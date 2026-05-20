@@ -26,9 +26,13 @@ import {
   ClipboardCheck,
   MessageSquare,
   CheckCircle,
+  AlertTriangle,
+  Shield,
+  Info,
 } from "lucide-react";
 import { getResults, StoredResult } from "@/lib/test-engine/results-store";
 import { getAllTests } from "@/lib/test-engine/test-registry";
+import { detectFlags, Flag } from "@/lib/scoring/flag-detector";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   psychology: <Brain className="h-5 w-5" />,
@@ -60,9 +64,12 @@ export default function DashboardPage() {
   const tc = useTranslations("categories");
 
   const [results, setResults] = useState<StoredResult[]>([]);
+  const [flags, setFlags] = useState<Flag[]>([]);
 
   useEffect(() => {
-    setResults(getResults());
+    const r = getResults();
+    setResults(r);
+    setFlags(detectFlags(r));
   }, []);
 
   const allTests = getAllTests();
@@ -115,6 +122,70 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Flags / Warnings */}
+      {flags.length > 0 && (
+        <div className="space-y-3">
+          {flags.map((flag) => {
+            const severityStyles = {
+              critical: "border-red-500/30 bg-red-500/5",
+              warning: "border-orange-500/30 bg-orange-500/5",
+              info: "border-blue-500/30 bg-blue-500/5",
+            };
+            const SeverityIcon = flag.severity === "critical" ? AlertTriangle
+              : flag.severity === "warning" ? Shield : Info;
+            const iconColor = flag.severity === "critical" ? "text-red-500"
+              : flag.severity === "warning" ? "text-orange-500" : "text-blue-500";
+            return (
+              <Card key={flag.key} className={severityStyles[flag.severity]}>
+                <CardContent className="flex items-start gap-3 py-4">
+                  <SeverityIcon className={`h-5 w-5 mt-0.5 shrink-0 ${iconColor}`} />
+                  <div>
+                    <p className="font-medium text-sm">
+                      {locale === "ru" ? flag.titleRu : flag.titleEn}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {locale === "ru" ? flag.messageRu : flag.messageEn}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Aggregated Profile */}
+      {results.length >= 2 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5" />
+              {locale === "ru" ? "Агрегированный профиль" : "Aggregated Profile"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {results.flatMap((r) =>
+                r.result.dimensions
+                  .filter((d) => d.key !== "style")
+                  .slice(0, 2)
+                  .map((d) => (
+                    <div key={`${r.testSlug}-${d.key}`} className="flex items-center gap-2">
+                      <div
+                        className="h-2 w-2 rounded-full shrink-0"
+                        style={{ backgroundColor: d.color }}
+                      />
+                      <span className="text-xs truncate">{d.name}</span>
+                      <Progress value={d.score} className="h-1.5 flex-1" />
+                      <span className="text-xs text-muted-foreground w-8 text-right">{d.score}%</span>
+                    </div>
+                  ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Recent results */}
       {results.length > 0 && (
