@@ -49,13 +49,13 @@ const categories = [
 ] as const;
 
 const questionCounts: Record<string, number> = {
-  psychology: 100,
+  psychology: 86,
   career: 80,
-  intelligence: 70,
-  habits: 70,
-  family: 60,
-  creativity: 50,
-  fun: 70,
+  intelligence: 24,
+  habits: 25,
+  family: 40,
+  creativity: 20,
+  fun: 30,
 };
 
 export default function LandingPage() {
@@ -110,7 +110,7 @@ export default function LandingPage() {
                     </CardTitle>
                     <CardDescription>{tc(`${cat}Desc`)}</CardDescription>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      {questionCounts[cat]} questions
+                      {questionCounts[cat]} {t("questionsCount")}
                     </p>
                   </CardHeader>
                 </Card>

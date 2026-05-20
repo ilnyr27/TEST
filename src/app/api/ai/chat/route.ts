@@ -3,9 +3,21 @@ import { createAIProvider } from "@/lib/ai/provider-factory";
 import { buildChatMessages } from "@/lib/ai/prompt-builder";
 import { ProviderType, AIMessage } from "@/lib/ai/types";
 import { StoredResult } from "@/lib/test-engine/results-store";
+import { checkRateLimit } from "@/lib/ai/rate-limiter";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || "anonymous";
+    const { allowed, retryAfterMs } = checkRateLimit(ip, 10, 60_000);
+    if (!allowed) {
+      return Response.json(
+        { error: "Too many requests. Please wait." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
+        }
+      );
+    }
     const body = await request.json();
     const {
       message,

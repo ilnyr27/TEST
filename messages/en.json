@@ -25,7 +25,8 @@
   },
   "landing": {
     "hero": "Truly know yourself",
-    "heroSub": "500+ questions across 7 dimensions. Scientific methodologies. AI analysis. Honest criticism mode.",
+    "heroSub": "300+ questions across 7 dimensions. Scientific methodologies. AI analysis. Honest criticism mode.",
+    "questionsCount": "questions",
     "startFree": "Start for free",
     "categories": "Testing Dimensions",
     "howItWorks": "How it works",

@@ -140,13 +140,21 @@ export default function DashboardPage() {
               <Card key={flag.key} className={severityStyles[flag.severity]}>
                 <CardContent className="flex items-start gap-3 py-4">
                   <SeverityIcon className={`h-5 w-5 mt-0.5 shrink-0 ${iconColor}`} />
-                  <div>
+                  <div className="flex-1">
                     <p className="font-medium text-sm">
                       {locale === "ru" ? flag.titleRu : flag.titleEn}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {locale === "ru" ? flag.messageRu : flag.messageEn}
                     </p>
+                    {flag.linkTo && (
+                      <Link href={flag.linkTo}>
+                        <Button variant="outline" size="sm" className="mt-2 gap-1 text-xs h-7">
+                          <ArrowRight className="h-3 w-3" />
+                          {locale === "ru" ? flag.linkLabelRu : flag.linkLabelEn}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 </CardContent>
               </Card>

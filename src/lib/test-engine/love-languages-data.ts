@@ -1,95 +1,136 @@
 import { Question, QuestionOption } from "@/types/database";
 
-const LL_TEST_ID = "love-languages-test";
+// Chapman 5 Love Languages
+// WA=Words of Affirmation, AS=Acts of Service, RG=Receiving Gifts, QT=Quality Time, PT=Physical Touch
+// 20 forced-choice questions (A vs B), each option maps to a different dimension
+
+export const LOVE_LANGUAGES_TEST_ID = "love-languages";
+
+export const loveLanguagesTestMeta = {
+  id: LOVE_LANGUAGES_TEST_ID,
+  slug: "love-languages",
+  nameRu: "Языки любви",
+  nameEn: "Love Languages",
+  descriptionRu: "Узнайте, как вы предпочитаете выражать и получать любовь. 5 языков: Слова одобрения, Помощь, Подарки, Время вместе, Прикосновения.",
+  descriptionEn: "Discover how you prefer to give and receive love. 5 languages: Words of Affirmation, Acts of Service, Receiving Gifts, Quality Time, Physical Touch.",
+  methodology: "Chapman 5 Love Languages",
+  estimatedMinutes: 5,
+  questionCount: 20,
+  category: "family",
+};
+
+type Dimension = "WA" | "AS" | "RG" | "QT" | "PT";
 
 interface LLQuestion {
   number: number;
   textRu: string;
   textEn: string;
-  optionA: { textRu: string; textEn: string; dimension: string };
-  optionB: { textRu: string; textEn: string; dimension: string };
+  optionA: { textRu: string; textEn: string; dimension: Dimension };
+  optionB: { textRu: string; textEn: string; dimension: Dimension };
 }
 
+// 20 questions: each dimension appears 8 times across all options (paired with each other dimension twice)
+// Pairing plan: WA-AS, WA-RG, WA-QT, WA-PT (x2 each = 8 for WA), same logic for all
 const llItems: LLQuestion[] = [
-  { number: 1, textRu: "Что для вас важнее?", textEn: "What matters more to you?",
-    optionA: { textRu: "Когда мне говорят, как я важен(а) для них", textEn: "Being told how important I am to someone", dimension: "WA" },
-    optionB: { textRu: "Когда мне помогают с делами без просьб", textEn: "Having someone help me without being asked", dimension: "AS" },
+  // --- WA vs QT (1 of 2) ---
+  { number: 1, textRu: "Что для вас важнее?", textEn: "Which matters more to you?",
+    optionA: { textRu: "Услышать «Я тобой горжусь»", textEn: "Hearing \"I'm proud of you\"", dimension: "WA" },
+    optionB: { textRu: "Провести вечер наедине с близким человеком", textEn: "Spending an evening alone with a loved one", dimension: "QT" },
   },
-  { number: 2, textRu: "Что вас больше радует?", textEn: "What makes you happier?",
+  // --- AS vs RG (1 of 2) ---
+  { number: 2, textRu: "Что вам приятнее получить?", textEn: "What would you enjoy receiving more?",
+    optionA: { textRu: "Помощь с делами, когда вы устали", textEn: "Help with chores when you're exhausted", dimension: "AS" },
+    optionB: { textRu: "Неожиданный подарок без повода", textEn: "A surprise gift for no reason", dimension: "RG" },
+  },
+  // --- PT vs WA (1 of 2) ---
+  { number: 3, textRu: "Что вы предпочитаете?", textEn: "Which do you prefer?",
+    optionA: { textRu: "Крепкие объятия при встрече", textEn: "A big hug when you meet", dimension: "PT" },
+    optionB: { textRu: "Искреннее «Ты для меня всё значишь»", textEn: "A heartfelt \"You mean everything to me\"", dimension: "WA" },
+  },
+  // --- QT vs AS (1 of 2) ---
+  { number: 4, textRu: "Что для вас ценнее?", textEn: "What do you value more?",
+    optionA: { textRu: "Совместная прогулка без телефонов", textEn: "A walk together without phones", dimension: "QT" },
+    optionB: { textRu: "Партнёр приготовил ужин, пока вы заняты", textEn: "Your partner cooked dinner while you were busy", dimension: "AS" },
+  },
+  // --- RG vs PT (1 of 2) ---
+  { number: 5, textRu: "Что значит для вас больше?", textEn: "Which means more to you?",
     optionA: { textRu: "Получить продуманный подарок", textEn: "Receiving a thoughtful gift", dimension: "RG" },
-    optionB: { textRu: "Провести вечер вдвоём без отвлечений", textEn: "Spending an evening together without distractions", dimension: "QT" },
+    optionB: { textRu: "Когда вас держат за руку на прогулке", textEn: "Having your hand held during a walk", dimension: "PT" },
   },
-  { number: 3, textRu: "Что вам приятнее?", textEn: "What feels better?",
-    optionA: { textRu: "Объятие или прикосновение", textEn: "A hug or a touch", dimension: "PT" },
-    optionB: { textRu: "Услышать «Я тобой горжусь»", textEn: "Hearing 'I'm proud of you'", dimension: "WA" },
+  // --- WA vs AS (1 of 2) ---
+  { number: 6, textRu: "Что вам приятнее?", textEn: "What makes you feel more loved?",
+    optionA: { textRu: "Получить записку с тёплыми словами", textEn: "Receiving a note with warm words", dimension: "WA" },
+    optionB: { textRu: "Кто-то взял на себя ваши обязанности, чтобы вы отдохнули", textEn: "Someone taking over your tasks so you can rest", dimension: "AS" },
   },
-  { number: 4, textRu: "Что важнее в отношениях?", textEn: "What's more important in a relationship?",
-    optionA: { textRu: "Совместные прогулки и поездки", textEn: "Going on walks and trips together", dimension: "QT" },
-    optionB: { textRu: "Когда партнёр берёт на себя домашние дела", textEn: "Partner taking care of household chores", dimension: "AS" },
+  // --- QT vs RG (1 of 2) ---
+  { number: 7, textRu: "Что вы выберете?", textEn: "Which would you choose?",
+    optionA: { textRu: "Целый день вдвоём за любимым занятием", textEn: "A whole day together doing something you love", dimension: "QT" },
+    optionB: { textRu: "Получить подарок, о котором давно мечтали", textEn: "Receiving a gift you've wanted for a long time", dimension: "RG" },
   },
-  { number: 5, textRu: "Что вы цените больше?", textEn: "What do you value more?",
-    optionA: { textRu: "Получить подарок-сюрприз", textEn: "Getting a surprise gift", dimension: "RG" },
-    optionB: { textRu: "Держаться за руки", textEn: "Holding hands", dimension: "PT" },
+  // --- PT vs AS (1 of 2) ---
+  { number: 8, textRu: "Что для вас важнее?", textEn: "Which matters more to you?",
+    optionA: { textRu: "Массаж после тяжёлого дня", textEn: "A massage after a hard day", dimension: "PT" },
+    optionB: { textRu: "Партнёр починил то, что давно сломалось", textEn: "Your partner fixed something that was long broken", dimension: "AS" },
   },
-  { number: 6, textRu: "Что для вас значимее?", textEn: "What is more meaningful?",
-    optionA: { textRu: "Комплименты и слова поддержки", textEn: "Compliments and words of encouragement", dimension: "WA" },
-    optionB: { textRu: "Полное внимание во время разговора", textEn: "Full attention during a conversation", dimension: "QT" },
+  // --- WA vs RG (1 of 2) ---
+  { number: 9, textRu: "Что трогает вас сильнее?", textEn: "What touches you more?",
+    optionA: { textRu: "Услышать «Ты делаешь мою жизнь лучше»", textEn: "Hearing \"You make my life better\"", dimension: "WA" },
+    optionB: { textRu: "Цветы или маленький сувенир «просто так»", textEn: "Flowers or a small souvenir \"just because\"", dimension: "RG" },
   },
-  { number: 7, textRu: "Что вас больше трогает?", textEn: "What touches you more?",
-    optionA: { textRu: "Когда готовят мою любимую еду", textEn: "Having my favorite meal prepared for me", dimension: "AS" },
-    optionB: { textRu: "Когда дарят цветы или маленький подарок", textEn: "Receiving flowers or a small gift", dimension: "RG" },
-  },
-  { number: 8, textRu: "Что вам ближе?", textEn: "What feels closer to you?",
-    optionA: { textRu: "Сидеть рядом, касаясь друг друга", textEn: "Sitting close, touching each other", dimension: "PT" },
-    optionB: { textRu: "Когда мне говорят «Я тебя люблю»", textEn: "Being told 'I love you'", dimension: "WA" },
-  },
-  { number: 9, textRu: "Что важнее для вас?", textEn: "What's more important to you?",
-    optionA: { textRu: "Проводить выходные вместе", textEn: "Spending weekends together", dimension: "QT" },
-    optionB: { textRu: "Получить подарок, о котором давно мечтал(а)", textEn: "Receiving a gift I've wanted for a long time", dimension: "RG" },
-  },
-  { number: 10, textRu: "Что для вас ценнее?", textEn: "What's more valuable?",
-    optionA: { textRu: "Когда партнёр помогает, не дожидаясь просьбы", textEn: "Partner helping without waiting to be asked", dimension: "AS" },
-    optionB: { textRu: "Массаж после тяжёлого дня", textEn: "A massage after a tough day", dimension: "PT" },
-  },
-  { number: 11, textRu: "Что вам приятнее?", textEn: "What's more pleasant?",
-    optionA: { textRu: "Записка с тёплыми словами", textEn: "A note with warm words", dimension: "WA" },
-    optionB: { textRu: "Когда чинят что-то в доме для меня", textEn: "Having something fixed around the house for me", dimension: "AS" },
-  },
-  { number: 12, textRu: "Что вас больше радует?", textEn: "What brings more joy?",
-    optionA: { textRu: "Объятие при встрече", textEn: "A hug when meeting", dimension: "PT" },
-    optionB: { textRu: "Совместный ужин без телефонов", textEn: "Dinner together without phones", dimension: "QT" },
-  },
-  { number: 13, textRu: "Что для вас важнее?", textEn: "What matters more?",
-    optionA: { textRu: "Памятный подарок на годовщину", textEn: "A memorable anniversary gift", dimension: "RG" },
-    optionB: { textRu: "Услышать, что я значу для партнёра", textEn: "Hearing what I mean to my partner", dimension: "WA" },
-  },
-  { number: 14, textRu: "Что вы предпочтёте?", textEn: "What would you prefer?",
-    optionA: { textRu: "Совместное хобби или занятие", textEn: "A shared hobby or activity", dimension: "QT" },
-    optionB: { textRu: "Когда партнёр выполняет мои поручения", textEn: "Partner running errands for me", dimension: "AS" },
-  },
-  { number: 15, textRu: "Что вам ближе?", textEn: "What feels closer?",
-    optionA: { textRu: "Когда дарят что-то, увидев, что мне понравилось", textEn: "Getting something they noticed I liked", dimension: "RG" },
-    optionB: { textRu: "Рука на плече, когда мне грустно", textEn: "A hand on my shoulder when I'm sad", dimension: "PT" },
-  },
-  { number: 16, textRu: "Что больше греет душу?", textEn: "What warms your heart more?",
-    optionA: { textRu: "Когда мне говорят, как хорошо я справляюсь", textEn: "Being told how well I'm doing", dimension: "WA" },
-    optionB: { textRu: "Совместная поездка на выходные", textEn: "A weekend trip together", dimension: "QT" },
-  },
-  { number: 17, textRu: "Что для вас значимее?", textEn: "What is more meaningful?",
-    optionA: { textRu: "Когда партнёр готовит мне завтрак", textEn: "Partner making me breakfast", dimension: "AS" },
-    optionB: { textRu: "Получить подарок «просто так»", textEn: "Getting a 'just because' gift", dimension: "RG" },
-  },
-  { number: 18, textRu: "Что вас больше трогает?", textEn: "What touches you more?",
-    optionA: { textRu: "Поцелуй при прощании", textEn: "A kiss goodbye", dimension: "PT" },
-    optionB: { textRu: "Когда партнёр берёт на себя мою задачу", textEn: "Partner taking on my task", dimension: "AS" },
-  },
-  { number: 19, textRu: "Что для вас важнее?", textEn: "What matters more?",
+  // --- QT vs PT (1 of 2) ---
+  { number: 10, textRu: "Что вы предпочитаете?", textEn: "Which do you prefer?",
     optionA: { textRu: "Долгий разговор по душам", textEn: "A long heart-to-heart conversation", dimension: "QT" },
-    optionB: { textRu: "Крепкое объятие", textEn: "A tight hug", dimension: "PT" },
+    optionB: { textRu: "Обниматься на диване перед фильмом", textEn: "Cuddling on the couch before a movie", dimension: "PT" },
   },
-  { number: 20, textRu: "Что вы цените больше?", textEn: "What do you value more?",
-    optionA: { textRu: "Подарок ручной работы", textEn: "A handmade gift", dimension: "RG" },
-    optionB: { textRu: "Прогулка вдвоём без спешки", textEn: "A leisurely walk together", dimension: "QT" },
+  // --- AS vs QT (2 of 2) ---
+  { number: 11, textRu: "Что вам приятнее?", textEn: "What makes you happier?",
+    optionA: { textRu: "Партнёр помыл посуду, не дожидаясь просьбы", textEn: "Your partner washed the dishes without being asked", dimension: "AS" },
+    optionB: { textRu: "Партнёр отложил все дела ради времени с вами", textEn: "Your partner dropped everything to spend time with you", dimension: "QT" },
+  },
+  // --- RG vs WA (2 of 2) ---
+  { number: 12, textRu: "Что значит для вас больше?", textEn: "Which means more to you?",
+    optionA: { textRu: "Получить подарок, привезённый из поездки", textEn: "Receiving a gift brought back from a trip", dimension: "RG" },
+    optionB: { textRu: "Длинное сообщение о том, как вас ценят", textEn: "A long message about how much you're valued", dimension: "WA" },
+  },
+  // --- PT vs QT (2 of 2) ---
+  { number: 13, textRu: "Что вы выберете?", textEn: "Which would you choose?",
+    optionA: { textRu: "Сидеть рядом, касаясь друг друга", textEn: "Sitting close, touching each other", dimension: "PT" },
+    optionB: { textRu: "Вместе гулять и разговаривать часами", textEn: "Walking and talking together for hours", dimension: "QT" },
+  },
+  // --- AS vs WA (2 of 2) ---
+  { number: 14, textRu: "Что для вас ценнее?", textEn: "What do you value more?",
+    optionA: { textRu: "Партнёр заправил машину, чтобы вам не пришлось", textEn: "Your partner filled up your car so you wouldn't have to", dimension: "AS" },
+    optionB: { textRu: "Партнёр сказал вам комплимент при друзьях", textEn: "Your partner complimented you in front of friends", dimension: "WA" },
+  },
+  // --- RG vs PT (2 of 2) ---
+  { number: 15, textRu: "Что вам приятнее?", textEn: "What makes you feel more loved?",
+    optionA: { textRu: "Получить украшение или аксессуар в подарок", textEn: "Receiving jewelry or an accessory as a gift", dimension: "RG" },
+    optionB: { textRu: "Когда вас нежно обнимают перед сном", textEn: "Being gently held before falling asleep", dimension: "PT" },
+  },
+  // --- QT vs WA (2 of 2) ---
+  { number: 16, textRu: "Что трогает вас сильнее?", textEn: "What touches you more?",
+    optionA: { textRu: "Партнёр выключил телефон, чтобы побыть с вами", textEn: "Your partner turned off their phone to be with you", dimension: "QT" },
+    optionB: { textRu: "Услышать «Я так рад(а), что ты рядом»", textEn: "Hearing \"I'm so glad you're here\"", dimension: "WA" },
+  },
+  // --- AS vs PT (2 of 2) ---
+  { number: 17, textRu: "Что для вас важнее?", textEn: "Which matters more to you?",
+    optionA: { textRu: "Партнёр организовал ваш переезд или ремонт", textEn: "Your partner organized your move or renovation", dimension: "AS" },
+    optionB: { textRu: "Долгое объятие после долгой разлуки", textEn: "A long embrace after being apart", dimension: "PT" },
+  },
+  // --- RG vs QT (2 of 2) ---
+  { number: 18, textRu: "Что вы предпочитаете?", textEn: "Which do you prefer?",
+    optionA: { textRu: "Получить книгу, которую вам подобрали специально", textEn: "Receiving a book picked out just for you", dimension: "RG" },
+    optionB: { textRu: "Провести выходные вместе, никуда не торопясь", textEn: "Spending the weekend together with no rush", dimension: "QT" },
+  },
+  // --- AS vs RG (2 of 2) ---
+  { number: 19, textRu: "Что значит для вас больше?", textEn: "Which means more to you?",
+    optionA: { textRu: "Партнёр привёз вас, когда вам было неудобно добираться", textEn: "Your partner drove you when getting there was inconvenient", dimension: "AS" },
+    optionB: { textRu: "Получить то, на что вы давно намекали", textEn: "Receiving something you had been hinting at", dimension: "RG" },
+  },
+  // --- WA vs PT (2 of 2) ---
+  { number: 20, textRu: "Что вам приятнее?", textEn: "What makes you feel more loved?",
+    optionA: { textRu: "Услышать «Ты самый важный человек в моей жизни»", textEn: "Hearing \"You're the most important person in my life\"", dimension: "WA" },
+    optionB: { textRu: "Когда вас нежно гладят по голове", textEn: "Having your hair gently stroked", dimension: "PT" },
   },
 ];
 
@@ -100,64 +141,56 @@ export const loveLanguagesDimensions: Record<string, {
   color: string;
 }> = {
   WA: {
-    nameRu: "Слова поддержки", nameEn: "Words of Affirmation",
-    descHighRu: "Вам важны комплименты, благодарности и слова любви. Вы чувствуете себя любимым(ой), когда вам говорят о своих чувствах.",
-    descHighEn: "Compliments, gratitude, and words of love matter most to you. You feel loved when people express their feelings verbally.",
-    descLowRu: "Слова для вас менее значимы, чем другие формы выражения чувств.",
-    descLowEn: "Words are less important to you than other forms of expressing feelings.",
+    nameRu: "Слова одобрения",
+    nameEn: "Words of Affirmation",
+    descHighRu: "Вы чувствуете любовь через слова — комплименты, благодарности, признания. Устное и письменное выражение чувств наполняет вас энергией и теплом.",
+    descHighEn: "You feel loved through words — compliments, gratitude, affirmations. Verbal and written expressions of feeling fill your emotional tank.",
+    descLowRu: "Слова для вас менее значимы, чем другие проявления заботы. Вы больше цените действия или присутствие.",
+    descLowEn: "Words matter less to you than other expressions of care. You value actions or presence more.",
     color: "#8b5cf6",
   },
   AS: {
-    nameRu: "Помощь и забота", nameEn: "Acts of Service",
-    descHighRu: "Для вас дела значат больше слов. Вы чувствуете любовь, когда близкие помогают вам и облегчают вашу жизнь.",
-    descHighEn: "Actions speak louder than words for you. You feel loved when others help and make your life easier.",
-    descLowRu: "Помощь в делах для вас не главный показатель заботы.",
-    descLowEn: "Acts of service are not your primary indicator of care.",
+    nameRu: "Помощь и забота",
+    nameEn: "Acts of Service",
+    descHighRu: "Ваш язык любви — действия. Когда кто-то облегчает вашу жизнь реальной помощью и заботой, вы чувствуете себя по-настоящему любимым(ой).",
+    descHighEn: "Your love language is action. When someone eases your life through real help and care, you feel truly loved.",
+    descLowRu: "Помощь приятна, но не является для вас главным способом почувствовать любовь.",
+    descLowEn: "Help is nice, but it's not the primary way you feel loved.",
     color: "#06b6d4",
   },
   RG: {
-    nameRu: "Подарки", nameEn: "Receiving Gifts",
-    descHighRu: "Вы цените продуманные подарки как символы внимания. Дело не в цене, а в мысли, стоящей за подарком.",
-    descHighEn: "You value thoughtful gifts as symbols of attention. It's not about the price, but the thought behind the gift.",
-    descLowRu: "Подарки для вас — приятный, но не основной способ выражения любви.",
-    descLowEn: "Gifts are pleasant but not your primary love language.",
+    nameRu: "Подарки",
+    nameEn: "Receiving Gifts",
+    descHighRu: "Для вас важен символизм подарка — то, что кто-то думал о вас и выбирал что-то специально. Это знак внимания и любви, а не вопрос цены.",
+    descHighEn: "The symbolism of a gift matters to you — someone thought of you and chose something special. It's a sign of attention and love, not a matter of price.",
+    descLowRu: "Подарки вас радуют, но другие проявления любви для вас важнее материальных знаков внимания.",
+    descLowEn: "Gifts make you happy, but other expressions of love matter more than material tokens.",
     color: "#f59e0b",
   },
   QT: {
-    nameRu: "Время вместе", nameEn: "Quality Time",
-    descHighRu: "Для вас самое важное — безраздельное внимание. Совместные занятия и разговоры — ваш главный язык любви.",
-    descHighEn: "Undivided attention matters most to you. Shared activities and conversations are your primary love language.",
-    descLowRu: "Совместное времяпрепровождение для вас важно, но не является главным.",
-    descLowEn: "Quality time is nice but not your top priority.",
+    nameRu: "Время вместе",
+    nameEn: "Quality Time",
+    descHighRu: "Безраздельное внимание — ваш главный язык любви. Совместное время, глубокие разговоры и общие занятия наполняют вас ощущением близости.",
+    descHighEn: "Undivided attention is your primary love language. Shared time, deep conversations, and activities together fill you with a sense of closeness.",
+    descLowRu: "Совместное время приятно, но вы не так сильно нуждаетесь в постоянном присутствии близкого человека.",
+    descLowEn: "Shared time is pleasant, but you don't need your partner's constant presence as much.",
     color: "#ec4899",
   },
   PT: {
-    nameRu: "Прикосновения", nameEn: "Physical Touch",
-    descHighRu: "Вы чувствуете связь через физический контакт — объятия, прикосновения, близость.",
-    descHighEn: "You feel connected through physical contact — hugs, touches, closeness.",
-    descLowRu: "Физический контакт важен, но вы больше цените другие способы выражения любви.",
-    descLowEn: "Physical contact matters, but you value other ways of showing love more.",
+    nameRu: "Прикосновения",
+    nameEn: "Physical Touch",
+    descHighRu: "Физический контакт — объятия, поглаживания, близость — ваш главный способ чувствовать любовь и эмоциональную связь.",
+    descHighEn: "Physical contact — hugs, caresses, closeness — is your primary way of feeling love and emotional connection.",
+    descLowRu: "Физический контакт для вас менее значим, чем другие способы выражения любви.",
+    descLowEn: "Physical touch is less significant to you than other ways of expressing love.",
     color: "#10b981",
   },
-};
-
-export const loveLanguagesTestMeta = {
-  id: LL_TEST_ID,
-  slug: "love-languages",
-  nameRu: "Языки любви",
-  nameEn: "Love Languages",
-  descriptionRu: "Узнайте, как вы лучше всего чувствуете и выражаете любовь. Определите ваш основной язык любви из 5 типов.",
-  descriptionEn: "Discover how you best feel and express love. Identify your primary love language from 5 types.",
-  methodology: "Chapman 5 Love Languages",
-  estimatedMinutes: 5,
-  questionCount: 20,
-  category: "family",
 };
 
 export function getLoveLanguagesQuestions(): (Question & { options: QuestionOption[] })[] {
   return llItems.map((item) => ({
     id: `ll-q-${item.number}`,
-    test_id: LL_TEST_ID,
+    test_id: LOVE_LANGUAGES_TEST_ID,
     question_number: item.number,
     text_ru: item.textRu,
     text_en: item.textEn,
