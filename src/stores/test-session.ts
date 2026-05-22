@@ -34,7 +34,7 @@ export interface TestSessionState {
   tick: () => void;
 }
 
-export const useTestSessionStore = create<TestSessionState>((set, _get) => ({
+export const useTestSessionStore = create<TestSessionState>((set) => ({
   testId: null,
   testName: "",
   questions: [],

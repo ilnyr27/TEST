@@ -68,9 +68,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const r = getResults();
+    // Reading from localStorage on mount — legitimate one-time init
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setResults(r);
     setFlags(detectFlags(r));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   const allTests = getAllTests();
