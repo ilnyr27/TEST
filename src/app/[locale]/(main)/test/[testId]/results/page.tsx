@@ -27,31 +27,10 @@ export default function TestResultsPage({
   const { testId } = use(params);
   const locale = useLocale() as "ru" | "en";
   const t = useTranslations("results");
-  const tc = useTranslations("common");
-
   const { questions, answers, timeSpentSeconds, testName, reset } =
     useTestSessionStore();
 
   const answeredCount = Object.keys(answers).length;
-
-  if (questions.length === 0 || answeredCount === 0) {
-    return (
-      <div className="mx-auto max-w-2xl py-12 text-center space-y-4">
-        <h1 className="text-2xl font-bold">
-          {locale === "ru" ? "Нет данных" : "No data"}
-        </h1>
-        <p className="text-muted-foreground">
-          {locale === "ru"
-            ? "Сначала пройдите тест, чтобы увидеть результаты."
-            : "Please complete the test first to see results."}
-        </p>
-        <Link href={`/test/${testId}`}>
-          <Button>{locale === "ru" ? "Перейти к тесту" : "Go to test"}</Button>
-        </Link>
-      </div>
-    );
-  }
-
   const scorer = getScorer(testId);
   const savedRef = useRef(false);
 
@@ -70,6 +49,24 @@ export default function TestResultsPage({
       });
     }
   }, [scorer, testId, questions, answers, locale, answeredCount, timeSpentSeconds]);
+
+  if (questions.length === 0 || answeredCount === 0) {
+    return (
+      <div className="mx-auto max-w-2xl py-12 text-center space-y-4">
+        <h1 className="text-2xl font-bold">
+          {locale === "ru" ? "Нет данных" : "No data"}
+        </h1>
+        <p className="text-muted-foreground">
+          {locale === "ru"
+            ? "Сначала пройдите тест, чтобы увидеть результаты."
+            : "Please complete the test first to see results."}
+        </p>
+        <Link href={`/test/${testId}`}>
+          <Button>{locale === "ru" ? "Перейти к тесту" : "Go to test"}</Button>
+        </Link>
+      </div>
+    );
+  }
 
   if (!scorer) {
     return (

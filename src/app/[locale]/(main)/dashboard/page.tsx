@@ -70,6 +70,7 @@ export default function DashboardPage() {
     const r = getResults();
     setResults(r);
     setFlags(detectFlags(r));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   const allTests = getAllTests();
