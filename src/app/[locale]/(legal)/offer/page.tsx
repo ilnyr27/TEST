@@ -89,7 +89,7 @@ export default function OfferPage() {
           Self-employed individual<br />
           Tax regime: Tax on Professional Income (NPD)<br />
           Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
-          Platform: <a href="https://know-yourself-alpha.vercel.app">know-yourself-alpha.vercel.app</a>
+          Platform: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
         </p>
       </article>
     );
@@ -177,7 +177,7 @@ export default function OfferPage() {
         Самозанятый<br />
         Налоговый режим: Налог на профессиональный доход (НПД)<br />
         Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
-        Платформа: <a href="https://know-yourself-alpha.vercel.app">know-yourself-alpha.vercel.app</a>
+        Платформа: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
       </p>
     </article>
   );

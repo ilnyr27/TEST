@@ -82,7 +82,7 @@ export default function ContactsPage() {
           </div>
           <div>
             <p className="text-muted-foreground">URL</p>
-            <p className="font-medium">know-yourself-alpha.vercel.app</p>
+            <p className="font-medium">poznaiy-sebya.ru</p>
           </div>
           <div>
             <p className="text-muted-foreground">
