@@ -1,4 +1,5 @@
 import { ScoringResult } from "@/lib/scoring/types";
+import { saveResultToSupabase } from "@/lib/supabase/results-sync";
 
 const STORAGE_KEY = "know-yourself-results";
 
@@ -13,8 +14,9 @@ export interface StoredResult {
 
 export function saveResult(data: StoredResult): void {
   if (typeof window === "undefined") return;
+
+  // Always write to localStorage (offline-first)
   const existing = getResults();
-  // Replace if same test, or add new
   const idx = existing.findIndex((r) => r.testSlug === data.testSlug);
   if (idx >= 0) {
     existing[idx] = data;
@@ -22,6 +24,11 @@ export function saveResult(data: StoredResult): void {
     existing.push(data);
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+
+  // Also persist to Supabase (fire-and-forget, non-blocking)
+  saveResultToSupabase(data).catch(() => {
+    // Silently fail — localStorage is the primary store
+  });
 }
 
 export function getResults(): StoredResult[] {
