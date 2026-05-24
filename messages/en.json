@@ -107,6 +107,19 @@
     "checkEmail": "Check your email",
     "confirmationSent": "We sent a confirmation link to"
   },
+  "legal": {
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "cookiesTitle": "Cookie Policy",
+    "lastUpdated": "Last updated",
+    "cookieBannerText": "We use cookies to provide our service.",
+    "cookieAcceptAll": "Accept all",
+    "cookieEssential": "Essential only",
+    "consentPrivacy": "I consent to the processing of my personal data",
+    "consentTerms": "I accept the Terms of Service",
+    "consentRequired": "You must accept to create an account",
+    "medicalDisclaimer": "This test is not a clinical diagnosis. Results are for self-discovery only and do not replace professional advice."
+  },
   "dashboard": {
     "welcome": "Welcome",
     "overview": "Overview",

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -20,10 +21,13 @@ import { Brain } from "lucide-react";
 export default function SignupPage() {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
+  const tl = useTranslations("legal");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [consentPrivacy, setConsentPrivacy] = useState(false);
+  const [consentTerms, setConsentTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -34,6 +38,11 @@ export default function SignupPage() {
 
     if (password !== confirmPassword) {
       setError(t("passwordsMismatch"));
+      return;
+    }
+
+    if (!consentPrivacy || !consentTerms) {
+      setError(tl("consentRequired"));
       return;
     }
 
@@ -128,9 +137,43 @@ export default function SignupPage() {
                 required
               />
             </div>
+
+            {/* Consent checkboxes */}
+            <div className="space-y-3 pt-2 border-t">
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="consent-privacy"
+                  checked={consentPrivacy}
+                  onCheckedChange={(v) => setConsentPrivacy(v === true)}
+                />
+                <label htmlFor="consent-privacy" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                  {tl("consentPrivacy")}{" "}
+                  <Link href="/privacy" className="text-primary hover:underline" target="_blank">
+                    {tl("privacyTitle")}
+                  </Link>
+                </label>
+              </div>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="consent-terms"
+                  checked={consentTerms}
+                  onCheckedChange={(v) => setConsentTerms(v === true)}
+                />
+                <label htmlFor="consent-terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                  {tl("consentTerms")}{" "}
+                  <Link href="/terms" className="text-primary hover:underline" target="_blank">
+                    {tl("termsTitle")}
+                  </Link>
+                </label>
+              </div>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || !consentPrivacy || !consentTerms}
+            >
               {loading ? tc("loading") : tc("signup")}
             </Button>
             <p className="text-sm text-muted-foreground">

@@ -29,7 +29,6 @@ export function useUserSettings() {
     if (!user) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSettings(defaultSettings);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
@@ -42,7 +41,6 @@ export function useUserSettings() {
       .single()
       .then(({ data }) => {
         if (data) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
           setSettings({
             ai_provider: data.ai_provider || "deepseek",
             criticism_mode: data.criticism_mode || false,
@@ -50,7 +48,6 @@ export function useUserSettings() {
             theme: data.theme || "system",
           });
         }
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(false);
       });
   }, [user]);

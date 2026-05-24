@@ -12,7 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Clock, HelpCircle, Play } from "lucide-react";
+import { ArrowLeft, Clock, HelpCircle, Play, Info } from "lucide-react";
 import { getTestMeta } from "@/lib/test-engine/test-registry";
 
 export default function TestIntroPage({
@@ -24,6 +24,7 @@ export default function TestIntroPage({
   const locale = useLocale() as "ru" | "en";
   const t = useTranslations("test");
   const tc = useTranslations("common");
+  const tl = useTranslations("legal");
 
   const meta = getTestMeta(testId);
 
@@ -81,6 +82,11 @@ export default function TestIntroPage({
               <p>{instruction}</p>
             </div>
           )}
+
+          <div className="flex items-start gap-2 rounded-lg border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/30 p-3 text-xs text-muted-foreground">
+            <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-blue-500" />
+            <p>{tl("medicalDisclaimer")}</p>
+          </div>
 
           <Link href={`/test/${testId}/play`}>
             <Button size="lg" className="w-full gap-2">
