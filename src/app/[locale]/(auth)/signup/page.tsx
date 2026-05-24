@@ -33,7 +33,7 @@ export default function SignupPage() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("passwordsMismatch"));
       return;
     }
 
@@ -62,9 +62,9 @@ export default function SignupPage() {
       <div className="flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-            <CardTitle>Check your email</CardTitle>
+            <CardTitle>{t("checkEmail")}</CardTitle>
             <CardDescription>
-              We sent a confirmation link to <strong>{email}</strong>
+              {t("confirmationSent")} <strong>{email}</strong>
             </CardDescription>
           </CardHeader>
         </Card>
@@ -90,7 +90,7 @@ export default function SignupPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="name">Display name</Label>
+              <Label htmlFor="name">{t("displayName")}</Label>
               <Input
                 id="name"
                 value={displayName}

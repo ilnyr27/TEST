@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,8 @@ import { Brain } from "lucide-react";
 export default function LoginPage() {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
+  const locale = useLocale();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,7 +43,8 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      window.location.href = "/dashboard";
+      const next = searchParams.get("next") || `/${locale}/dashboard`;
+      window.location.href = next;
     }
   };
 

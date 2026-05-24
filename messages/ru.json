@@ -98,10 +98,14 @@
     "email": "Email",
     "password": "Пароль",
     "confirmPassword": "Подтвердите пароль",
+    "displayName": "Имя",
     "forgotPassword": "Забыли пароль?",
     "noAccount": "Нет аккаунта?",
     "hasAccount": "Уже есть аккаунт?",
-    "orContinueWith": "Или продолжить с"
+    "orContinueWith": "Или продолжить с",
+    "passwordsMismatch": "Пароли не совпадают",
+    "checkEmail": "Проверьте почту",
+    "confirmationSent": "Мы отправили ссылку для подтверждения на"
   },
   "dashboard": {
     "welcome": "Добро пожаловать",

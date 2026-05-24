@@ -98,10 +98,14 @@
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",
+    "displayName": "Display name",
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "orContinueWith": "Or continue with"
+    "orContinueWith": "Or continue with",
+    "passwordsMismatch": "Passwords do not match",
+    "checkEmail": "Check your email",
+    "confirmationSent": "We sent a confirmation link to"
   },
   "dashboard": {
     "welcome": "Welcome",

@@ -7,10 +7,13 @@ import { Brain, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { UserMenu } from "@/components/auth/UserMenu";
+import { useUser } from "@/hooks/useUser";
 
 export function Header() {
   const t = useTranslations("common");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, loading } = useUser();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,20 +43,31 @@ export function Header() {
         <div className="hidden md:flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              {t("login")}
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button size="sm">{t("signup")}</Button>
-          </Link>
+          {loading ? (
+            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+          ) : user ? (
+            <UserMenu />
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  {t("login")}
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm">{t("signup")}</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile: theme + lang + hamburger */}
         <div className="flex md:hidden items-center gap-1">
           <LanguageSwitcher />
           <ThemeToggle />
+          {user ? (
+            <UserMenu />
+          ) : null}
           <Button
             variant="ghost"
             size="icon"
@@ -83,16 +97,18 @@ export function Header() {
             >
               {t("coach")}
             </Link>
-            <div className="flex gap-2 pt-2 border-t">
-              <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full">
-                  {t("login")}
-                </Button>
-              </Link>
-              <Link href="/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
-                <Button size="sm" className="w-full">{t("signup")}</Button>
-              </Link>
-            </div>
+            {!user && !loading && (
+              <div className="flex gap-2 pt-2 border-t">
+                <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" size="sm" className="w-full">
+                    {t("login")}
+                  </Button>
+                </Link>
+                <Link href="/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button size="sm" className="w-full">{t("signup")}</Button>
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       )}
