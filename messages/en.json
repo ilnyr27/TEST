@@ -118,7 +118,9 @@
     "consentPrivacy": "I consent to the processing of my personal data",
     "consentTerms": "I accept the Terms of Service",
     "consentRequired": "You must accept to create an account",
-    "medicalDisclaimer": "This test is not a clinical diagnosis. Results are for self-discovery only and do not replace professional advice."
+    "medicalDisclaimer": "This test is not a clinical diagnosis. Results are for self-discovery only and do not replace professional advice.",
+    "offerTitle": "Public Offer Agreement",
+    "contactsTitle": "Contacts & Legal Info"
   },
   "dashboard": {
     "welcome": "Welcome",

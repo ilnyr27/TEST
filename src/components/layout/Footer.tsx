@@ -17,15 +17,18 @@ export function Footer() {
             <span>{t("appName")}</span>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
-          <nav className="flex items-center gap-4 text-xs text-muted-foreground">
+          <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               {tl("privacyTitle")}
             </Link>
             <Link href="/terms" className="hover:text-foreground transition-colors">
               {tl("termsTitle")}
             </Link>
-            <Link href="/cookies" className="hover:text-foreground transition-colors">
-              {tl("cookiesTitle")}
+            <Link href="/offer" className="hover:text-foreground transition-colors">
+              {tl("offerTitle")}
+            </Link>
+            <Link href="/contacts" className="hover:text-foreground transition-colors">
+              {tl("contactsTitle")}
             </Link>
           </nav>
         </div>
