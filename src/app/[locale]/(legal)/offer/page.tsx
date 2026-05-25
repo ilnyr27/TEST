@@ -87,6 +87,7 @@ export default function OfferPage() {
         <h2>10. Service Provider Details</h2>
         <p>
           Self-employed individual<br />
+          INN: 165207104133<br />
           Tax regime: Tax on Professional Income (NPD)<br />
           Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
           Platform: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
@@ -175,6 +176,7 @@ export default function OfferPage() {
       <h2>10. Реквизиты Исполнителя</h2>
       <p>
         Самозанятый<br />
+        ИНН: 165207104133<br />
         Налоговый режим: Налог на профессиональный доход (НПД)<br />
         Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
         Платформа: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>

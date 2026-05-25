@@ -29,6 +29,10 @@ export default function ContactsPage() {
             </p>
           </div>
           <div>
+            <p className="text-muted-foreground">ИНН</p>
+            <p className="font-medium">165207104133</p>
+          </div>
+          <div>
             <p className="text-muted-foreground">
               {locale === "ru" ? "Налоговый режим" : "Tax Regime"}
             </p>
