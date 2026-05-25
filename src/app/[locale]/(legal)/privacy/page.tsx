@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <h2>1. Data Controller</h2>
         <p>
           Individual entrepreneur (self-employed), Russian Federation.<br />
-          Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a>
+          Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a>
         </p>
 
         <h2>2. Data We Collect</h2>
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
           <li>Withdraw consent at any time</li>
           <li>Export your data in machine-readable format</li>
         </ul>
-        <p>To exercise these rights, contact us at <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a> or use the Settings page.</p>
+        <p>To exercise these rights, contact us at <a href="mailto:ilray@mail.ru">ilray@mail.ru</a> or use the Settings page.</p>
 
         <h2>9. Medical Disclaimer</h2>
         <p>
@@ -94,7 +94,7 @@ export default function PrivacyPage() {
       <h2>1. Оператор персональных данных</h2>
       <p>
         Самозанятый, Российская Федерация.<br />
-        Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a>
+        Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a>
       </p>
 
       <h2>2. Какие данные мы собираем</h2>
@@ -150,7 +150,7 @@ export default function PrivacyPage() {
         <li>Отозвать согласие в любое время</li>
         <li>Экспортировать данные в машиночитаемом формате</li>
       </ul>
-      <p>Для реализации прав обратитесь по адресу <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a> или используйте страницу Настроек.</p>
+      <p>Для реализации прав обратитесь по адресу <a href="mailto:ilray@mail.ru">ilray@mail.ru</a> или используйте страницу Настроек.</p>
 
       <h2>9. Медицинский дисклеймер</h2>
       <p>

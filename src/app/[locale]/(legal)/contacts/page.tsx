@@ -61,8 +61,8 @@ export default function ContactsPage() {
         <CardContent className="space-y-3 text-sm">
           <div>
             <p className="text-muted-foreground">Email</p>
-            <a href="mailto:3drayway@gmail.com" className="font-medium text-primary hover:underline">
-              3drayway@gmail.com
+            <a href="mailto:ilray@mail.ru" className="font-medium text-primary hover:underline">
+              ilray@mail.ru
             </a>
           </div>
           <div>

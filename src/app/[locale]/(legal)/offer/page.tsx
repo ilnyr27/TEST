@@ -55,7 +55,7 @@ export default function OfferPage() {
           <li>Unused credits: refundable within 14 days of purchase</li>
           <li>Used credits: non-refundable (service already rendered)</li>
           <li>Comprehensive report: non-refundable after generation</li>
-          <li>Refund requests: contact 3drayway@gmail.com</li>
+          <li>Refund requests: contact ilray@mail.ru</li>
         </ul>
 
         <h2>6. Limitations and Disclaimers</h2>
@@ -90,7 +90,7 @@ export default function OfferPage() {
           Self-employed individual<br />
           INN: 165207104133<br />
           Tax regime: Tax on Professional Income (NPD)<br />
-          Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
+          Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a><br />
           Platform: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
         </p>
       </article>
@@ -145,7 +145,7 @@ export default function OfferPage() {
         <li>Неиспользованные кредиты: возврат в течение 14 дней с момента покупки</li>
         <li>Использованные кредиты: возврату не подлежат (услуга оказана)</li>
         <li>Комплексный отчёт: возврат невозможен после генерации</li>
-        <li>Запросы на возврат: 3drayway@gmail.com</li>
+        <li>Запросы на возврат: ilray@mail.ru</li>
       </ul>
 
       <h2>6. Ограничения ответственности</h2>
@@ -180,7 +180,7 @@ export default function OfferPage() {
         Самозанятый<br />
         ИНН: 165207104133<br />
         Налоговый режим: Налог на профессиональный доход (НПД)<br />
-        Email: <a href="mailto:3drayway@gmail.com">3drayway@gmail.com</a><br />
+        Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a><br />
         Платформа: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
       </p>
     </article>
