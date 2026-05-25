@@ -1,9 +1,11 @@
 import { NextRequest } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { createAIProvider } from "@/lib/ai/provider-factory";
 import { buildChatMessages } from "@/lib/ai/prompt-builder";
 import { ProviderType, AIMessage } from "@/lib/ai/types";
 import { StoredResult } from "@/lib/test-engine/results-store";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { spendCredit } from "@/lib/payment/credits";
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,6 +39,32 @@ export async function POST(request: NextRequest) {
 
     if (!message?.trim()) {
       return Response.json({ error: "Message is required" }, { status: 400 });
+    }
+
+    // Credit gate: Claude requires 1 credit per session
+    if (provider === "claude") {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        return Response.json(
+          { error: "Login required for Claude" },
+          { status: 401 }
+        );
+      }
+
+      // Only charge on first message in conversation
+      if (chatHistory.length === 0) {
+        const spent = await spendCredit(user.id, "Claude coach session");
+        if (!spent) {
+          return Response.json(
+            { error: "Insufficient credits. Purchase credits to use Claude." },
+            { status: 402 }
+          );
+        }
+      }
     }
 
     const aiProvider = createAIProvider(provider);
