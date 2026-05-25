@@ -86,6 +86,7 @@ export default function OfferPage() {
 
         <h2>10. Service Provider Details</h2>
         <p>
+          Sabirov Ilnur Ildusovich<br />
           Self-employed individual<br />
           INN: 165207104133<br />
           Tax regime: Tax on Professional Income (NPD)<br />
@@ -175,6 +176,7 @@ export default function OfferPage() {
 
       <h2>10. Реквизиты Исполнителя</h2>
       <p>
+        Сабиров Ильнур Ильдусович<br />
         Самозанятый<br />
         ИНН: 165207104133<br />
         Налоговый режим: Налог на профессиональный доход (НПД)<br />

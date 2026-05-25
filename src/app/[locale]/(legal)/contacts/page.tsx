@@ -22,6 +22,14 @@ export default function ContactsPage() {
         <CardContent className="space-y-3 text-sm">
           <div>
             <p className="text-muted-foreground">
+              {locale === "ru" ? "ФИО" : "Full Name"}
+            </p>
+            <p className="font-medium">
+              {locale === "ru" ? "Сабиров Ильнур Ильдусович" : "Sabirov Ilnur Ildusovich"}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">
               {locale === "ru" ? "Организационная форма" : "Legal Form"}
             </p>
             <p className="font-medium">
