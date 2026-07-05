@@ -91,7 +91,7 @@ export default function OfferPage() {
           INN: 165207104133<br />
           Tax regime: Tax on Professional Income (NPD)<br />
           Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a><br />
-          Platform: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
+          Platform: <a href="https://poznaisebya27.ru">poznaisebya27.ru</a>
         </p>
       </article>
     );
@@ -181,7 +181,7 @@ export default function OfferPage() {
         ИНН: 165207104133<br />
         Налоговый режим: Налог на профессиональный доход (НПД)<br />
         Email: <a href="mailto:ilray@mail.ru">ilray@mail.ru</a><br />
-        Платформа: <a href="https://poznaiy-sebya.ru">poznaiy-sebya.ru</a>
+        Платформа: <a href="https://poznaisebya27.ru">poznaisebya27.ru</a>
       </p>
     </article>
   );

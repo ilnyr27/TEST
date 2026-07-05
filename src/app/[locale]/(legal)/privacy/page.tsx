@@ -39,21 +39,22 @@ export default function PrivacyPage() {
         <h2>4. Legal Basis</h2>
         <p>Your explicit consent given during registration (Federal Law No. 152-FZ, Article 6).</p>
 
-        <h2>5. Data Sharing</h2>
-        <p>We may share data with the following third parties for service delivery:</p>
+        <h2>5. Data Storage & Sharing</h2>
+        <p>
+          Your data (account, test results, AI conversations) is stored and processed on our own
+          servers located in the Russian Federation.
+        </p>
+        <p>We share a limited amount of data with the following third parties for service delivery:</p>
         <ul>
-          <li><strong>Supabase</strong> (US/EU) — database and authentication</li>
-          <li><strong>DeepSeek</strong> (China) — AI analysis (free tier)</li>
-          <li><strong>Anthropic</strong> (US) — Claude AI analysis (premium)</li>
+          <li><strong>DeepSeek</strong> (China) — AI analysis of your requests</li>
           <li><strong>YuKassa</strong> (Russia) — payment processing</li>
-          <li><strong>Vercel</strong> (US) — hosting</li>
         </ul>
 
         <h2>6. Cross-Border Data Transfer</h2>
         <p>
-          Your data may be transferred to and processed in countries outside the Russian Federation
-          (US, EU, China). By accepting this policy, you consent to such transfers in accordance with
-          Federal Law No. 152-FZ, Article 12.
+          Your personal data is stored in the Russian Federation. For AI analysis, your requests may
+          be transferred to DeepSeek (China). By accepting this policy, you consent to such transfer
+          in accordance with Federal Law No. 152-FZ, Article 12.
         </p>
 
         <h2>7. Data Retention</h2>
@@ -118,21 +119,22 @@ export default function PrivacyPage() {
       <h2>4. Правовое основание</h2>
       <p>Ваше явное согласие, данное при регистрации (152-ФЗ, статья 6).</p>
 
-      <h2>5. Передача данных третьим лицам</h2>
-      <p>Мы можем передавать данные следующим третьим лицам для оказания услуг:</p>
+      <h2>5. Хранение и передача данных</h2>
+      <p>
+        Ваши данные (аккаунт, результаты тестов, ИИ-разговоры) хранятся и обрабатываются на наших
+        собственных серверах, расположенных на территории Российской Федерации.
+      </p>
+      <p>Ограниченный объём данных мы передаём следующим третьим лицам для оказания услуг:</p>
       <ul>
-        <li><strong>Supabase</strong> (США/ЕС) — база данных и аутентификация</li>
-        <li><strong>DeepSeek</strong> (Китай) — ИИ-анализ (бесплатный)</li>
-        <li><strong>Anthropic</strong> (США) — Claude ИИ-анализ (премиум)</li>
+        <li><strong>DeepSeek</strong> (Китай) — ИИ-анализ ваших запросов</li>
         <li><strong>ЮKassa</strong> (Россия) — обработка платежей</li>
-        <li><strong>Vercel</strong> (США) — хостинг</li>
       </ul>
 
       <h2>6. Трансграничная передача данных</h2>
       <p>
-        Ваши данные могут быть переданы и обработаны в странах за пределами Российской Федерации
-        (США, ЕС, Китай). Принимая настоящую политику, вы даёте согласие на такую передачу
-        в соответствии с 152-ФЗ, статья 12.
+        Ваши персональные данные хранятся на территории Российской Федерации. Для ИИ-анализа ваши
+        запросы могут передаваться в DeepSeek (Китай). Принимая настоящую политику, вы даёте согласие
+        на такую передачу в соответствии с 152-ФЗ, статья 12.
       </p>
 
       <h2>7. Сроки хранения</h2>

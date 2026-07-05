@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const product = PRODUCTS[productType];
-    const origin = request.headers.get("origin") || "https://poznaiy-sebya.ru";
+    const origin = request.headers.get("origin") || "https://poznaisebya27.ru";
 
     // Create YuKassa payment
     const payment = await createPayment({
