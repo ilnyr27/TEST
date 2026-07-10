@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { addCredits, PRODUCTS, ProductType } from "@/lib/payment/credits";
+import { PRODUCTS, ProductType } from "@/lib/payment/credits";
 
 /**
  * YuKassa webhook — called when payment status changes.
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Missing metadata" }, { status: 400 });
     }
 
-    // Use service role client for webhook (no user session)
+    // Service role client — no cookie auth needed
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -39,10 +39,34 @@ export async function POST(request: NextRequest) {
       .update({ status: "succeeded", confirmed_at: new Date().toISOString() })
       .eq("external_id", yukassaId);
 
-    // Add credits
+    // Add credits directly using service role client (avoids cookie-auth issue)
     const product = PRODUCTS[productType];
     if (product && product.credits > 0) {
-      await addCredits(userId, product.credits, `Покупка: ${productType}`);
+      const { data: existing } = await supabase
+        .from("user_credits")
+        .select("balance")
+        .eq("user_id", userId)
+        .single();
+
+      if (existing) {
+        await supabase
+          .from("user_credits")
+          .update({ balance: existing.balance + product.credits, updated_at: new Date().toISOString() })
+          .eq("user_id", userId);
+      } else {
+        await supabase
+          .from("user_credits")
+          .insert({ user_id: userId, balance: product.credits });
+      }
+
+      await supabase.from("credit_transactions").insert({
+        user_id: userId,
+        amount: product.credits,
+        type: "purchase",
+        description: `Покупка: ${productType}`,
+      });
+
+      console.log(`[webhook] Added ${product.credits} credits to user ${userId}`);
     }
 
     return Response.json({ ok: true });
