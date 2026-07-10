@@ -71,7 +71,9 @@ export default function TestResultsPage({
   if (!scorer) {
     return (
       <div className="mx-auto max-w-2xl py-12 text-center">
-        <p className="text-muted-foreground">Scorer not found for {testId}</p>
+        <p className="text-muted-foreground">
+          {locale === "ru" ? `Тест не найден: ${testId}` : `Scorer not found: ${testId}`}
+        </p>
       </div>
     );
   }
