@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const payment = await createPayment({
       amountKopecks: product.priceKopecks,
       description: `Познай Себя — ${productType}`,
-      returnUrl: `${origin}/ru/dashboard?payment=success`,
+      returnUrl: `${origin}/ru/pricing?payment=success`,
       metadata: {
         user_id: user.id,
         product_type: productType,
