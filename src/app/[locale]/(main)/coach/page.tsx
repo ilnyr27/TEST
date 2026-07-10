@@ -39,6 +39,26 @@ export default function CoachPage() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Restore chat from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("coach-chat");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (saved) setMessages(JSON.parse(saved));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Save chat to localStorage when messages change
+  useEffect(() => {
+    if (messages.length === 0) {
+      localStorage.removeItem("coach-chat");
+    } else {
+      localStorage.setItem("coach-chat", JSON.stringify(messages));
+    }
+  }, [messages]);
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
