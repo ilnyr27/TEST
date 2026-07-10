@@ -28,6 +28,7 @@ export default function PricingPage() {
 
   const handlePurchase = async (productType: string) => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/immutability
       window.location.href = `/${locale}/login?next=/${locale}/pricing`;
       return;
     }
@@ -40,6 +41,7 @@ export default function PricingPage() {
       });
       const data = await res.json();
       if (data.url) {
+        // eslint-disable-next-line react-hooks/immutability
         window.location.href = data.url;
       } else {
         alert(data.error || "Payment error");
