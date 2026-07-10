@@ -19,23 +19,26 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Know Yourself | Познай Себя",
+  title: {
+    template: "%s | Познай Себя",
+    default: "Познай Себя — Тесты личности и ИИ-анализ",
+  },
   description:
-    "Deep self-discovery platform through scientific tests and AI analysis. 300+ questions across psychology, career, intelligence, habits, family, creativity.",
-  keywords: ["psychology tests", "self-discovery", "personality test", "Big Five", "MBTI", "emotional intelligence", "burnout test", "психологические тесты", "самопознание", "тест личности"],
-  authors: [{ name: "Know Yourself" }],
+    "300+ научных вопросов по 7 направлениям: психология, карьера, интеллект, привычки, семья, творчество. ИИ-анализ. Узнайте себя по-настоящему.",
+  keywords: ["психологические тесты", "самопознание", "тест личности", "Большая пятёрка", "MBTI", "эмоциональный интеллект", "тест на выгорание", "psychology tests", "self-discovery", "personality test"],
+  authors: [{ name: "Познай Себя" }],
   openGraph: {
-    title: "Know Yourself | Познай Себя",
-    description: "300+ scientific psychology questions. AI-powered analysis. Discover who you really are.",
+    title: "Познай Себя — Тесты личности и ИИ-анализ",
+    description: "300+ научных вопросов по 7 направлениям. ИИ-анализ. Узнайте себя по-настоящему.",
     type: "website",
     locale: "ru_RU",
     alternateLocale: "en_US",
-    siteName: "Know Yourself",
+    siteName: "Познай Себя",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Know Yourself | Познай Себя",
-    description: "300+ scientific psychology questions. AI-powered analysis.",
+    title: "Познай Себя — Тесты личности и ИИ-анализ",
+    description: "300+ научных вопросов по 7 направлениям. ИИ-анализ.",
   },
   robots: "index, follow",
 };
