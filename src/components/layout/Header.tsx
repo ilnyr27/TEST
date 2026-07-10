@@ -39,6 +39,12 @@ export function Header() {
           >
             {t("coach")}
           </Link>
+          <Link
+            href="/pricing"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("pricing")}
+          </Link>
         </nav>
 
         {/* Desktop actions */}
@@ -114,6 +120,13 @@ export function Header() {
               onClick={() => setMobileOpen(false)}
             >
               {t("coach")}
+            </Link>
+            <Link
+              href="/pricing"
+              className="block text-sm font-medium text-muted-foreground hover:text-foreground"
+              onClick={() => setMobileOpen(false)}
+            >
+              {t("pricing")}
             </Link>
             {!user && !loading && (
               <div className="flex gap-2 pt-2 border-t">

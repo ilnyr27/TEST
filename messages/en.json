@@ -21,7 +21,8 @@
     "start": "Start",
     "continue": "Continue",
     "finish": "Finish",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "pricing": "Pricing"
   },
   "landing": {
     "hero": "Truly know yourself",
