@@ -168,6 +168,7 @@ export default function PricingPage() {
       price: "499 ₽",
       priceNote: ru ? "один раз" : "once",
       description: ru ? "Кто вы на самом деле" : "Who you really are",
+      notice: ru ? "Разовая оплата картой, не кредитами" : "One-time card payment, not credits",
       features: ru
         ? [
             "Claude анализирует все ваши тесты",
@@ -266,21 +267,19 @@ export default function PricingPage() {
               }`}
             >
               <CardHeader className="pb-3">
-                {/* Status badge inside header — no overflow clipping */}
-                {(isPurchased || (plan.popular && showPopular)) && (
-                  <div className="flex justify-center mb-1">
-                    {isPurchased ? (
-                      <Badge className="bg-green-500 hover:bg-green-500 gap-1 whitespace-nowrap">
-                        <CheckCircle2 className="h-3 w-3" />
-                        {ru ? "Куплено" : "Purchased"}
-                      </Badge>
-                    ) : (
-                      <Badge className="whitespace-nowrap">
-                        {ru ? "Популярный" : "Popular"}
-                      </Badge>
-                    )}
-                  </div>
-                )}
+                {/* Reserved badge slot — always same height so card titles align */}
+                <div className="flex justify-center min-h-[28px] items-center mb-1">
+                  {isPurchased ? (
+                    <Badge className="bg-green-500 hover:bg-green-500 gap-1 whitespace-nowrap">
+                      <CheckCircle2 className="h-3 w-3" />
+                      {ru ? "Куплено" : "Purchased"}
+                    </Badge>
+                  ) : plan.popular && showPopular ? (
+                    <Badge className="whitespace-nowrap">
+                      {ru ? "Популярный" : "Popular"}
+                    </Badge>
+                  ) : null}
+                </div>
                 <div className={`flex items-center gap-2 ${isPurchased ? "text-green-600 dark:text-green-400" : "text-primary"}`}>
                   {plan.icon}
                   <CardTitle className="text-lg">{plan.name}</CardTitle>
@@ -290,6 +289,9 @@ export default function PricingPage() {
                   <span className="text-xs text-muted-foreground">{plan.priceNote}</span>
                 </div>
                 <CardDescription>{plan.description}</CardDescription>
+                {"notice" in plan && plan.notice && (
+                  <p className="text-[11px] text-muted-foreground/60 mt-1">{plan.notice as string}</p>
+                )}
               </CardHeader>
 
               <CardContent className="flex-1 flex flex-col">
@@ -362,8 +364,8 @@ export default function PricingPage() {
                       >
                         {loading === plan.cta ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : isPurchased ? (
-                          ru ? "Докупить ещё" : "Buy more"
+                        ) : isPurchased || (hasBalance && isCreditsProduct) ? (
+                          ru ? "Докупить ещё" : "Add more"
                         ) : (
                           ru ? "Купить" : "Buy"
                         )}
