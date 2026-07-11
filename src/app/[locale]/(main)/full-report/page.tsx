@@ -9,6 +9,7 @@ import { getResults, StoredResult } from "@/lib/test-engine/results-store";
 import { Link } from "@/lib/i18n/navigation";
 import { usePlan } from "@/hooks/usePlan";
 import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/lib/supabase/client";
 
 const LOCKED_SECTIONS_RU = [
   {
@@ -86,6 +87,14 @@ const LOCKED_SECTIONS_EN = [
   },
 ];
 
+function formatDate(iso: string, locale: string) {
+  return new Date(iso).toLocaleDateString(locale === "ru" ? "ru-RU" : "en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 function renderMarkdown(text: string) {
   return text.split("\n").map((line, i) => {
     if (line.startsWith("## ")) {
@@ -134,7 +143,9 @@ export default function FullReportPage() {
   const { hasReport, loading: planLoading } = usePlan();
   const [results, setResults] = useState<StoredResult[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
-  const [fullReport, setFullReport] = useState<string | null>(null);
+  // undefined = not yet fetched from DB; null = fetched, no report; string = report content
+  const [fullReport, setFullReport] = useState<string | null | undefined>(undefined);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [loadingFull, setLoadingFull] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
@@ -148,6 +159,22 @@ export default function FullReportPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setResults(getResults());
   }, []);
+
+  // Load saved report from DB for paid users
+  useEffect(() => {
+    if (!user || !hasReport || planLoading) return;
+    const supabase = createClient();
+    supabase
+      .from("user_reports")
+      .select("content, updated_at")
+      .eq("user_id", user.id)
+      .eq("locale", locale)
+      .single()
+      .then(({ data }) => {
+        setFullReport(data?.content ?? null);
+        if (data?.updated_at) setSavedAt(data.updated_at);
+      });
+  }, [user, hasReport, planLoading, locale]);
 
   useEffect(() => {
     if (
@@ -189,6 +216,7 @@ export default function FullReportPage() {
       }
       const data = await resp.json();
       setFullReport(data.report);
+      setSavedAt(data.savedAt ?? null);
     } catch (err) {
       setFullError(err instanceof Error ? err.message : "Error");
     } finally {
@@ -196,7 +224,7 @@ export default function FullReportPage() {
     }
   };
 
-  if (planLoading) {
+  if (planLoading || (hasReport && fullReport === undefined)) {
     return (
       <div className="mx-auto max-w-3xl py-16 flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -255,7 +283,7 @@ export default function FullReportPage() {
       ) : hasReport ? (
         /* Paid user — show full report */
         <>
-          {!fullReport ? (
+          {fullReport === null ? (
             <Card>
               <CardContent className="flex flex-col items-center text-center py-10 gap-4">
                 <Crown className="h-12 w-12 text-amber-500/50" />
@@ -298,10 +326,15 @@ export default function FullReportPage() {
                   <Crown className="h-5 w-5 text-amber-600" />
                   {ru ? "Ваш психологический профиль" : "Your Psychological Profile"}
                 </CardTitle>
+                {savedAt && (
+                  <p className="text-xs text-muted-foreground">
+                    {ru ? "Создан" : "Created"} {formatDate(savedAt, locale)}
+                  </p>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {renderMarkdown(fullReport)}
+                  {renderMarkdown(fullReport ?? "")}
                 </div>
                 <div className="flex justify-center mt-6">
                   <Button

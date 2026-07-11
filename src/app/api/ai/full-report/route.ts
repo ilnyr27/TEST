@@ -124,7 +124,15 @@ Write warmly, honestly, and constructively. Reference specific test scores.`;
       { role: "user", content: userMessage },
     ]);
 
-    return Response.json({ report });
+    const savedAt = new Date().toISOString();
+    await supabase
+      .from("user_reports")
+      .upsert(
+        { user_id: user.id, content: report, locale, updated_at: savedAt },
+        { onConflict: "user_id,locale" }
+      );
+
+    return Response.json({ report, savedAt });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
