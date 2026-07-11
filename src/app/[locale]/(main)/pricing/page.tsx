@@ -6,10 +6,9 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Check, X, Sparkles, Zap, Crown, Loader2,
-  Bot, ArrowRight, Brain, MessageSquare,
+  Bot, CheckCircle2, ArrowRight, Brain, MessageSquare,
   CreditCard, Clock,
 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
