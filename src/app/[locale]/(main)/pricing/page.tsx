@@ -65,6 +65,31 @@ export default function PricingPage() {
   const freeSessionUsed = plan?.free_session_used ?? false;
   const freeAnalysisUsed = plan?.free_analysis_used ?? false;
 
+  // Determine which specific tier card is active for this user
+  const activeDsPlan: string | null = (() => {
+    if (dsSessions <= 0) return null;
+    if (dsMsgLimit >= 1000) return "ds_3";
+    if (dsMsgLimit >= 300) return "ds_2";
+    return "ds_1";
+  })();
+
+  const activeClPlan: string | null = (() => {
+    if (clSessions <= 0) return null;
+    if (clMsgLimit >= 40) return "cl_3";
+    if (clMsgLimit >= 30) return "cl_2";
+    return "cl_1";
+  })();
+
+  const sessRemaining = (n: number): string => {
+    if (!ru) return `${n} session${n !== 1 ? "s" : ""} remaining`;
+    const m10 = n % 10;
+    const m100 = n % 100;
+    if (m100 >= 11 && m100 <= 19) return `${n} сессий осталось`;
+    if (m10 === 1) return `${n} сессия осталась`;
+    if (m10 >= 2 && m10 <= 4) return `${n} сессии осталось`;
+    return `${n} сессий осталось`;
+  };
+
   const dsPacks = [
     {
       planType: "ds_1" as const,
@@ -333,22 +358,38 @@ export default function PricingPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {dsPacks.map((p) => {
             const planData = PLANS[p.planType];
+            const isActive = activeDsPlan === p.planType;
             return (
               <Card
                 key={p.planType}
-                className={`flex flex-col transition-all duration-200 ${
-                  p.popular ? "border-primary shadow-md shadow-primary/10" : ""
+                className={`flex flex-col overflow-hidden transition-all duration-200 ${
+                  isActive
+                    ? "border-blue-500 shadow-md shadow-blue-500/10"
+                    : p.popular
+                    ? "border-primary shadow-md shadow-primary/10"
+                    : ""
                 }`}
               >
+                {isActive && (
+                  <div className="bg-blue-500/10 border-b border-blue-500/20 px-4 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    {sessRemaining(dsSessions)}
+                  </div>
+                )}
+
                 <CardHeader className="pb-3">
                   <div className="flex justify-center min-h-[28px] items-center mb-1">
-                    {p.popular ? (
+                    {isActive ? (
+                      <Badge className="bg-blue-500 hover:bg-blue-500 whitespace-nowrap">
+                        {ru ? "Ваш план" : "Your plan"}
+                      </Badge>
+                    ) : p.popular ? (
                       <Badge className="whitespace-nowrap">
                         {ru ? "Популярный" : "Popular"}
                       </Badge>
                     ) : null}
                   </div>
-                  <div className="flex items-center gap-2 text-primary">
+                  <div className={`flex items-center gap-2 ${isActive ? "text-blue-600 dark:text-blue-400" : "text-primary"}`}>
                     {p.icon}
                     <CardTitle className="text-base">{p.name}</CardTitle>
                   </div>
@@ -376,13 +417,13 @@ export default function PricingPage() {
 
                   <Button
                     className="w-full"
-                    variant={dsSessions > 0 ? "outline" : "default"}
+                    variant={isActive || dsSessions > 0 ? "outline" : "default"}
                     onClick={() => handlePurchase(p.planType)}
                     disabled={purchaseLoading !== null}
                   >
                     {purchaseLoading === p.planType ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : dsSessions > 0 ? (
+                    ) : isActive || dsSessions > 0 ? (
                       ru ? "Добавить ещё" : "Add more"
                     ) : (
                       ru ? "Купить" : "Buy"
@@ -427,16 +468,30 @@ export default function PricingPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {clPacks.map((p) => {
             const planData = PLANS[p.planType];
+            const isActive = activeClPlan === p.planType;
             return (
               <Card
                 key={p.planType}
-                className={`flex flex-col transition-all duration-200 ${
-                  p.popular ? "border-violet-500 shadow-md shadow-violet-500/10" : ""
+                className={`flex flex-col overflow-hidden transition-all duration-200 ${
+                  isActive || p.popular
+                    ? "border-violet-500 shadow-md shadow-violet-500/10"
+                    : ""
                 }`}
               >
+                {isActive && (
+                  <div className="bg-violet-500/10 border-b border-violet-500/20 px-4 py-2 text-xs font-medium text-violet-700 dark:text-violet-400 flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    {sessRemaining(clSessions)}
+                  </div>
+                )}
+
                 <CardHeader className="pb-3">
                   <div className="flex justify-center min-h-[28px] items-center mb-1">
-                    {p.popular ? (
+                    {isActive ? (
+                      <Badge className="bg-violet-500 hover:bg-violet-500 whitespace-nowrap">
+                        {ru ? "Ваш план" : "Your plan"}
+                      </Badge>
+                    ) : p.popular ? (
                       <Badge variant="outline" className="whitespace-nowrap border-violet-500 text-violet-600">
                         {ru ? "Популярный" : "Popular"}
                       </Badge>
@@ -473,13 +528,13 @@ export default function PricingPage() {
 
                   <Button
                     className="w-full"
-                    variant={clSessions > 0 ? "outline" : "default"}
+                    variant={isActive || clSessions > 0 ? "outline" : "default"}
                     onClick={() => handlePurchase(p.planType)}
                     disabled={purchaseLoading !== null}
                   >
                     {purchaseLoading === p.planType ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : clSessions > 0 ? (
+                    ) : isActive || clSessions > 0 ? (
                       ru ? "Добавить ещё" : "Add more"
                     ) : (
                       ru ? "Купить" : "Buy"
