@@ -28,8 +28,8 @@ export default function PricingPage() {
   const paymentSuccess = searchParams.get("payment") === "success";
 
   const [provider, setProvider] = useState<Provider>("deepseek");
-  const [dsSessions, setDsSessions] = useState<number>(5);
-  const [clSessions, setClSessions] = useState<number>(5);
+  const [dsSessions, setDsSessions] = useState<number>(3);
+  const [clSessions, setClSessions] = useState<number>(3);
 
   useEffect(() => {
     if (paymentSuccess) refresh();
@@ -166,7 +166,7 @@ export default function PricingPage() {
                 <Bot className="h-3.5 w-3.5 text-blue-500" />
                 <span className="font-medium">{currentDsSessions}</span>
                 <span className="text-muted-foreground">
-                  {ru ? "сессий" : "sessions"} · {currentDsMsgLimit} {ru ? "сообщ/с" : "msg/s"}
+                  {ru ? "сессий" : "sessions"} · {DS_MSG_LIMIT} {ru ? "сообщ/с" : "msg/s"}
                 </span>
               </div>
             )}
@@ -273,7 +273,7 @@ export default function PricingPage() {
             <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/15">
               <Bot className="h-5 w-5 text-primary shrink-0" />
               <p className="text-sm text-muted-foreground">
-                {ru ? "ИИ-коуч · до 100 сообщений на сессию" : "AI coach · up to 100 messages per session"}
+                {ru ? `ИИ-коуч · до ${DS_MSG_LIMIT} сообщений на сессию` : `AI coach · up to ${DS_MSG_LIMIT} messages per session`}
               </p>
             </div>
 

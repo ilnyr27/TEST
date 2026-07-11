@@ -44,7 +44,7 @@ export default function OfferPage() {
         <h2>4. Service Delivery</h2>
         <ul>
           <li>Sessions are credited immediately upon successful payment</li>
-          <li>Each session equals one conversation with the AI coach (up to 100 messages)</li>
+          <li>Each session equals one conversation with the AI coach (up to 20 messages)</li>
           <li>Services are delivered electronically through the platform</li>
           <li>The comprehensive report is generated within 5 minutes of purchase</li>
         </ul>
@@ -133,7 +133,7 @@ export default function OfferPage() {
       <h2>4. Порядок оказания услуг</h2>
       <ul>
         <li>Сессии зачисляются сразу после успешной оплаты</li>
-        <li>Одна сессия — это один разговор с ИИ-коучем (до 100 сообщений)</li>
+        <li>Одна сессия — это один разговор с ИИ-коучем (до 20 сообщений)</li>
         <li>Услуги оказываются в электронной форме через платформу</li>
         <li>Комплексный отчёт генерируется в течение 5 минут после оплаты</li>
       </ul>
