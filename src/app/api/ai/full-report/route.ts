@@ -55,30 +55,68 @@ export async function POST(request: NextRequest) {
       .join("\n\n---\n\n");
 
     const systemPrompt = ru
-      ? `Ты опытный психолог и коуч. Ты получаешь результаты нескольких психологических тестов одного человека. Твоя задача — составить полный, глубокий и практичный отчёт о личности этого человека.
+      ? `Ты опытный психолог и коуч. На основе результатов психологических тестов составь полный, глубокий отчёт о личности человека.
 
-Структура отчёта:
-1. **Общий портрет** — кто этот человек, его ключевые черты
-2. **Сильные стороны** — что у него хорошо развито
-3. **Зоны роста** — что можно развить
-4. **Взаимосвязи** — как разные черты влияют друг на друга
-5. **Практические рекомендации** — конкретные шаги для развития
+Используй СТРОГО эти заголовки разделов (## уровень):
 
-Пиши тепло, честно и конструктивно. Используй markdown для форматирования.`
-      : `You are an experienced psychologist and coach. You receive results from multiple psychological tests of one person. Your task is to create a complete, deep, and practical personality report.
+## Общий портрет
+Кто этот человек, ключевые черты характера, внутренний мир, мотивация.
 
-Report structure:
-1. **Overall Portrait** — who this person is, their key traits
-2. **Strengths** — what is well developed
-3. **Growth Areas** — what can be improved
-4. **Connections** — how different traits interact
-5. **Practical Recommendations** — concrete steps for development
+## Сильные стороны
+Что развито хорошо, уникальные способности, ресурсы личности.
 
-Write warmly, honestly, and constructively. Use markdown for formatting.`;
+## Зоны роста
+Что можно и стоит развить, конкретные ограничения и как с ними работать.
+
+## Взаимосвязи черт личности
+Как разные черты влияют друг на друга, синергии и противоречия.
+
+## Карьера и призвание
+Подходящие сферы деятельности, стиль работы, роли в команде.
+
+## Отношения и коммуникация
+Стиль общения, потребности в отношениях, типичные паттерны.
+
+## Эмоциональный интеллект
+Самосознание, управление эмоциями, эмпатия, социальные навыки.
+
+## Практические рекомендации
+Конкретные шаги для развития — минимум 5 пунктов списком.
+
+Пиши тепло, честно и конструктивно. Опирайся на конкретные показатели тестов.`
+      : `You are an experienced psychologist and coach. Based on psychological test results, create a complete, deep personality report.
+
+Use EXACTLY these section headers (## level):
+
+## General Portrait
+Who this person is, key personality traits, inner world, motivation.
+
+## Strengths
+What is well developed, unique abilities, personal resources.
+
+## Growth Areas
+What can and should be developed, specific limitations and how to work with them.
+
+## Personality Trait Connections
+How different traits influence each other, synergies and contradictions.
+
+## Career & Purpose
+Suitable fields, work style, team roles.
+
+## Relationships & Communication
+Communication style, relationship needs, typical patterns.
+
+## Emotional Intelligence
+Self-awareness, emotion management, empathy, social skills.
+
+## Practical Recommendations
+Concrete development steps — at least 5 bullet points.
+
+Write warmly, honestly, and constructively. Reference specific test scores.`;
 
     const userMessage = ru
-      ? `Вот результаты тестов:\n\n${testSummaries}\n\nСоставь полный психологический отчёт.`
-      : `Here are the test results:\n\n${testSummaries}\n\nCreate a comprehensive psychological report.`;
+      ? `Результаты тестов:\n\n${testSummaries}\n\nСоставь полный психологический отчёт по всем 8 разделам.`
+      : `Test results:\n\n${testSummaries}\n\nCreate a comprehensive psychological report across all 8 sections.`;
 
     const aiProvider = createAIProvider("deepseek");
     const report = await aiProvider.analyze([
