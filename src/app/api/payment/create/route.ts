@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createPayment } from "@/lib/payment/yukassa";
-import { getConfigPrice, REPORT_PRICE_KOPECKS, Provider } from "@/lib/payment/plans";
+import { getSessionPrice, getMsgLimit, REPORT_PRICE_KOPECKS, Provider } from "@/lib/payment/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       type?: "config" | "report";
       provider?: Provider;
       sessions?: number;
-      msgsPerSession?: number;
     };
 
     const origin = request.headers.get("origin") || "https://poznaisebya27.ru";
@@ -28,16 +27,17 @@ export async function POST(request: NextRequest) {
       productType = "report_addon";
       paymentMeta = { user_id: user.id, product_type: "report_addon" };
     } else {
-      const { provider, sessions, msgsPerSession } = body;
-      if (!provider || !sessions || !msgsPerSession) {
+      const { provider, sessions } = body;
+      if (!provider || !sessions) {
         return Response.json({ error: "Missing fields" }, { status: 400 });
       }
-      const price = getConfigPrice(provider, sessions, msgsPerSession);
+      const price = getSessionPrice(provider, sessions);
       if (!price) return Response.json({ error: "Invalid configuration" }, { status: 400 });
 
+      const msgsPerSession = getMsgLimit(provider);
       priceKopecks = price;
-      description = `Познай Себя — ${provider === "deepseek" ? "DeepSeek" : "Claude"} ${sessions}×${msgsPerSession}`;
-      productType = `${provider}_${sessions}_${msgsPerSession}`;
+      description = `Познай Себя — ${provider === "deepseek" ? "DeepSeek" : "Claude"} ${sessions} сессий`;
+      productType = `${provider}_${sessions}`;
       paymentMeta = {
         user_id: user.id,
         product_type: productType,

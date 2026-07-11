@@ -14,8 +14,9 @@ import { useUser } from "@/hooks/useUser";
 import { usePlan } from "@/hooks/usePlan";
 import { Link } from "@/lib/i18n/navigation";
 import {
-  DS_SESSIONS, DS_MSGS, CL_SESSIONS, CL_MSGS,
-  getConfigPrice, formatPrice, REPORT_PRICE_LABEL, Provider,
+  DS_SESSIONS, CL_SESSIONS,
+  DS_MSG_LIMIT, CL_MSG_LIMIT,
+  getSessionPrice, formatPrice, REPORT_PRICE_LABEL, Provider,
 } from "@/lib/payment/plans";
 
 export default function PricingPage() {
@@ -28,9 +29,7 @@ export default function PricingPage() {
 
   const [provider, setProvider] = useState<Provider>("deepseek");
   const [dsSessions, setDsSessions] = useState<number>(5);
-  const [dsMsgs, setDsMsgs] = useState<number>(20);
   const [clSessions, setClSessions] = useState<number>(5);
-  const [clMsgs, setClMsgs] = useState<number>(20);
 
   useEffect(() => {
     if (paymentSuccess) refresh();
@@ -49,18 +48,14 @@ export default function PricingPage() {
   const freeAnalysisUsed = plan?.free_analysis_used ?? false;
 
   const sessions = isDs ? dsSessions : clSessions;
-  const msgs = isDs ? dsMsgs : clMsgs;
   const sessionsOpts = isDs ? DS_SESSIONS : CL_SESSIONS;
-  const msgsOpts = isDs ? DS_MSGS : CL_MSGS;
+  const msgLimit = isDs ? DS_MSG_LIMIT : CL_MSG_LIMIT;
 
   const handleSessionChange = (s: number) => {
     if (isDs) setDsSessions(s); else setClSessions(s);
   };
-  const handleMsgChange = (m: number) => {
-    if (isDs) setDsMsgs(m); else setClMsgs(m);
-  };
 
-  const priceKopecks = getConfigPrice(provider, sessions, msgs);
+  const priceKopecks = getSessionPrice(provider, sessions);
 
   const handlePurchase = async () => {
     if (!user) {
@@ -72,7 +67,7 @@ export default function PricingPage() {
       const res = await fetch("/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "config", provider, sessions, msgsPerSession: msgs }),
+        body: JSON.stringify({ type: "config", provider, sessions }),
       });
       const data = await res.json();
       if (data.url) {
@@ -118,19 +113,18 @@ export default function PricingPage() {
   const borderActiveClass = isDs
     ? "border-2 border-blue-500 shadow-md shadow-blue-500/10"
     : "border-2 border-orange-500 shadow-md shadow-orange-500/10";
+  const buyBtnClass = isDs
+    ? "bg-blue-500 hover:bg-blue-600 text-white"
+    : "bg-orange-500 hover:bg-orange-600 text-white";
 
   const stepBtn = (active: boolean) =>
-    `h-10 px-4 rounded-lg border text-sm font-medium transition-all ${
+    `h-10 px-5 rounded-lg border text-sm font-medium transition-all ${
       active
         ? isDs
           ? "bg-blue-500 text-white border-blue-500 shadow-sm"
           : "bg-orange-500 text-white border-orange-500 shadow-sm"
         : "border-border hover:border-muted-foreground/40 bg-background"
     }`;
-
-  const buyBtnClass = isDs
-    ? "bg-blue-500 hover:bg-blue-600 text-white"
-    : "bg-orange-500 hover:bg-orange-600 text-white";
 
   const hasCurrentSessions = isDs ? currentDsSessions > 0 : currentClSessions > 0;
 
@@ -165,7 +159,6 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* Balance widget */}
         {(currentDsSessions > 0 || currentClSessions > 0 || hasReport) && (
           <div className="shrink-0 rounded-lg border bg-card px-4 py-3 text-sm space-y-1.5">
             {currentDsSessions > 0 && (
@@ -218,8 +211,8 @@ export default function PricingPage() {
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {ru
-                  ? "Все 11 тестов · 1 DeepSeek чат (20 сообщений) · 1 ИИ-анализ тестов"
-                  : "All 11 tests · 1 DeepSeek chat (20 messages) · 1 AI test analysis"}
+                  ? "Все тесты · 1 DeepSeek чат (20 сообщений) · 1 ИИ-анализ"
+                  : "All tests · 1 DeepSeek chat (20 messages) · 1 AI analysis"}
               </p>
             </div>
           </div>
@@ -268,8 +261,8 @@ export default function PricingPage() {
           <h2 className="text-lg font-semibold">{ru ? "Коуч-сессии" : "Coaching Sessions"}</h2>
           <p className="text-sm text-muted-foreground mt-0.5">
             {ru
-              ? "1 сессия = 1 разговор с ИИ-коучем. Сессии не сгорают."
-              : "1 session = 1 conversation with AI coach. Sessions never expire."}
+              ? "1 сессия = 1 разговор с ИИ-коучем на любую тему"
+              : "1 session = 1 conversation with AI coach on any topic"}
           </p>
         </div>
 
@@ -307,8 +300,8 @@ export default function PricingPage() {
               </div>
               <p className="text-xs text-muted-foreground">
                 {isDs
-                  ? (ru ? "Умный китайский ИИ, быстрый и доступный" : "Smart Chinese AI, fast and affordable")
-                  : (ru ? "Передовой ИИ от Anthropic — точнее и глубже" : "Frontier AI from Anthropic — deeper & more precise")}
+                  ? (ru ? "Быстрый и доступный · до 100 сообщений на сессию" : "Fast & affordable · up to 100 messages/session")
+                  : (ru ? "Глубже и точнее · до 40 сообщений на сессию" : "Deeper & more precise · up to 40 messages/session")}
               </p>
             </div>
 
@@ -326,25 +319,6 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* Messages selector */}
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {ru ? "Сообщений в сессии" : "Messages per session"}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {msgsOpts.map(m => (
-                  <button key={m} onClick={() => handleMsgChange(m)} className={stepBtn(msgs === m)}>
-                    {m} {ru ? "сообщ" : "msgs"}
-                  </button>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {ru
-                  ? "20 ≈ короткий сеанс · 50 — стандартный · 100 — глубокий разбор"
-                  : "20 ≈ short · 50 — standard · 100 — deep dive"}
-              </p>
-            </div>
-
             {/* Price + Buy */}
             <div className="border-t pt-5 flex items-center justify-between gap-4 flex-wrap">
               <div>
@@ -355,7 +329,7 @@ export default function PricingPage() {
                   <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {sessions} {ru ? "сессий" : "sessions"} × {msgs} {ru ? "сообщений" : "messages"}
+                  {sessions} {ru ? "сессий · до" : "sessions · up to"} {msgLimit} {ru ? "сообщ/сессию" : "msg/session"}
                 </p>
               </div>
               <Button
@@ -379,15 +353,15 @@ export default function PricingPage() {
             <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-green-500" />
-                {ru ? "ИИ-анализ тестов" : "AI test analysis"}
+                {ru ? "ИИ видит результаты ваших тестов" : "AI sees your test results"}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-green-500" />
+                {ru ? "История разговоров сохраняется" : "Chat history saved"}
               </span>
               <span className="flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-green-500" />
                 {ru ? "Сессии не сгорают" : "Sessions never expire"}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-green-500" />
-                {ru ? "История разговоров" : "Chat history"}
               </span>
             </div>
 
