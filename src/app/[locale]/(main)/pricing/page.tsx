@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Check, X, Sparkles, Zap, Crown, Loader2,
-  Bot, CheckCircle2, ArrowRight, Brain, MessageSquare,
+  Bot, ArrowRight, Brain, MessageSquare,
   CreditCard, Clock,
 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
@@ -79,16 +79,6 @@ export default function PricingPage() {
     if (clMsgLimit >= 30) return "cl_2";
     return "cl_1";
   })();
-
-  const sessRemaining = (n: number): string => {
-    if (!ru) return `${n} session${n !== 1 ? "s" : ""} remaining`;
-    const m10 = n % 10;
-    const m100 = n % 100;
-    if (m100 >= 11 && m100 <= 19) return `${n} сессий осталось`;
-    if (m10 === 1) return `${n} сессия осталась`;
-    if (m10 >= 2 && m10 <= 4) return `${n} сессии осталось`;
-    return `${n} сессий осталось`;
-  };
 
   const dsPacks = [
     {
@@ -347,12 +337,6 @@ export default function PricingPage() {
             </p>
           </div>
 
-          {dsSessions > 0 && (
-            <div className="rounded-lg border bg-blue-500/5 border-blue-500/20 px-3 py-2 text-sm">
-              <p className="font-medium text-blue-700 dark:text-blue-400">{dsSessions} {ru ? "сессий" : "sessions"}</p>
-              <p className="text-xs text-muted-foreground">{dsMsgLimit} {ru ? "сообщ/сессию" : "msg/session"}</p>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -360,77 +344,79 @@ export default function PricingPage() {
             const planData = PLANS[p.planType];
             const isActive = activeDsPlan === p.planType;
             return (
-              <Card
-                key={p.planType}
-                className={`flex flex-col overflow-hidden transition-all duration-200 ${
+              <div key={p.planType} className="relative pt-5">
+                {isActive && (
+                  <div className="absolute top-0 left-0 right-0 flex justify-center">
+                    <Badge className="bg-blue-500 hover:bg-blue-500 shadow-sm whitespace-nowrap text-xs">
+                      {ru ? "Ваш план" : "Your plan"}
+                    </Badge>
+                  </div>
+                )}
+                <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
                   isActive
                     ? "border-blue-500 shadow-md shadow-blue-500/10"
                     : p.popular
                     ? "border-primary shadow-md shadow-primary/10"
                     : ""
-                }`}
-              >
-                {isActive && (
-                  <div className="bg-blue-500/10 border-b border-blue-500/20 px-4 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 flex items-center gap-1.5">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    {sessRemaining(dsSessions)}
-                  </div>
-                )}
+                }`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-center min-h-[28px] items-center mb-1">
+                      {!isActive && p.popular ? (
+                        <Badge className="whitespace-nowrap">
+                          {ru ? "Популярный" : "Popular"}
+                        </Badge>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center gap-2 text-primary">
+                      {p.icon}
+                      <CardTitle className="text-base">{p.name}</CardTitle>
+                    </div>
+                    <div className="flex items-baseline gap-1.5 pt-1">
+                      <span className="text-3xl font-bold">{planData.priceLabel}</span>
+                      <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
+                    </div>
+                  </CardHeader>
 
-                <CardHeader className="pb-3">
-                  <div className="flex justify-center min-h-[28px] items-center mb-1">
-                    {isActive ? (
-                      <Badge className="bg-blue-500 hover:bg-blue-500 whitespace-nowrap">
-                        {ru ? "Ваш план" : "Your plan"}
-                      </Badge>
-                    ) : p.popular ? (
-                      <Badge className="whitespace-nowrap">
-                        {ru ? "Популярный" : "Popular"}
-                      </Badge>
-                    ) : null}
-                  </div>
-                  <div className={`flex items-center gap-2 ${isActive ? "text-blue-600 dark:text-blue-400" : "text-primary"}`}>
-                    {p.icon}
-                    <CardTitle className="text-base">{p.name}</CardTitle>
-                  </div>
-                  <div className="flex items-baseline gap-1.5 pt-1">
-                    <span className="text-3xl font-bold">{planData.priceLabel}</span>
-                    <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
-                  </div>
-                </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <ul className="space-y-2 flex-1 mb-4">
+                      {p.features.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                          <Check className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
+                          {f}
+                        </li>
+                      ))}
+                      {p.noFeatures.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <X className="h-4 w-4 shrink-0 mt-0.5" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
 
-                <CardContent className="flex-1 flex flex-col">
-                  <ul className="space-y-2 flex-1 mb-4">
-                    {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
-                        {f}
-                      </li>
-                    ))}
-                    {p.noFeatures.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <X className="h-4 w-4 shrink-0 mt-0.5" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className="w-full"
-                    variant={isActive || dsSessions > 0 ? "outline" : "default"}
-                    onClick={() => handlePurchase(p.planType)}
-                    disabled={purchaseLoading !== null}
-                  >
-                    {purchaseLoading === p.planType ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : isActive || dsSessions > 0 ? (
-                      ru ? "Добавить ещё" : "Add more"
-                    ) : (
-                      ru ? "Купить" : "Buy"
+                    {isActive && (
+                      <div className="flex justify-between text-xs mb-3">
+                        <span className="text-muted-foreground">{planData.sessions} {ru ? "сессий в пакете" : "in pack"}</span>
+                        <span className="text-blue-600 dark:text-blue-400 font-medium">{dsSessions} {ru ? "осталось" : "left"}</span>
+                      </div>
                     )}
-                  </Button>
-                </CardContent>
-              </Card>
+
+                    <Button
+                      className="w-full"
+                      variant={isActive || dsSessions > 0 ? "outline" : "default"}
+                      onClick={() => handlePurchase(p.planType)}
+                      disabled={purchaseLoading !== null}
+                    >
+                      {purchaseLoading === p.planType ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : isActive || dsSessions > 0 ? (
+                        ru ? "Добавить ещё" : "Add more"
+                      ) : (
+                        ru ? "Купить" : "Buy"
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             );
           })}
         </div>
@@ -449,12 +435,6 @@ export default function PricingPage() {
             </p>
           </div>
 
-          {clSessions > 0 && (
-            <div className="rounded-lg border bg-orange-500/5 border-orange-500/20 px-3 py-2 text-sm">
-              <p className="font-medium text-orange-700 dark:text-orange-400">{clSessions} {ru ? "сессий" : "sessions"}</p>
-              <p className="text-xs text-muted-foreground">{clMsgLimit} {ru ? "сообщ/сессию" : "msg/session"}</p>
-            </div>
-          )}
         </div>
 
         {/* Coming soon note */}
@@ -470,78 +450,80 @@ export default function PricingPage() {
             const planData = PLANS[p.planType];
             const isActive = activeClPlan === p.planType;
             return (
-              <Card
-                key={p.planType}
-                className={`flex flex-col overflow-hidden transition-all duration-200 ${
+              <div key={p.planType} className="relative pt-5">
+                {isActive && (
+                  <div className="absolute top-0 left-0 right-0 flex justify-center">
+                    <Badge className="bg-orange-500 hover:bg-orange-500 shadow-sm whitespace-nowrap text-xs">
+                      {ru ? "Ваш план" : "Your plan"}
+                    </Badge>
+                  </div>
+                )}
+                <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
                   isActive || p.popular
                     ? "border-orange-500 shadow-md shadow-orange-500/10"
                     : ""
-                }`}
-              >
-                {isActive && (
-                  <div className="bg-orange-500/10 border-b border-orange-500/20 px-4 py-2 text-xs font-medium text-orange-700 dark:text-orange-400 flex items-center gap-1.5">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                    {sessRemaining(clSessions)}
-                  </div>
-                )}
+                }`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-center min-h-[28px] items-center mb-1">
+                      {!isActive && p.popular ? (
+                        <Badge variant="outline" className="whitespace-nowrap border-orange-500 text-orange-600">
+                          {ru ? "Популярный" : "Popular"}
+                        </Badge>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                      {p.icon}
+                      <CardTitle className="text-base">{p.name}</CardTitle>
+                    </div>
+                    <div className="flex items-baseline gap-1.5 pt-1">
+                      <span className="text-3xl font-bold">{planData.priceLabel}</span>
+                      <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
+                    </div>
+                    <CardDescription className="text-xs text-orange-600/70 dark:text-orange-400/70">
+                      {ru ? "Точнее чем DeepSeek" : "More precise than DeepSeek"}
+                    </CardDescription>
+                  </CardHeader>
 
-                <CardHeader className="pb-3">
-                  <div className="flex justify-center min-h-[28px] items-center mb-1">
-                    {isActive ? (
-                      <Badge className="bg-orange-500 hover:bg-orange-500 whitespace-nowrap">
-                        {ru ? "Ваш план" : "Your plan"}
-                      </Badge>
-                    ) : p.popular ? (
-                      <Badge variant="outline" className="whitespace-nowrap border-orange-500 text-orange-600">
-                        {ru ? "Популярный" : "Popular"}
-                      </Badge>
-                    ) : null}
-                  </div>
-                  <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
-                    {p.icon}
-                    <CardTitle className="text-base">{p.name}</CardTitle>
-                  </div>
-                  <div className="flex items-baseline gap-1.5 pt-1">
-                    <span className="text-3xl font-bold">{planData.priceLabel}</span>
-                    <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
-                  </div>
-                  <CardDescription className="text-xs text-orange-600/70 dark:text-orange-400/70">
-                    {ru ? "Точнее чем DeepSeek" : "More precise than DeepSeek"}
-                  </CardDescription>
-                </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <ul className="space-y-2 flex-1 mb-4">
+                      {p.features.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                          <Check className="h-4 w-4 shrink-0 mt-0.5 text-orange-500" />
+                          {f}
+                        </li>
+                      ))}
+                      {p.noFeatures.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <X className="h-4 w-4 shrink-0 mt-0.5" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
 
-                <CardContent className="flex-1 flex flex-col">
-                  <ul className="space-y-2 flex-1 mb-4">
-                    {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="h-4 w-4 shrink-0 mt-0.5 text-orange-500" />
-                        {f}
-                      </li>
-                    ))}
-                    {p.noFeatures.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <X className="h-4 w-4 shrink-0 mt-0.5" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className="w-full"
-                    variant={isActive || clSessions > 0 ? "outline" : "default"}
-                    onClick={() => handlePurchase(p.planType)}
-                    disabled={purchaseLoading !== null}
-                  >
-                    {purchaseLoading === p.planType ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : isActive || clSessions > 0 ? (
-                      ru ? "Добавить ещё" : "Add more"
-                    ) : (
-                      ru ? "Купить" : "Buy"
+                    {isActive && (
+                      <div className="flex justify-between text-xs mb-3">
+                        <span className="text-muted-foreground">{planData.sessions} {ru ? "сессий в пакете" : "in pack"}</span>
+                        <span className="text-orange-600 dark:text-orange-400 font-medium">{clSessions} {ru ? "осталось" : "left"}</span>
+                      </div>
                     )}
-                  </Button>
-                </CardContent>
-              </Card>
+
+                    <Button
+                      className="w-full"
+                      variant={isActive || clSessions > 0 ? "outline" : "default"}
+                      onClick={() => handlePurchase(p.planType)}
+                      disabled={purchaseLoading !== null}
+                    >
+                      {purchaseLoading === p.planType ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : isActive || clSessions > 0 ? (
+                        ru ? "Добавить ещё" : "Add more"
+                      ) : (
+                        ru ? "Купить" : "Buy"
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             );
           })}
         </div>
