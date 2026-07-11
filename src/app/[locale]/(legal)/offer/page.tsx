@@ -29,30 +29,30 @@ export default function OfferPage() {
         <ul>
           <li>Access to psychological self-assessment tests (free)</li>
           <li>AI-powered personality analysis using DeepSeek (free)</li>
-          <li>AI coaching sessions (paid, credits)</li>
+          <li>AI coaching sessions with DeepSeek (paid, per session)</li>
           <li>Comprehensive personality report (paid, one-time)</li>
         </ul>
 
         <h2>3. Pricing and Payment</h2>
         <ul>
-          <li>Credit packages: 3 credits — 149 RUB, 10 credits — 399 RUB</li>
-          <li>Comprehensive report: 499 RUB</li>
+          <li>DeepSeek coaching sessions: 5 sessions — 199 RUB, 15 sessions — 499 RUB, 50 sessions — 1 299 RUB</li>
+          <li>Full personality report: 299 RUB (one-time)</li>
           <li>Payments are processed by YuKassa (NBK LLC, INN 7750005725)</li>
           <li>Prices include all applicable taxes (self-employed tax regime)</li>
         </ul>
 
         <h2>4. Service Delivery</h2>
         <ul>
-          <li>Credits are credited immediately upon successful payment</li>
-          <li>Each credit equals one AI coaching session</li>
+          <li>Sessions are credited immediately upon successful payment</li>
+          <li>Each session equals one conversation with the AI coach (up to 100 messages)</li>
           <li>Services are delivered electronically through the platform</li>
           <li>The comprehensive report is generated within 5 minutes of purchase</li>
         </ul>
 
         <h2>5. Refund Policy</h2>
         <ul>
-          <li>Unused credits: refundable within 14 days of purchase</li>
-          <li>Used credits: non-refundable (service already rendered)</li>
+          <li>Unused sessions: refundable within 14 days of purchase</li>
+          <li>Used sessions: non-refundable (service already rendered)</li>
           <li>Comprehensive report: non-refundable after generation</li>
           <li>Refund requests: contact ilray@mail.ru</li>
         </ul>
@@ -73,7 +73,7 @@ export default function OfferPage() {
 
         <h2>8. Agreement Termination</h2>
         <p>
-          The User may terminate this agreement by deleting their account. Unused credits
+          The User may terminate this agreement by deleting their account. Unused sessions
           are refunded upon request within 14 days of the last purchase.
         </p>
 
@@ -118,30 +118,30 @@ export default function OfferPage() {
       <ul>
         <li>Доступ к психологическим тестам самооценки (бесплатно)</li>
         <li>ИИ-анализ личности с использованием DeepSeek (бесплатно)</li>
-        <li>ИИ-коуч-сессии (платно, кредиты)</li>
+        <li>ИИ-коуч-сессии с DeepSeek (платно, за сессию)</li>
         <li>Комплексный отчёт о личности (платно, разовый)</li>
       </ul>
 
       <h2>3. Стоимость и оплата</h2>
       <ul>
-        <li>Пакеты кредитов: 3 кредита — 149 ₽, 10 кредитов — 399 ₽</li>
-        <li>Комплексный отчёт: 499 ₽</li>
+        <li>Коуч-сессии DeepSeek: 5 сессий — 199 ₽, 15 сессий — 499 ₽, 50 сессий — 1 299 ₽</li>
+        <li>Комплексный отчёт о личности: 299 ₽ (разовая оплата)</li>
         <li>Оплата осуществляется через ЮKassa (ООО НКО «ЮМани», ИНН 7750005725)</li>
         <li>Цены включают все применимые налоги (режим НПД)</li>
       </ul>
 
       <h2>4. Порядок оказания услуг</h2>
       <ul>
-        <li>Кредиты зачисляются сразу после успешной оплаты</li>
-        <li>Один кредит равен одной коуч-сессии</li>
+        <li>Сессии зачисляются сразу после успешной оплаты</li>
+        <li>Одна сессия — это один разговор с ИИ-коучем (до 100 сообщений)</li>
         <li>Услуги оказываются в электронной форме через платформу</li>
         <li>Комплексный отчёт генерируется в течение 5 минут после оплаты</li>
       </ul>
 
       <h2>5. Возврат средств</h2>
       <ul>
-        <li>Неиспользованные кредиты: возврат в течение 14 дней с момента покупки</li>
-        <li>Использованные кредиты: возврату не подлежат (услуга оказана)</li>
+        <li>Неиспользованные сессии: возврат в течение 14 дней с момента покупки</li>
+        <li>Использованные сессии: возврату не подлежат (услуга оказана)</li>
         <li>Комплексный отчёт: возврат невозможен после генерации</li>
         <li>Запросы на возврат: ilray@mail.ru</li>
       </ul>
@@ -163,7 +163,7 @@ export default function OfferPage() {
       <h2>8. Расторжение договора</h2>
       <p>
         Пользователь может расторгнуть договор, удалив свой аккаунт. Неиспользованные
-        кредиты возвращаются по запросу в течение 14 дней с момента последней покупки.
+        сессии возвращаются по запросу в течение 14 дней с момента последней покупки.
       </p>
 
       <h2>9. Разрешение споров</h2>

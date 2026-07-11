@@ -241,7 +241,7 @@ export default function PricingPage() {
             )}
           </div>
           {!user ? (
-            <Link href={`/${locale}/login`}>
+            <Link href="/signup">
               <Button variant="outline">{ru ? "Зарегистрироваться" : "Sign up"}</Button>
             </Link>
           ) : (
@@ -269,40 +269,15 @@ export default function PricingPage() {
         <Card className={`transition-all duration-200 ${borderActiveClass}`}>
           <CardContent className="p-6 space-y-6">
 
-            {/* Provider selector */}
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {ru ? "ИИ-модель" : "AI model"}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setProvider("deepseek")}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-                    isDs
-                      ? "bg-blue-500 text-white border-blue-500 shadow-sm"
-                      : "border-border hover:border-blue-300 bg-background"
-                  }`}
-                >
-                  <Bot className="h-4 w-4" />
-                  DeepSeek
-                </button>
-                <button
-                  onClick={() => setProvider("claude")}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
-                    !isDs
-                      ? "bg-orange-500 text-white border-orange-500 shadow-sm"
-                      : "border-border hover:border-orange-300 bg-background"
-                  }`}
-                >
-                  <Brain className="h-4 w-4" />
-                  Claude
-                </button>
+            {/* Model info */}
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+              <Bot className="h-5 w-5 text-blue-500 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-blue-700 dark:text-blue-400">DeepSeek</p>
+                <p className="text-xs text-muted-foreground">
+                  {ru ? "до 100 сообщений на сессию" : "up to 100 messages per session"}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {isDs
-                  ? (ru ? "Быстрый и доступный · до 100 сообщений на сессию" : "Fast & affordable · up to 100 messages/session")
-                  : (ru ? "Глубже и точнее · до 40 сообщений на сессию" : "Deeper & more precise · up to 40 messages/session")}
-              </p>
             </div>
 
             {/* Sessions selector */}
