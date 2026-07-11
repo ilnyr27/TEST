@@ -5,7 +5,6 @@ import { buildChatMessages } from "@/lib/ai/prompt-builder";
 import { ProviderType, AIMessage } from "@/lib/ai/types";
 import { StoredResult } from "@/lib/test-engine/results-store";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
-import { spendCredit } from "@/lib/payment/credits";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,6 +19,14 @@ export async function POST(request: NextRequest) {
         }
       );
     }
+
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ error: "Login required" }, { status: 401 });
+    }
+
     const body = await request.json();
     const {
       message,
@@ -28,6 +35,7 @@ export async function POST(request: NextRequest) {
       locale = "ru",
       criticismMode = false,
       results = [],
+      sessionId,
     } = body as {
       message: string;
       chatHistory: AIMessage[];
@@ -35,37 +43,42 @@ export async function POST(request: NextRequest) {
       locale: "ru" | "en";
       criticismMode: boolean;
       results: StoredResult[];
+      sessionId: string | null;
     };
 
     if (!message?.trim()) {
       return Response.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // Credit gate: Claude requires 1 credit per session
-    if (provider === "claude") {
-      const supabase = await createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        return Response.json(
-          { error: "Login required for Claude" },
-          { status: 401 }
-        );
-      }
-
-      // Only charge on first message in conversation
-      if (chatHistory.length === 0) {
-        const spent = await spendCredit(user.id, "Claude coach session");
-        if (!spent) {
-          return Response.json(
-            { error: "Insufficient credits. Purchase credits to use Claude." },
-            { status: 402 }
-          );
-        }
-      }
+    if (!sessionId) {
+      return Response.json({ error: "No active session" }, { status: 400 });
     }
+
+    // Validate session
+    const { data: session } = await supabase
+      .from("chat_sessions")
+      .select("id, messages_used, messages_limit, is_active")
+      .eq("id", sessionId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (!session || !session.is_active) {
+      return Response.json({ error: "Session not found or expired" }, { status: 404 });
+    }
+
+    if (session.messages_used >= session.messages_limit) {
+      return Response.json(
+        { error: "Session message limit reached" },
+        { status: 402 }
+      );
+    }
+
+    // Increment message count (fire-and-forget to not delay streaming)
+    supabase
+      .from("chat_sessions")
+      .update({ messages_used: session.messages_used + 1 })
+      .eq("id", sessionId)
+      .then(() => {});
 
     const aiProvider = createAIProvider(provider);
     const messages = buildChatMessages(
@@ -76,7 +89,6 @@ export async function POST(request: NextRequest) {
 
     const stream = await aiProvider.chat(messages);
 
-    // Convert string stream to byte stream for Response
     const encoder = new TextEncoder();
     const byteStream = stream.pipeThrough(
       new TransformStream<string, Uint8Array>({

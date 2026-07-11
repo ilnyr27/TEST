@@ -1,11 +1,7 @@
 import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { PRODUCTS, ProductType } from "@/lib/payment/credits";
+import { PLANS, PlanType } from "@/lib/payment/plans";
 
-/**
- * YuKassa webhook — called when payment status changes.
- * Uses service role key (no auth needed — webhook is server-to-server).
- */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -19,56 +15,56 @@ export async function POST(request: NextRequest) {
     const yukassaId = payment.id;
     const metadata = payment.metadata || {};
     const userId = metadata.user_id;
-    const productType = metadata.product_type as ProductType;
+    const planType = metadata.product_type as PlanType;
 
-    if (!userId || !productType) {
+    if (!userId || !planType) {
       console.error("[webhook] Missing metadata:", metadata);
       return Response.json({ error: "Missing metadata" }, { status: 400 });
     }
 
-    // Service role client — no cookie auth needed
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { cookies: { getAll: () => [], setAll: () => {} } }
     );
 
-    // Update payment status
     await supabase
       .from("payments")
       .update({ status: "succeeded", confirmed_at: new Date().toISOString() })
       .eq("external_id", yukassaId);
 
-    // Add credits directly using service role client (avoids cookie-auth issue)
-    const product = PRODUCTS[productType];
-    if (product && product.credits > 0) {
-      const { data: existing } = await supabase
-        .from("user_credits")
-        .select("balance")
-        .eq("user_id", userId)
-        .single();
-
-      if (existing) {
-        await supabase
-          .from("user_credits")
-          .update({ balance: existing.balance + product.credits, updated_at: new Date().toISOString() })
-          .eq("user_id", userId);
-      } else {
-        await supabase
-          .from("user_credits")
-          .insert({ user_id: userId, balance: product.credits });
-      }
-
-      await supabase.from("credit_transactions").insert({
-        user_id: userId,
-        amount: product.credits,
-        type: "purchase",
-        description: `Покупка: ${productType}`,
-      });
-
-      console.log(`[webhook] Added ${product.credits} credits to user ${userId}`);
+    const plan = PLANS[planType];
+    if (!plan) {
+      console.error("[webhook] Unknown plan type:", planType);
+      return Response.json({ ok: true });
     }
 
+    const { data: existing } = await supabase
+      .from("user_plans")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+
+    const isDeepSeek = plan.provider === "deepseek";
+    const isClaude = plan.provider === "claude";
+
+    await supabase.from("user_plans").upsert({
+      user_id: userId,
+      deepseek_sessions: (existing?.deepseek_sessions ?? 0) + (isDeepSeek ? plan.sessions : 0),
+      deepseek_msg_limit: isDeepSeek
+        ? Math.max(existing?.deepseek_msg_limit ?? 20, plan.msgLimit)
+        : (existing?.deepseek_msg_limit ?? 20),
+      claude_sessions: (existing?.claude_sessions ?? 0) + (isClaude ? plan.sessions : 0),
+      claude_msg_limit: isClaude
+        ? Math.max(existing?.claude_msg_limit ?? 0, plan.msgLimit)
+        : (existing?.claude_msg_limit ?? 0),
+      has_report: (existing?.has_report ?? false) || plan.hasReport,
+      free_session_used: existing?.free_session_used ?? false,
+      free_analysis_used: existing?.free_analysis_used ?? false,
+      updated_at: new Date().toISOString(),
+    });
+
+    console.log(`[webhook] Plan ${planType} applied to user ${userId}`);
     return Response.json({ ok: true });
   } catch (error) {
     console.error("[webhook] Error:", error);
