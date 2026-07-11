@@ -162,7 +162,7 @@ export default function TestResultsPage({
       </div>
 
       {/* AI Analysis */}
-      <AIAnalysisSection locale={locale} t={t} />
+      <AIAnalysisSection locale={locale} t={t} testId={testId} />
 
       {/* Go to coach */}
       <div className="text-center">
@@ -180,9 +180,11 @@ export default function TestResultsPage({
 function AIAnalysisSection({
   locale,
   t,
+  testId,
 }: {
   locale: "ru" | "en";
   t: ReturnType<typeof useTranslations>;
+  testId: string;
 }) {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -196,13 +198,16 @@ function AIAnalysisSection({
       const resp = await fetch("/api/ai/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: "deepseek",
-          locale,
-          criticismMode: false,
-          results,
-        }),
+        body: JSON.stringify({ locale, criticismMode: false, results }),
       });
+      if (resp.status === 401) {
+        window.location.href = `/${locale}/login?next=/${locale}/test/${testId}/results`; // eslint-disable-line react-hooks/immutability
+        return;
+      }
+      if (resp.status === 402) {
+        window.location.href = `/${locale}/pricing`; // eslint-disable-line react-hooks/immutability
+        return;
+      }
       if (!resp.ok) {
         const err = await resp.json();
         throw new Error(err.error || "API error");

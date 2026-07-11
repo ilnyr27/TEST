@@ -3,19 +3,20 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Brain, Menu, X, Coins } from "lucide-react";
+import { Brain, Menu, X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useUser } from "@/hooks/useUser";
-import { useCredits } from "@/hooks/useCredits";
+import { usePlan } from "@/hooks/usePlan";
 
 export function Header() {
   const t = useTranslations("common");
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, loading } = useUser();
-  const { balance } = useCredits();
+  const { deepseekSessions, claudeSessions } = usePlan();
+  const totalSessions = deepseekSessions + claudeSessions;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -55,10 +56,10 @@ export function Header() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : user ? (
             <>
-              {balance > 0 && (
+              {totalSessions > 0 && (
                 <Link href="/pricing" className="flex items-center gap-1 text-sm font-medium text-primary">
-                  <Coins className="h-4 w-4" />
-                  {balance}
+                  <MessageSquare className="h-4 w-4" />
+                  {totalSessions}
                 </Link>
               )}
               <UserMenu />
@@ -83,10 +84,10 @@ export function Header() {
           <ThemeToggle />
           {user ? (
             <>
-              {balance > 0 && (
+              {totalSessions > 0 && (
                 <span className="flex items-center gap-0.5 text-xs font-medium text-primary">
-                  <Coins className="h-3.5 w-3.5" />
-                  {balance}
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  {totalSessions}
                 </span>
               )}
               <UserMenu />
