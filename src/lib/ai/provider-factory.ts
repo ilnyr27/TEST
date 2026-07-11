@@ -1,6 +1,5 @@
 import { AIProvider, ProviderType } from "./types";
 import { DeepSeekProvider } from "./deepseek-provider";
-import { ClaudeProvider } from "./claude-provider";
 
 export function createAIProvider(type: ProviderType): AIProvider {
   switch (type) {
