@@ -251,7 +251,7 @@ export default function PricingPage() {
             )}
             {clSessions > 0 && (
               <div className="flex items-center gap-2">
-                <Brain className="h-3.5 w-3.5 text-violet-500" />
+                <Brain className="h-3.5 w-3.5 text-orange-500" />
                 <span className="font-medium">{clSessions}</span>
                 <span className="text-muted-foreground">Claude {ru ? "сессий" : "sessions"}</span>
               </div>
@@ -441,7 +441,7 @@ export default function PricingPage() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Brain className="h-5 w-5 text-violet-500" />
+              <Brain className="h-5 w-5 text-orange-500" />
               {ru ? "Claude — Глубже и точнее" : "Claude — Deeper & More Precise"}
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -450,8 +450,8 @@ export default function PricingPage() {
           </div>
 
           {clSessions > 0 && (
-            <div className="rounded-lg border bg-violet-500/5 border-violet-500/20 px-3 py-2 text-sm">
-              <p className="font-medium text-violet-700 dark:text-violet-400">{clSessions} {ru ? "сессий" : "sessions"}</p>
+            <div className="rounded-lg border bg-orange-500/5 border-orange-500/20 px-3 py-2 text-sm">
+              <p className="font-medium text-orange-700 dark:text-orange-400">{clSessions} {ru ? "сессий" : "sessions"}</p>
               <p className="text-xs text-muted-foreground">{clMsgLimit} {ru ? "сообщ/сессию" : "msg/session"}</p>
             </div>
           )}
@@ -474,12 +474,12 @@ export default function PricingPage() {
                 key={p.planType}
                 className={`flex flex-col overflow-hidden transition-all duration-200 ${
                   isActive || p.popular
-                    ? "border-violet-500 shadow-md shadow-violet-500/10"
+                    ? "border-orange-500 shadow-md shadow-orange-500/10"
                     : ""
                 }`}
               >
                 {isActive && (
-                  <div className="bg-violet-500/10 border-b border-violet-500/20 px-4 py-2 text-xs font-medium text-violet-700 dark:text-violet-400 flex items-center gap-1.5">
+                  <div className="bg-orange-500/10 border-b border-orange-500/20 px-4 py-2 text-xs font-medium text-orange-700 dark:text-orange-400 flex items-center gap-1.5">
                     <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                     {sessRemaining(clSessions)}
                   </div>
@@ -488,16 +488,16 @@ export default function PricingPage() {
                 <CardHeader className="pb-3">
                   <div className="flex justify-center min-h-[28px] items-center mb-1">
                     {isActive ? (
-                      <Badge className="bg-violet-500 hover:bg-violet-500 whitespace-nowrap">
+                      <Badge className="bg-orange-500 hover:bg-orange-500 whitespace-nowrap">
                         {ru ? "Ваш план" : "Your plan"}
                       </Badge>
                     ) : p.popular ? (
-                      <Badge variant="outline" className="whitespace-nowrap border-violet-500 text-violet-600">
+                      <Badge variant="outline" className="whitespace-nowrap border-orange-500 text-orange-600">
                         {ru ? "Популярный" : "Popular"}
                       </Badge>
                     ) : null}
                   </div>
-                  <div className="flex items-center gap-2 text-violet-600 dark:text-violet-400">
+                  <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                     {p.icon}
                     <CardTitle className="text-base">{p.name}</CardTitle>
                   </div>
@@ -505,7 +505,7 @@ export default function PricingPage() {
                     <span className="text-3xl font-bold">{planData.priceLabel}</span>
                     <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
                   </div>
-                  <CardDescription className="text-xs text-violet-600/70 dark:text-violet-400/70">
+                  <CardDescription className="text-xs text-orange-600/70 dark:text-orange-400/70">
                     {ru ? "Точнее чем DeepSeek" : "More precise than DeepSeek"}
                   </CardDescription>
                 </CardHeader>
@@ -514,7 +514,7 @@ export default function PricingPage() {
                   <ul className="space-y-2 flex-1 mb-4">
                     {p.features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="h-4 w-4 shrink-0 mt-0.5 text-violet-500" />
+                        <Check className="h-4 w-4 shrink-0 mt-0.5 text-orange-500" />
                         {f}
                       </li>
                     ))}
