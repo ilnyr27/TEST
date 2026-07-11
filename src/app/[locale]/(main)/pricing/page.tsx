@@ -353,7 +353,7 @@ export default function PricingPage() {
                 )}
                 <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
                   isActive
-                    ? "border-blue-500 shadow-md shadow-blue-500/10"
+                    ? "border-2 border-blue-500 shadow-md shadow-blue-500/10"
                     : p.popular
                     ? "border-primary shadow-md shadow-primary/10"
                     : ""
@@ -458,7 +458,9 @@ export default function PricingPage() {
                   </div>
                 )}
                 <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
-                  isActive || p.popular
+                  isActive
+                    ? "border-2 border-orange-500 shadow-md shadow-orange-500/10"
+                    : p.popular
                     ? "border-orange-500 shadow-md shadow-orange-500/10"
                     : ""
                 }`}>
