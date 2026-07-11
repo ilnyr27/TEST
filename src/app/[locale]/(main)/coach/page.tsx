@@ -33,11 +33,14 @@ import {
   AlertTriangle,
   History,
   Trash2,
+  Crown,
 } from "lucide-react";
 import { getResults } from "@/lib/test-engine/results-store";
 import { AIMessage } from "@/lib/ai/types";
 import { Link } from "@/lib/i18n/navigation";
 import { useUser } from "@/hooks/useUser";
+import { usePlan } from "@/hooks/usePlan";
+import { createClient } from "@/lib/supabase/client";
 import { MarkdownText } from "@/components/ui/markdown-text";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -142,8 +145,10 @@ export default function CoachPage() {
   const locale = useLocale() as "ru" | "en";
   const t = useTranslations("ai");
   const { user } = useUser();
+  const { hasReport } = usePlan();
   const ru = locale === "ru";
 
+  const [reportContext, setReportContext] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -205,6 +210,20 @@ export default function CoachPage() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Load full report for personalized coaching context
+  useEffect(() => {
+    if (!user || !hasReport) return;
+    createClient()
+      .from("user_reports")
+      .select("content")
+      .eq("user_id", user.id)
+      .eq("locale", locale)
+      .single()
+      .then(({ data }) => {
+        if (data?.content) setReportContext(data.content);
+      });
+  }, [user, hasReport, locale]);
 
   // ── Save helper ──────────────────────────────────────────────────────────────
 
@@ -387,6 +406,7 @@ export default function CoachPage() {
           criticismMode,
           results,
           sessionId: activeSession.id,
+          ...(reportContext ? { reportContext } : {}),
         }),
       });
 
@@ -525,7 +545,13 @@ export default function CoachPage() {
           />
         </div>
 
-        {hasResults && (
+        {reportContext && (
+          <Link href="/full-report" className="flex items-center gap-1 text-xs text-amber-600 bg-amber-500/10 rounded-full px-2 py-1 hover:bg-amber-500/20 transition-colors">
+            <Crown className="h-3 w-3" />
+            {ru ? "Профиль загружен" : "Profile loaded"}
+          </Link>
+        )}
+        {hasResults && !reportContext && (
           <span className="text-xs text-green-600 bg-green-500/10 rounded-full px-2 py-1">
             {ru
               ? `${results.length} тест(ов) загружено`
@@ -669,9 +695,13 @@ export default function CoachPage() {
                       ? "Нет доступных сессий"
                       : "No sessions available"
                     : ru
-                    ? hasResults
+                    ? reportContext
+                      ? "Я знаю ваш полный психологический профиль. Спросите о карьере, отношениях, развитии — отвечу с учётом ваших личных черт."
+                      : hasResults
                       ? "Я знаю ваши результаты тестов. Спросите меня что угодно о вашем профиле!"
                       : "Пройдите тесты, чтобы я мог дать персональные рекомендации. Или задайте общий вопрос."
+                    : reportContext
+                    ? "I know your full psychological profile. Ask me about career, relationships, growth — I'll answer based on your specific traits."
                     : hasResults
                     ? "I know your test results. Ask me anything about your profile!"
                     : "Take some tests so I can give personalized advice. Or ask a general question."}

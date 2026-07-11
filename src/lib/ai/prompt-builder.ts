@@ -6,6 +6,7 @@ interface PromptContext {
   criticismMode: boolean;
   results?: StoredResult[];
   testSlug?: string;
+  reportContext?: string;
 }
 
 function buildSystemPrompt(ctx: PromptContext): string {
@@ -47,6 +48,17 @@ Be supportive but honest. Acknowledge strengths first, then gently suggest areas
     }
   }
 
+  let reportBlock = "";
+  if (ctx.reportContext) {
+    const label = ctx.locale === "ru"
+      ? "ПОЛНЫЙ ПСИХОЛОГИЧЕСКИЙ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ (составлен ранее)"
+      : "USER'S FULL PSYCHOLOGICAL PROFILE (previously generated)";
+    const note = ctx.locale === "ru"
+      ? "Это детальный анализ личности этого конкретного пользователя. Используй его как основной контекст. Ссылайся на конкретные разделы (сильные стороны, карьера, отношения и т.д.) в ответах."
+      : "This is a detailed personality analysis for this specific user. Use it as primary context. Reference specific sections (strengths, career, relationships, etc.) in your responses.";
+    reportBlock = `\n\n${label}:\n${note}\n---\n${ctx.reportContext}\n---`;
+  }
+
   return `You are an experienced psychological consultant providing personalized analysis based on validated psychological test results.
 
 LANGUAGE: Respond entirely in ${lang}.
@@ -60,7 +72,7 @@ IMPORTANT GUIDELINES:
 - Be concise but thorough. Use bullet points and structure for clarity.
 - When the user asks a question, relate your answer to their test profile when relevant.
 - If no test data is available, provide general psychological guidance and encourage taking tests for personalized insights.
-${resultsBlock}`;
+${resultsBlock}${reportBlock}`;
 }
 
 export function buildAnalysisMessages(ctx: PromptContext): AIMessage[] {

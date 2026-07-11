@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Menu, X, MessageSquare } from "lucide-react";
+import { Menu, X, MessageSquare, Crown } from "lucide-react";
 import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -16,7 +16,7 @@ export function Header() {
   const t = useTranslations("common");
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, loading } = useUser();
-  const { deepseekSessions, claudeSessions } = usePlan();
+  const { deepseekSessions, claudeSessions, hasReport } = usePlan();
   const totalSessions = deepseekSessions + claudeSessions;
 
   return (
@@ -57,6 +57,11 @@ export function Header() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : user ? (
             <>
+              {hasReport && (
+                <Link href="/full-report" className="text-amber-600 hover:text-amber-700 transition-colors" title="Полный отчёт">
+                  <Crown className="h-4 w-4" />
+                </Link>
+              )}
               {totalSessions > 0 && (
                 <Link href="/pricing" className="flex items-center gap-1 text-sm font-medium text-primary">
                   <MessageSquare className="h-4 w-4" />
@@ -85,6 +90,11 @@ export function Header() {
           <ThemeToggle />
           {user ? (
             <>
+              {hasReport && (
+                <Link href="/full-report" className="text-amber-600">
+                  <Crown className="h-3.5 w-3.5" />
+                </Link>
+              )}
               {totalSessions > 0 && (
                 <span className="flex items-center gap-0.5 text-xs font-medium text-primary">
                   <MessageSquare className="h-3.5 w-3.5" />

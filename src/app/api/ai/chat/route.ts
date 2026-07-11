@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       criticismMode = false,
       results = [],
       sessionId,
+      reportContext,
     } = body as {
       message: string;
       chatHistory: AIMessage[];
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
       criticismMode: boolean;
       results: StoredResult[];
       sessionId: string | null;
+      reportContext?: string;
     };
 
     if (!message?.trim()) {
@@ -82,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     const aiProvider = createAIProvider(provider);
     const messages = buildChatMessages(
-      { locale, criticismMode, results },
+      { locale, criticismMode, results, reportContext },
       chatHistory,
       message
     );
