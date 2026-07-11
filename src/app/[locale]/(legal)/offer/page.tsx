@@ -29,7 +29,6 @@ export default function OfferPage() {
         <ul>
           <li>Access to psychological self-assessment tests (free)</li>
           <li>AI-powered personality analysis using DeepSeek (free)</li>
-          <li>AI-powered personality analysis using Claude (paid, credits)</li>
           <li>AI coaching sessions (paid, credits)</li>
           <li>Comprehensive personality report (paid, one-time)</li>
         </ul>
@@ -45,7 +44,7 @@ export default function OfferPage() {
         <h2>4. Service Delivery</h2>
         <ul>
           <li>Credits are credited immediately upon successful payment</li>
-          <li>Each credit equals one Claude AI analysis or one coaching session</li>
+          <li>Each credit equals one AI coaching session</li>
           <li>Services are delivered electronically through the platform</li>
           <li>The comprehensive report is generated within 5 minutes of purchase</li>
         </ul>
@@ -119,7 +118,6 @@ export default function OfferPage() {
       <ul>
         <li>Доступ к психологическим тестам самооценки (бесплатно)</li>
         <li>ИИ-анализ личности с использованием DeepSeek (бесплатно)</li>
-        <li>ИИ-анализ личности с использованием Claude (платно, кредиты)</li>
         <li>ИИ-коуч-сессии (платно, кредиты)</li>
         <li>Комплексный отчёт о личности (платно, разовый)</li>
       </ul>
@@ -135,7 +133,7 @@ export default function OfferPage() {
       <h2>4. Порядок оказания услуг</h2>
       <ul>
         <li>Кредиты зачисляются сразу после успешной оплаты</li>
-        <li>Один кредит равен одному анализу Claude или одной коуч-сессии</li>
+        <li>Один кредит равен одной коуч-сессии</li>
         <li>Услуги оказываются в электронной форме через платформу</li>
         <li>Комплексный отчёт генерируется в течение 5 минут после оплаты</li>
       </ul>

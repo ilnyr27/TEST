@@ -9,7 +9,7 @@ export function Footer() {
   const tl = useTranslations("legal");
 
   return (
-    <footer className="border-t bg-muted/30">
+    <footer className="border-t bg-muted/30 print:hidden">
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

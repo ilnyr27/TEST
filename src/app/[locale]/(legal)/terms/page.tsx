@@ -29,7 +29,7 @@ export default function TermsPage() {
         <h2>3. Free and Paid Features</h2>
         <ul>
           <li><strong>Free:</strong> all tests, DeepSeek AI analysis</li>
-          <li><strong>Paid (credits):</strong> Claude AI analysis, AI coaching sessions, full personality report</li>
+          <li><strong>Paid (credits):</strong> AI coaching sessions, full personality report</li>
         </ul>
         <p>Credits are non-refundable once used. Unused credits do not expire.</p>
 
@@ -85,7 +85,7 @@ export default function TermsPage() {
       <h2>3. Бесплатные и платные функции</h2>
       <ul>
         <li><strong>Бесплатно:</strong> все тесты, ИИ-анализ DeepSeek</li>
-        <li><strong>Платно (кредиты):</strong> анализ Claude, коуч-сессии, полный отчёт о личности</li>
+        <li><strong>Платно (кредиты):</strong> коуч-сессии, полный отчёт о личности</li>
       </ul>
       <p>Использованные кредиты не возвращаются. Неиспользованные кредиты не сгорают.</p>
 

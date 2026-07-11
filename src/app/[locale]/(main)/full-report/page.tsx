@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Crown, Loader2, RotateCcw, ArrowLeft, Lock, Sparkles } from "lucide-react";
+import { Crown, Loader2, RotateCcw, ArrowLeft, Lock, Sparkles, Printer } from "lucide-react";
 import { getResults, StoredResult } from "@/lib/test-engine/results-store";
+import { getTestMeta } from "@/lib/test-engine/test-registry";
 import { Link } from "@/lib/i18n/navigation";
 import { usePlan } from "@/hooks/usePlan";
 import { useUser } from "@/hooks/useUser";
@@ -86,6 +87,28 @@ const LOCKED_SECTIONS_EN = [
     excerpt:
       "Based on the full analysis, specific recommendations have been compiled. The first priority is daily practice that strengthens your strengths. Special attention is recommended for the skill of...",
   },
+];
+
+const SECTIONS_RU = [
+  "Общий портрет",
+  "Сильные стороны",
+  "Зоны роста",
+  "Взаимосвязи черт",
+  "Карьера и призвание",
+  "Отношения",
+  "Эмоциональный интеллект",
+  "Рекомендации",
+];
+
+const SECTIONS_EN = [
+  "General Portrait",
+  "Strengths",
+  "Growth Areas",
+  "Trait Connections",
+  "Career & Purpose",
+  "Relationships",
+  "Emotional Intelligence",
+  "Recommendations",
 ];
 
 function formatDate(iso: string, loc: string) {
@@ -195,7 +218,7 @@ export default function FullReportPage() {
     <div className="mx-auto max-w-3xl space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/dashboard">
+        <Link href="/dashboard" className="print:hidden">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -244,56 +267,111 @@ export default function FullReportPage() {
         <>
           {fullReport === null ? (
             <Card>
-              <CardContent className="flex flex-col items-center text-center py-10 gap-4">
-                <Crown className="h-12 w-12 text-amber-500/50" />
-                <div>
+              <CardContent className="py-8 space-y-6">
+                {/* Title */}
+                <div className="text-center space-y-2">
+                  <Crown className="h-10 w-10 text-amber-500/50 mx-auto" />
                   <h2 className="text-lg font-semibold">
-                    {ru ? "Полный отчёт готов" : "Full report ready"}
+                    {ru ? "Полный психологический отчёт" : "Full Psychological Report"}
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground">
                     {ru
-                      ? `ИИ проанализирует ${results.length} тест${results.length > 1 ? "а" : ""} и создаст 8-раздельный профиль`
-                      : `AI will analyze ${results.length} test${results.length > 1 ? "s" : ""} and create an 8-section profile`}
+                      ? `${results.length} тест${results.length === 1 ? "" : results.length < 5 ? "а" : "ов"} → 8 разделов · ~30–40 секунд`
+                      : `${results.length} test${results.length > 1 ? "s" : ""} → 8 sections · ~30–40 seconds`}
                   </p>
                 </div>
-                <Button
-                  onClick={handleGenerateFull}
-                  disabled={loadingFull}
-                  className="gap-2 bg-amber-600 hover:bg-amber-700 text-white"
-                >
-                  {loadingFull ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      {ru ? "Генерирую..." : "Generating..."}
-                    </>
-                  ) : (
-                    <>
-                      <Crown className="h-4 w-4" />
-                      {ru ? "Сгенерировать отчёт" : "Generate report"}
-                    </>
+
+                {/* Tests included */}
+                <div className="border rounded-lg p-4 space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    {ru ? "Входят данные из тестов:" : "Based on your tests:"}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {results.map((r) => {
+                      const meta = getTestMeta(r.testSlug);
+                      return (
+                        <span
+                          key={r.testSlug}
+                          className="text-xs bg-secondary text-secondary-foreground rounded-full px-2.5 py-0.5"
+                        >
+                          {ru ? (meta?.nameRu ?? r.testSlug) : (meta?.nameEn ?? r.testSlug)}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 8 sections */}
+                <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+                  {(ru ? SECTIONS_RU : SECTIONS_EN).map((name, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className="text-xs text-amber-600 font-semibold w-4 shrink-0">{i + 1}.</span>
+                      {name}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Persistence note */}
+                <p className="text-xs text-center text-muted-foreground">
+                  {ru
+                    ? "Отчёт сохраняется — можно открыть с любого устройства в любое время"
+                    : "Report is saved — accessible from any device at any time"}
+                </p>
+
+                {/* Generate button */}
+                <div className="flex flex-col items-center gap-2">
+                  <Button
+                    onClick={handleGenerateFull}
+                    disabled={loadingFull}
+                    className="gap-2 bg-amber-600 hover:bg-amber-700 text-white"
+                  >
+                    {loadingFull ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {ru ? "Генерирую отчёт..." : "Generating report..."}
+                      </>
+                    ) : (
+                      <>
+                        <Crown className="h-4 w-4" />
+                        {ru ? "Сгенерировать отчёт" : "Generate report"}
+                      </>
+                    )}
+                  </Button>
+                  {fullError && (
+                    <p className="text-sm text-destructive">{fullError}</p>
                   )}
-                </Button>
-                {fullError && (
-                  <p className="text-sm text-destructive">{fullError}</p>
-                )}
+                </div>
               </CardContent>
             </Card>
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-amber-600" />
-                  {ru ? "Ваш психологический профиль" : "Your Psychological Profile"}
-                </CardTitle>
-                {savedAt && (
-                  <p className="text-xs text-muted-foreground">
-                    {ru ? "Создан" : "Created"} {formatDate(savedAt, locale)}
-                  </p>
-                )}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Crown className="h-5 w-5 text-amber-600" />
+                      {ru ? "Ваш психологический профиль" : "Your Psychological Profile"}
+                    </CardTitle>
+                    {savedAt && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {ru ? "Создан" : "Created"} {formatDate(savedAt, locale)}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.print()}
+                    className="print:hidden shrink-0 gap-1.5 text-xs"
+                  >
+                    <Printer className="h-3.5 w-3.5" />
+                    {ru ? "PDF" : "PDF"}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <MarkdownText text={fullReport ?? ""} />
-                <div className="flex justify-center mt-6">
+                <div className="flex justify-center mt-6 print:hidden">
                   <Button
                     variant="ghost"
                     onClick={handleGenerateFull}
