@@ -16,7 +16,10 @@ import {
   CheckCircle,
   Sparkles,
   Target,
+  Crown,
+  Lock,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   psychology: <AppLogo size={32} />,
@@ -152,6 +155,73 @@ export default function LandingPage() {
                   {t("step3Title")}
                 </h3>
                 <p className="text-muted-foreground">{t("step3Desc")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Report Preview */}
+        <section className="container mx-auto px-4 py-20">
+          <div className="mx-auto max-w-2xl">
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl font-bold">{t("reportPreviewTitle")}</h2>
+              <p className="mt-3 text-muted-foreground">{t("reportPreviewSub")}</p>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border bg-card shadow-xl">
+              {/* Report header */}
+              <div className="flex items-center gap-3 border-b bg-amber-500/5 px-6 py-4">
+                <Crown className="h-5 w-5 text-amber-500" />
+                <span className="font-semibold">
+                  {t("reportPreviewBadge")}
+                </span>
+                <Badge variant="secondary" className="ml-auto text-xs">
+                  11 {t("step2Title").toLowerCase()}
+                </Badge>
+              </div>
+
+              {/* Visible section */}
+              <div className="border-b px-6 py-5">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">1</span>
+                  <h3 className="font-semibold">{t("reportPreviewSection1")}</h3>
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {t("reportPreviewText1")}
+                </p>
+              </div>
+
+              {/* Blurred sections */}
+              <div className="relative">
+                {[
+                  { num: 2, title: t("reportPreviewBlur1"), text: t("reportPreviewBlur1Text") },
+                  { num: 3, title: t("reportPreviewBlur2"), text: t("reportPreviewBlur2Text") },
+                  { num: 4, title: t("reportPreviewBlur3"), text: t("reportPreviewBlur3Text") },
+                ].map(({ num, title, text }) => (
+                  <div key={num} className="select-none border-b px-6 py-4 blur-[3px]">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{num}</span>
+                      <h3 className="font-semibold">{title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{text}</p>
+                  </div>
+                ))}
+
+                {/* Gradient overlay + CTA */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-transparent via-background/70 to-background/95">
+                  <div className="mt-auto pb-6 text-center">
+                    <div className="mb-3 flex items-center justify-center gap-2 text-muted-foreground">
+                      <Lock className="h-4 w-4" />
+                      <span className="text-sm">{t("reportPreviewCtaSub")}</span>
+                    </div>
+                    <Link href="/signup">
+                      <Button size="lg" className="gap-2 bg-amber-500 hover:bg-amber-600 text-white">
+                        <Crown className="h-4 w-4" />
+                        {t("reportPreviewCta")}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

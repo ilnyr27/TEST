@@ -36,7 +36,20 @@
     "step2Title": "Take the tests",
     "step2Desc": "From simple questions to deep self-analysis",
     "step3Title": "Get your profile",
-    "step3Desc": "Visual results + AI analysis on demand"
+    "step3Desc": "Visual results + AI analysis on demand",
+    "reportPreviewTitle": "What's inside the full report",
+    "reportPreviewSub": "AI synthesizes all 11 tests into a single psychological portrait",
+    "reportPreviewBadge": "Sample report",
+    "reportPreviewSection1": "Key personality traits",
+    "reportPreviewText1": "Your profile reveals an unconventional pattern. High openness to experience (87%) combined with moderate extraversion (48%) is rare — you're drawn to new ideas but process them internally. Conscientiousness (78%) explains why you rarely abandon projects even when interest fades halfway through. A secure attachment style (anxiety 15%) makes you a stable partner — a strength that's easy to underestimate.",
+    "reportPreviewBlur1": "Career & calling",
+    "reportPreviewBlur1Text": "Your RIASEC profile points to three most suitable directions. The Investigative type (81%) combined with...",
+    "reportPreviewBlur2": "Relationships & communication",
+    "reportPreviewBlur2Text": "Your primary love language is physical touch (100%). This explains why you feel most connected when...",
+    "reportPreviewBlur3": "Practical recommendations",
+    "reportPreviewBlur3Text": "5 concrete steps for the next 90 days, derived from the analysis of all 11 tests...",
+    "reportPreviewCta": "Get your own report — 299 ₽",
+    "reportPreviewCtaSub": "Take the tests first — it's free"
   },
   "categories": {
     "psychology": "Psychology",
