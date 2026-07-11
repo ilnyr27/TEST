@@ -13,8 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { AppLogo } from "@/components/ui/app-logo";
 import {
-  Brain,
   Briefcase,
   Lightbulb,
   Repeat,
@@ -37,7 +37,7 @@ import { getAllTests } from "@/lib/test-engine/test-registry";
 import { detectFlags, Flag } from "@/lib/scoring/flag-detector";
 
 const categoryIcons: Record<string, React.ReactNode> = {
-  psychology: <Brain className="h-5 w-5" />,
+  psychology: <AppLogo size={20} />,
   career: <Briefcase className="h-5 w-5" />,
   intelligence: <Lightbulb className="h-5 w-5" />,
   habits: <Repeat className="h-5 w-5" />,
@@ -119,7 +119,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">{t("profileComplete")}</CardTitle>
-            <Brain className="h-4 w-4 text-muted-foreground" />
+            <AppLogo size={16} />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{profilePercent}%</div>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
+              <AppLogo size={20} />
               {locale === "ru" ? "Агрегированный профиль" : "Aggregated Profile"}
             </CardTitle>
           </CardHeader>

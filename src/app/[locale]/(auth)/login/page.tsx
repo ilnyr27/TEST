@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Brain } from "lucide-react";
+import { AppLogo } from "@/components/ui/app-logo";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
@@ -53,7 +53,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Brain className="h-6 w-6 text-primary" />
+            <AppLogo size={24} />
           </div>
           <CardTitle>{t("loginTitle")}</CardTitle>
           <CardDescription>{tc("appDescription")}</CardDescription>

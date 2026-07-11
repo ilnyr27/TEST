@@ -4,8 +4,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { AppLogo } from "@/components/ui/app-logo";
 import {
-  Brain,
   Briefcase,
   Lightbulb,
   Repeat,
@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 const categoryIcons: Record<string, React.ReactNode> = {
-  psychology: <Brain className="h-8 w-8" />,
+  psychology: <AppLogo size={32} />,
   career: <Briefcase className="h-8 w-8" />,
   intelligence: <Lightbulb className="h-8 w-8" />,
   habits: <Repeat className="h-8 w-8" />,
@@ -69,8 +69,8 @@ export default function LandingPage() {
         {/* Hero */}
         <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 py-24 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-              <Brain className="h-8 w-8 text-primary" />
+            <div className="mx-auto mb-4">
+              <AppLogo size={64} className="rounded-2xl" />
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               {t("hero")}

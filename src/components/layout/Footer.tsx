@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Brain } from "lucide-react";
+import { AppLogo } from "@/components/ui/app-logo";
 
 export function Footer() {
   const t = useTranslations("common");
@@ -13,7 +13,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Brain className="h-4 w-4" />
+            <AppLogo size={16} />
             <span>{t("appName")}</span>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
