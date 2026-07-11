@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Crown, Loader2, RotateCcw, ArrowLeft, Lock, Sparkles } from "lucide-react";
-import { getResults } from "@/lib/test-engine/results-store";
+import { getResults, StoredResult } from "@/lib/test-engine/results-store";
 import { Link } from "@/lib/i18n/navigation";
 import { usePlan } from "@/hooks/usePlan";
 import { useUser } from "@/hooks/useUser";
@@ -132,9 +132,7 @@ export default function FullReportPage() {
   const locale = useLocale() as "ru" | "en";
   const { user } = useUser();
   const { hasReport, loading: planLoading } = usePlan();
-  const [results] = useState(() =>
-    typeof window !== "undefined" ? getResults() : []
-  );
+  const [results, setResults] = useState<StoredResult[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
   const [fullReport, setFullReport] = useState<string | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
@@ -145,6 +143,11 @@ export default function FullReportPage() {
 
   const ru = locale === "ru";
   const lockedSections = ru ? LOCKED_SECTIONS_RU : LOCKED_SECTIONS_EN;
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResults(getResults());
+  }, []);
 
   useEffect(() => {
     if (
