@@ -29,7 +29,9 @@ import {
   AlertTriangle,
   Shield,
   Info,
+  Crown,
 } from "lucide-react";
+import { usePlan } from "@/hooks/usePlan";
 import { getResults, StoredResult } from "@/lib/test-engine/results-store";
 import { getAllTests } from "@/lib/test-engine/test-registry";
 import { detectFlags, Flag } from "@/lib/scoring/flag-detector";
@@ -65,6 +67,7 @@ export default function DashboardPage() {
 
   const [results, setResults] = useState<StoredResult[]>([]);
   const [flags, setFlags] = useState<Flag[]>([]);
+  const { hasReport } = usePlan();
 
   useEffect(() => {
     const r = getResults();
@@ -247,13 +250,28 @@ export default function DashboardPage() {
       )}
 
       {/* Quick actions */}
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Link href="/coach">
           <Button variant="outline" className="gap-2">
             <MessageSquare className="h-4 w-4" />
             {locale === "ru" ? "ИИ-Коуч" : "AI Coach"}
           </Button>
         </Link>
+        {hasReport ? (
+          <Link href="/full-report">
+            <Button variant="outline" className="gap-2 border-amber-500/50 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10">
+              <Crown className="h-4 w-4" />
+              {locale === "ru" ? "Полный отчёт" : "Full Report"}
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/pricing">
+            <Button variant="ghost" className="gap-2 text-muted-foreground text-xs">
+              <Crown className="h-4 w-4" />
+              {locale === "ru" ? "Полный отчёт — 299 ₽" : "Full Report — 299 ₽"}
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Categories */}
