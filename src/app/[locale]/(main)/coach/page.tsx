@@ -164,7 +164,9 @@ export default function CoachPage() {
 
   // Mutable snapshot of latest state — avoids stale closures in callbacks
   const snap = useRef({ messages, session, provider, activeConvId });
-  snap.current = { messages, session, provider, activeConvId };
+  useEffect(() => {
+    snap.current = { messages, session, provider, activeConvId };
+  }, [messages, session, provider, activeConvId]);
 
   // ── Init on mount ────────────────────────────────────────────────────────────
 
@@ -174,21 +176,27 @@ export default function CoachPage() {
 
     migrateOldFormat();
     const history = loadHistory();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setConversations(history);
 
     const lastId = localStorage.getItem(ACTIVE_KEY);
     if (lastId) {
       const conv = history.find((c) => c.id === lastId);
       if (conv) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveConvId(conv.id);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setProvider(conv.provider);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMessages(conv.messages);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSession(conv.session);
         return;
       }
     }
 
     const newId = crypto.randomUUID();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveConvId(newId);
     localStorage.setItem(ACTIVE_KEY, newId);
   }, []);
