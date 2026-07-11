@@ -134,4 +134,28 @@
     margin: 2cm;
     size: A4;
   }
+
+  /* Force white background regardless of dark mode */
+  body, .card, [class*="bg-"] {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Prevent headers from orphaning at page bottom */
+  h1, h2, h3, h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Prevent paragraphs and list items from splitting mid-content */
+  p, li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep heading attached to its following paragraph */
+  h2 + p, h3 + p {
+    break-before: avoid;
+    page-break-before: avoid;
+  }
 }

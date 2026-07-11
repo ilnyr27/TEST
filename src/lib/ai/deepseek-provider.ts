@@ -79,7 +79,7 @@ export class DeepSeekProvider implements AIProvider {
       body: JSON.stringify({
         model: this.model,
         messages,
-        max_tokens: 2000,
+        max_tokens: 6000,
         temperature: 0.7,
         stream: false,
       }),
@@ -91,6 +91,10 @@ export class DeepSeekProvider implements AIProvider {
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content ?? "";
+    const choice = data.choices?.[0];
+    if (choice?.finish_reason === "length") {
+      throw new Error("Report was truncated by token limit — please try again");
+    }
+    return choice?.message?.content ?? "";
   }
 }
