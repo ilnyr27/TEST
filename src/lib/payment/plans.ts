@@ -16,7 +16,7 @@ export const CL_SESSION_PRICES: { [s: number]: number } = {
 };
 
 // Fixed message limits per session (hidden from user, enforced server-side)
-export const DS_MSG_LIMIT = 100;
+export const DS_MSG_LIMIT = 20;
 export const CL_MSG_LIMIT = 40;
 
 export const REPORT_PRICE_KOPECKS = 29900;
