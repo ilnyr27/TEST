@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAIProvider } from "@/lib/ai/provider-factory";
-import { buildAnalysisMessages } from "@/lib/ai/prompt-builder";
+import { buildAnalysisMessages, buildSingleTestAnalysisMessages } from "@/lib/ai/prompt-builder";
 import { StoredResult } from "@/lib/test-engine/results-store";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 
@@ -34,10 +34,12 @@ export async function POST(request: NextRequest) {
       locale = "ru",
       criticismMode = false,
       results = [],
+      testSlug,
     } = body as {
       locale: "ru" | "en";
       criticismMode: boolean;
       results: StoredResult[];
+      testSlug?: string;
     };
 
     if (results.length === 0) {
@@ -79,9 +81,20 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Always DeepSeek for test analysis (Claude analysis — coming soon)
+    // Always DeepSeek for test analysis
     const aiProvider = createAIProvider("deepseek");
-    const messages = buildAnalysisMessages({ locale, criticismMode, results });
+
+    let messages;
+    if (testSlug) {
+      const single = results.find((r) => r.testSlug === testSlug);
+      if (!single) {
+        return Response.json({ error: "Test result not found" }, { status: 400 });
+      }
+      messages = buildSingleTestAnalysisMessages(single, locale);
+    } else {
+      messages = buildAnalysisMessages({ locale, criticismMode, results });
+    }
+
     const analysis = await aiProvider.analyze(messages);
 
     return Response.json({ analysis });

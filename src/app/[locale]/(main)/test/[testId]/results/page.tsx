@@ -249,7 +249,7 @@ function AIAnalysisSection({
       const resp = await fetch("/api/ai/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locale, criticismMode: false, results }),
+        body: JSON.stringify({ locale, criticismMode: false, results, testSlug: testId }),
       });
       if (resp.status === 401) {
         window.location.href = `/${locale}/login?next=/${locale}/test/${testId}/results`; // eslint-disable-line react-hooks/immutability

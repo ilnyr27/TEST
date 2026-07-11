@@ -88,6 +88,45 @@ export function buildAnalysisMessages(ctx: PromptContext): AIMessage[] {
   ];
 }
 
+export function buildSingleTestAnalysisMessages(
+  result: StoredResult,
+  locale: "ru" | "en"
+): AIMessage[] {
+  const lang = locale === "ru" ? "Russian" : "English";
+
+  let testBlock = `TEST: ${result.testSlug.toUpperCase()} (completed ${new Date(result.completedAt).toLocaleDateString()})\n`;
+  testBlock += `Summary: ${result.result.summary[locale]}\n`;
+  testBlock += `Dimensions:\n`;
+  for (const dim of result.result.dimensions) {
+    if (dim.key !== "style") {
+      testBlock += `  - ${dim.name}: ${dim.score}%\n`;
+    } else {
+      testBlock += `  - Type: ${dim.name}\n`;
+    }
+  }
+
+  const system = `You are a psychological consultant giving a brief interpretation of ONE test result.
+
+LANGUAGE: Respond entirely in ${lang}.
+
+STRICT RULES:
+- Analyze ONLY this one test. Do NOT mention other tests or give a general personality profile.
+- Length: exactly 2-3 paragraphs of plain text. No headers, no bullet lists, no emojis.
+- Cover: what the result reveals about the person, 1-2 notable strengths, and one concrete thing to be aware of.
+- Do NOT give career advice, relationship advice, or life recommendations — those are for a full report.
+
+${testBlock}`;
+
+  const userPrompt = locale === "ru"
+    ? "Дай краткую интерпретацию моего результата."
+    : "Give me a brief interpretation of my result.";
+
+  return [
+    { role: "system", content: system },
+    { role: "user", content: userPrompt },
+  ];
+}
+
 export function buildChatMessages(
   ctx: PromptContext,
   chatHistory: AIMessage[],
