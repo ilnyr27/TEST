@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { useTestSessionStore } from "@/stores/test-session";
 import { getScorer } from "@/lib/scoring/scorer-registry";
-import { saveResult } from "@/lib/test-engine/results-store";
+import { saveResult, getResultBySlug, getResults, StoredResult } from "@/lib/test-engine/results-store";
+import { getTestMeta } from "@/lib/test-engine/test-registry";
 import { RadarChart } from "@/components/results/RadarChart";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +18,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart3, RotateCcw, Bot, Trophy, Loader2, MessageSquare } from "lucide-react";
-import { getResults } from "@/lib/test-engine/results-store";
 
 export default function TestResultsPage({
   params,
@@ -27,30 +27,94 @@ export default function TestResultsPage({
   const { testId } = use(params);
   const locale = useLocale() as "ru" | "en";
   const t = useTranslations("results");
-  const { questions, answers, timeSpentSeconds, testName, reset } =
-    useTestSessionStore();
 
-  const answeredCount = Object.keys(answers).length;
+  const {
+    questions,
+    answers,
+    timeSpentSeconds,
+    testName: storeTestName,
+    testId: storeTestId,
+    reset,
+  } = useTestSessionStore();
+
+  // Does the in-memory store hold data for THIS test?
+  const storeMatchesTest = storeTestId === testId;
+  const storeAnsweredCount = storeMatchesTest ? Object.keys(answers).length : 0;
+
   const scorer = getScorer(testId);
   const savedRef = useRef(false);
 
-  // Save result to localStorage on first render
+  // undefined = loading, null = not found, StoredResult = loaded
+  const [storedResult, setStoredResult] = useState<StoredResult | null | undefined>(undefined);
+
+  // Load from localStorage when store doesn't hold data for this test
   useEffect(() => {
-    if (scorer && !savedRef.current && answeredCount > 0) {
+    if (!storeMatchesTest) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setStoredResult(getResultBySlug(testId) ?? null);
+    } else {
+      // Fresh session — no need to read localStorage
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setStoredResult(null);
+    }
+  }, [testId, storeMatchesTest]);
+
+  // Persist fresh result to localStorage (once, only for live sessions)
+  useEffect(() => {
+    if (storeMatchesTest && scorer && !savedRef.current && storeAnsweredCount > 0) {
       savedRef.current = true;
       const r = scorer.calculate(questions, answers, locale);
       saveResult({
         testSlug: testId,
         result: r,
         completedAt: new Date().toISOString(),
-        answeredCount,
+        answeredCount: storeAnsweredCount,
         totalQuestions: questions.length,
         timeSpentSeconds,
       });
     }
-  }, [scorer, testId, questions, answers, locale, answeredCount, timeSpentSeconds]);
+  }, [storeMatchesTest, scorer, testId, questions, answers, locale, storeAnsweredCount, timeSpentSeconds]);
 
-  if (questions.length === 0 || answeredCount === 0) {
+  // Compute which result to display
+  const liveResult =
+    storeMatchesTest && storeAnsweredCount > 0 && scorer
+      ? scorer.calculate(questions, answers, locale)
+      : null;
+
+  const result = liveResult ?? storedResult?.result ?? null;
+
+  const testMeta = getTestMeta(testId);
+  const displayName =
+    storeMatchesTest && storeTestName
+      ? storeTestName
+      : locale === "ru"
+      ? (testMeta?.nameRu ?? testId)
+      : (testMeta?.nameEn ?? testId);
+
+  const displayAnswered = storeMatchesTest
+    ? storeAnsweredCount
+    : (storedResult?.answeredCount ?? 0);
+  const displayTotal = storeMatchesTest
+    ? questions.length
+    : (storedResult?.totalQuestions ?? 0);
+  const displayTime = storeMatchesTest
+    ? timeSpentSeconds
+    : (storedResult?.timeSpentSeconds ?? 0);
+
+  const minutes = Math.floor(displayTime / 60);
+  const seconds = displayTime % 60;
+
+  // Spinner only while loading old results (fresh session has live data immediately via store)
+  if (!storeMatchesTest && storedResult === undefined) {
+    return (
+      <div className="mx-auto max-w-2xl py-16 flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  // No data: test hasn't been taken yet
+  if (!result) {
     return (
       <div className="mx-auto max-w-2xl py-12 text-center space-y-4">
         <h1 className="text-2xl font-bold">
@@ -68,20 +132,6 @@ export default function TestResultsPage({
     );
   }
 
-  if (!scorer) {
-    return (
-      <div className="mx-auto max-w-2xl py-12 text-center">
-        <p className="text-muted-foreground">
-          {locale === "ru" ? `Тест не найден: ${testId}` : `Scorer not found: ${testId}`}
-        </p>
-      </div>
-    );
-  }
-
-  const result = scorer.calculate(questions, answers, locale);
-  const minutes = Math.floor(timeSpentSeconds / 60);
-  const seconds = timeSpentSeconds % 60;
-
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Header */}
@@ -95,7 +145,7 @@ export default function TestResultsPage({
           <div>
             <h1 className="text-2xl font-bold">{t("title")}</h1>
             <p className="text-sm text-muted-foreground">
-              {testName} &middot; {answeredCount}/{questions.length}{" "}
+              {displayName} &middot; {displayAnswered}/{displayTotal}{" "}
               {locale === "ru" ? "вопросов" : "questions"} &middot;{" "}
               {minutes}:{seconds.toString().padStart(2, "0")}
             </p>
