@@ -12,12 +12,12 @@ export function usePlan() {
 
   useEffect(() => {
     if (!user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPlan(null);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
+
+    setLoading(true);
 
     const supabase = createClient();
     supabase
