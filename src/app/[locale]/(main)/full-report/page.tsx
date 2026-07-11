@@ -10,6 +10,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { usePlan } from "@/hooks/usePlan";
 import { useUser } from "@/hooks/useUser";
 import { createClient } from "@/lib/supabase/client";
+import { MarkdownText } from "@/components/ui/markdown-text";
 
 const LOCKED_SECTIONS_RU = [
   {
@@ -87,53 +88,11 @@ const LOCKED_SECTIONS_EN = [
   },
 ];
 
-function formatDate(iso: string, locale: string) {
-  return new Date(iso).toLocaleDateString(locale === "ru" ? "ru-RU" : "en-US", {
+function formatDate(iso: string, loc: string) {
+  return new Date(iso).toLocaleDateString(loc === "ru" ? "ru-RU" : "en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  });
-}
-
-function renderMarkdown(text: string) {
-  return text.split("\n").map((line, i) => {
-    if (line.startsWith("## ")) {
-      return (
-        <h2 key={i} className="text-lg font-semibold mt-6 mb-2 first:mt-0">
-          {line.slice(3)}
-        </h2>
-      );
-    }
-    if (line.startsWith("### ")) {
-      return (
-        <h3 key={i} className="text-base font-semibold mt-4 mb-1">
-          {line.slice(4)}
-        </h3>
-      );
-    }
-    if (line.startsWith("**") && line.endsWith("**")) {
-      return (
-        <p key={i} className="font-semibold">
-          {line.slice(2, -2)}
-        </p>
-      );
-    }
-    if (line.startsWith("- ")) {
-      return (
-        <p key={i} className="flex gap-2 text-sm">
-          <span className="text-muted-foreground shrink-0">•</span>
-          {line.slice(2)}
-        </p>
-      );
-    }
-    if (line === "") {
-      return <div key={i} className="h-2" />;
-    }
-    return (
-      <p key={i} className="text-sm leading-relaxed">
-        {line}
-      </p>
-    );
   });
 }
 
@@ -333,9 +292,7 @@ export default function FullReportPage() {
                 )}
               </CardHeader>
               <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {renderMarkdown(fullReport ?? "")}
-                </div>
+                <MarkdownText text={fullReport ?? ""} />
                 <div className="flex justify-center mt-6">
                   <Button
                     variant="ghost"
@@ -380,9 +337,7 @@ export default function FullReportPage() {
                   </span>
                 </div>
               ) : preview ? (
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {renderMarkdown(preview)}
-                </div>
+                <MarkdownText text={preview} />
               ) : (
                 <div className="flex flex-col items-center py-8 gap-3">
                   {previewError && (

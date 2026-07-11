@@ -8,6 +8,7 @@ import { getScorer } from "@/lib/scoring/scorer-registry";
 import { saveResult, getResultBySlug, getResults, StoredResult } from "@/lib/test-engine/results-store";
 import { getTestMeta } from "@/lib/test-engine/test-registry";
 import { RadarChart } from "@/components/results/RadarChart";
+import { MarkdownText } from "@/components/ui/markdown-text";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -281,7 +282,7 @@ function AIAnalysisSection({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm whitespace-pre-wrap leading-relaxed">{analysis}</p>
+          <MarkdownText text={analysis} />
         </CardContent>
       </Card>
     );

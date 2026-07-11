@@ -38,6 +38,7 @@ import { getResults } from "@/lib/test-engine/results-store";
 import { AIMessage } from "@/lib/ai/types";
 import { Link } from "@/lib/i18n/navigation";
 import { useUser } from "@/hooks/useUser";
+import { MarkdownText } from "@/components/ui/markdown-text";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -717,7 +718,11 @@ export default function CoachPage() {
                       : "bg-muted"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === "assistant" ? (
+                    <MarkdownText text={msg.content} />
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  )}
                   {msg.role === "assistant" &&
                     msg.content === "" &&
                     isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
