@@ -1,12 +1,12 @@
 export type Provider = "deepseek" | "claude";
 
-export const DS_SESSIONS = [5, 15, 50] as const;
-export const CL_SESSIONS = [5, 15, 30] as const;
+export const DS_SESSIONS = [3, 7, 15] as const;
+export const CL_SESSIONS = [3, 7, 15] as const;
 
 export const DS_SESSION_PRICES: { [s: number]: number } = {
-  5:  19900,
-  15: 49900,
-  50: 129900,
+  3:  9900,
+  7:  19900,
+  15: 36900,
 };
 
 export const CL_SESSION_PRICES: { [s: number]: number } = {

@@ -35,7 +35,7 @@ export default function OfferPage() {
 
         <h2>3. Pricing and Payment</h2>
         <ul>
-          <li>DeepSeek coaching sessions: 5 sessions — 199 RUB, 15 sessions — 499 RUB, 50 sessions — 1 299 RUB</li>
+          <li>DeepSeek coaching sessions: 3 sessions — 99 RUB, 7 sessions — 199 RUB, 15 sessions — 369 RUB</li>
           <li>Full personality report: 299 RUB (one-time)</li>
           <li>Payments are processed by YuKassa (NBK LLC, INN 7750005725)</li>
           <li>Prices include all applicable taxes (self-employed tax regime)</li>
@@ -124,7 +124,7 @@ export default function OfferPage() {
 
       <h2>3. Стоимость и оплата</h2>
       <ul>
-        <li>Коуч-сессии DeepSeek: 5 сессий — 199 ₽, 15 сессий — 499 ₽, 50 сессий — 1 299 ₽</li>
+        <li>Коуч-сессии DeepSeek: 3 сессии — 99 ₽, 7 сессий — 199 ₽, 15 сессий — 369 ₽</li>
         <li>Комплексный отчёт о личности: 299 ₽ (разовая оплата)</li>
         <li>Оплата осуществляется через ЮKassa (ООО НКО «ЮМани», ИНН 7750005725)</li>
         <li>Цены включают все применимые налоги (режим НПД)</li>
