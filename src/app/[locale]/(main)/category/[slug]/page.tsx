@@ -26,6 +26,7 @@ export default function CategoryPage({
 
   useEffect(() => {
     const results = getResults();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCompletedSlugs(new Set(results.map((r) => r.testSlug)));
   }, []);
 
