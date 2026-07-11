@@ -166,7 +166,7 @@ export default function PricingPage() {
                 <Bot className="h-3.5 w-3.5 text-blue-500" />
                 <span className="font-medium">{currentDsSessions}</span>
                 <span className="text-muted-foreground">
-                  DeepSeek {ru ? "сессий" : "sessions"} · {currentDsMsgLimit} {ru ? "сообщ/с" : "msg/s"}
+                  {ru ? "сессий" : "sessions"} · {currentDsMsgLimit} {ru ? "сообщ/с" : "msg/s"}
                 </span>
               </div>
             )}
@@ -211,8 +211,8 @@ export default function PricingPage() {
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {ru
-                  ? "Все тесты · 1 DeepSeek чат (20 сообщений) · 1 ИИ-анализ"
-                  : "All tests · 1 DeepSeek chat (20 messages) · 1 AI analysis"}
+                  ? "Все тесты · 1 бесплатный чат (20 сообщений) · 1 ИИ-анализ"
+                  : "All tests · 1 free chat (20 messages) · 1 AI analysis"}
               </p>
             </div>
           </div>
@@ -270,14 +270,11 @@ export default function PricingPage() {
           <CardContent className="p-6 space-y-6">
 
             {/* Model info */}
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-              <Bot className="h-5 w-5 text-blue-500 shrink-0" />
-              <div>
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-400">DeepSeek</p>
-                <p className="text-xs text-muted-foreground">
-                  {ru ? "до 100 сообщений на сессию" : "up to 100 messages per session"}
-                </p>
-              </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/15">
+              <Bot className="h-5 w-5 text-primary shrink-0" />
+              <p className="text-sm text-muted-foreground">
+                {ru ? "ИИ-коуч · до 100 сообщений на сессию" : "AI coach · up to 100 messages per session"}
+              </p>
             </div>
 
             {/* Sessions selector */}
