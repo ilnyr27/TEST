@@ -1,25 +1,19 @@
 import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { PLANS, PlanType } from "@/lib/payment/plans";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const event = body.event;
+    if (body.event !== "payment.succeeded") return Response.json({ ok: true });
+
     const payment = body.object;
-
-    if (event !== "payment.succeeded") {
-      return Response.json({ ok: true });
-    }
-
     const yukassaId = payment.id;
     const metadata = payment.metadata || {};
     const userId = metadata.user_id;
-    const planType = metadata.product_type as PlanType;
 
-    if (!userId || !planType) {
-      console.error("[webhook] Missing metadata:", metadata);
-      return Response.json({ error: "Missing metadata" }, { status: 400 });
+    if (!userId) {
+      console.error("[webhook] Missing user_id:", metadata);
+      return Response.json({ error: "Missing user_id" }, { status: 400 });
     }
 
     const supabase = createServerClient(
@@ -33,38 +27,56 @@ export async function POST(request: NextRequest) {
       .update({ status: "succeeded", confirmed_at: new Date().toISOString() })
       .eq("external_id", yukassaId);
 
-    const plan = PLANS[planType];
-    if (!plan) {
-      console.error("[webhook] Unknown plan type:", planType);
-      return Response.json({ ok: true });
-    }
-
     const { data: existing } = await supabase
       .from("user_plans")
       .select("*")
       .eq("user_id", userId)
       .single();
 
-    const isDeepSeek = plan.provider === "deepseek";
-    const isClaude = plan.provider === "claude";
+    if (metadata.product_type === "report_addon") {
+      await supabase.from("user_plans").upsert({
+        user_id: userId,
+        deepseek_sessions: existing?.deepseek_sessions ?? 0,
+        deepseek_msg_limit: existing?.deepseek_msg_limit ?? 20,
+        claude_sessions: existing?.claude_sessions ?? 0,
+        claude_msg_limit: existing?.claude_msg_limit ?? 0,
+        has_report: true,
+        free_session_used: existing?.free_session_used ?? false,
+        free_analysis_used: existing?.free_analysis_used ?? false,
+        updated_at: new Date().toISOString(),
+      });
+      console.log(`[webhook] Report applied to user ${userId}`);
+      return Response.json({ ok: true });
+    }
+
+    const provider = metadata.provider as "deepseek" | "claude" | undefined;
+    const sessions = metadata.sessions ? parseInt(metadata.sessions) : null;
+    const msgsPerSession = metadata.msgs_per_session ? parseInt(metadata.msgs_per_session) : null;
+
+    if (!provider || !sessions || !msgsPerSession) {
+      console.error("[webhook] Missing purchase metadata:", metadata);
+      return Response.json({ error: "Missing metadata" }, { status: 400 });
+    }
+
+    const isDeepSeek = provider === "deepseek";
 
     await supabase.from("user_plans").upsert({
       user_id: userId,
-      deepseek_sessions: (existing?.deepseek_sessions ?? 0) + (isDeepSeek ? plan.sessions : 0),
+      deepseek_sessions: (existing?.deepseek_sessions ?? 0) + (isDeepSeek ? sessions : 0),
       deepseek_msg_limit: isDeepSeek
-        ? Math.max(existing?.deepseek_msg_limit ?? 20, plan.msgLimit)
+        ? Math.max(existing?.deepseek_msg_limit ?? 20, msgsPerSession)
         : (existing?.deepseek_msg_limit ?? 20),
-      claude_sessions: (existing?.claude_sessions ?? 0) + (isClaude ? plan.sessions : 0),
-      claude_msg_limit: isClaude
-        ? Math.max(existing?.claude_msg_limit ?? 0, plan.msgLimit)
+      claude_sessions: (existing?.claude_sessions ?? 0) + (!isDeepSeek ? sessions : 0),
+      claude_msg_limit: !isDeepSeek
+        ? Math.max(existing?.claude_msg_limit ?? 0, msgsPerSession)
         : (existing?.claude_msg_limit ?? 0),
-      has_report: (existing?.has_report ?? false) || plan.hasReport,
+      has_report: existing?.has_report ?? false,
       free_session_used: existing?.free_session_used ?? false,
       free_analysis_used: existing?.free_analysis_used ?? false,
       updated_at: new Date().toISOString(),
     });
 
-    console.log(`[webhook] Plan ${planType} applied to user ${userId}`);
+    console.log(`[webhook] ${provider} ${sessions}×${msgsPerSession} applied to user ${userId}`);
     return Response.json({ ok: true });
   } catch (error) {
     console.error("[webhook] Error:", error);

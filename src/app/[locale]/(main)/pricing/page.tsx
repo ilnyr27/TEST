@@ -3,18 +3,20 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Check, X, Sparkles, Zap, Crown, Loader2,
-  Bot, CheckCircle2, ArrowRight, Brain, MessageSquare,
-  CreditCard, Clock,
+  Check, Zap, Loader2, Bot, CheckCircle2, ArrowRight, Brain,
+  MessageSquare, CreditCard, Crown,
 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import { usePlan } from "@/hooks/usePlan";
 import { Link } from "@/lib/i18n/navigation";
-import { PLANS } from "@/lib/payment/plans";
+import {
+  DS_SESSIONS, DS_MSGS, CL_SESSIONS, CL_MSGS,
+  getConfigPrice, formatPrice, REPORT_PRICE_LABEL, Provider,
+} from "@/lib/payment/plans";
 
 export default function PricingPage() {
   const locale = useLocale() as "ru" | "en";
@@ -24,21 +26,53 @@ export default function PricingPage() {
   const searchParams = useSearchParams();
   const paymentSuccess = searchParams.get("payment") === "success";
 
+  const [provider, setProvider] = useState<Provider>("deepseek");
+  const [dsSessions, setDsSessions] = useState<number>(5);
+  const [dsMsgs, setDsMsgs] = useState<number>(20);
+  const [clSessions, setClSessions] = useState<number>(5);
+  const [clMsgs, setClMsgs] = useState<number>(20);
+
   useEffect(() => {
     if (paymentSuccess) refresh();
   }, [paymentSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handlePurchase = async (planType: string) => {
+  const ru = locale === "ru";
+  const isLoaded = !planLoading;
+  const isDs = provider === "deepseek";
+
+  const currentDsSessions = plan?.deepseek_sessions ?? 0;
+  const currentDsMsgLimit = plan?.deepseek_msg_limit ?? 20;
+  const currentClSessions = plan?.claude_sessions ?? 0;
+  const currentClMsgLimit = plan?.claude_msg_limit ?? 0;
+  const hasReport = plan?.has_report ?? false;
+  const freeSessionUsed = plan?.free_session_used ?? false;
+  const freeAnalysisUsed = plan?.free_analysis_used ?? false;
+
+  const sessions = isDs ? dsSessions : clSessions;
+  const msgs = isDs ? dsMsgs : clMsgs;
+  const sessionsOpts = isDs ? DS_SESSIONS : CL_SESSIONS;
+  const msgsOpts = isDs ? DS_MSGS : CL_MSGS;
+
+  const handleSessionChange = (s: number) => {
+    if (isDs) setDsSessions(s); else setClSessions(s);
+  };
+  const handleMsgChange = (m: number) => {
+    if (isDs) setDsMsgs(m); else setClMsgs(m);
+  };
+
+  const priceKopecks = getConfigPrice(provider, sessions, msgs);
+
+  const handlePurchase = async () => {
     if (!user) {
       window.location.href = `/${locale}/login?next=/${locale}/pricing`; // eslint-disable-line react-hooks/immutability
       return;
     }
-    setPurchaseLoading(planType);
+    setPurchaseLoading("config");
     try {
       const res = await fetch("/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productType: planType }),
+        body: JSON.stringify({ type: "config", provider, sessions, msgsPerSession: msgs }),
       });
       const data = await res.json();
       if (data.url) {
@@ -53,167 +87,70 @@ export default function PricingPage() {
     }
   };
 
-  const ru = locale === "ru";
-  const isLoaded = !planLoading;
+  const handleReportPurchase = async () => {
+    if (!user) {
+      window.location.href = `/${locale}/login?next=/${locale}/pricing`; // eslint-disable-line react-hooks/immutability
+      return;
+    }
+    setPurchaseLoading("report");
+    try {
+      const res = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "report" }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url; // eslint-disable-line react-hooks/immutability
+      } else {
+        alert(data.error || "Payment error");
+      }
+    } catch {
+      alert("Payment error");
+    } finally {
+      setPurchaseLoading(null);
+    }
+  };
 
-  const dsSessions = plan?.deepseek_sessions ?? 0;
-  const dsMsgLimit = plan?.deepseek_msg_limit ?? 20;
-  const clSessions = plan?.claude_sessions ?? 0;
-  const clMsgLimit = plan?.claude_msg_limit ?? 0;
-  const hasReport = plan?.has_report ?? false;
-  const freeSessionUsed = plan?.free_session_used ?? false;
-  const freeAnalysisUsed = plan?.free_analysis_used ?? false;
+  const accentClass = isDs
+    ? "text-blue-600 dark:text-blue-400"
+    : "text-orange-600 dark:text-orange-400";
+  const borderActiveClass = isDs
+    ? "border-2 border-blue-500 shadow-md shadow-blue-500/10"
+    : "border-2 border-orange-500 shadow-md shadow-orange-500/10";
 
-  // Determine which specific tier card is active for this user
-  const activeDsPlan: string | null = (() => {
-    if (dsSessions <= 0) return null;
-    if (dsMsgLimit >= 1000) return "ds_3";
-    if (dsMsgLimit >= 300) return "ds_2";
-    return "ds_1";
-  })();
+  const stepBtn = (active: boolean) =>
+    `h-10 px-4 rounded-lg border text-sm font-medium transition-all ${
+      active
+        ? isDs
+          ? "bg-blue-500 text-white border-blue-500 shadow-sm"
+          : "bg-orange-500 text-white border-orange-500 shadow-sm"
+        : "border-border hover:border-muted-foreground/40 bg-background"
+    }`;
 
-  const activeClPlan: string | null = (() => {
-    if (clSessions <= 0) return null;
-    if (clMsgLimit >= 40) return "cl_3";
-    if (clMsgLimit >= 30) return "cl_2";
-    return "cl_1";
-  })();
+  const buyBtnClass = isDs
+    ? "bg-blue-500 hover:bg-blue-600 text-white"
+    : "bg-orange-500 hover:bg-orange-600 text-white";
 
-  const dsPacks = [
-    {
-      planType: "ds_1" as const,
-      icon: <Zap className="h-5 w-5" />,
-      name: ru ? "DeepSeek Старт" : "DeepSeek Starter",
-      popular: !freeSessionUsed && dsSessions === 0,
-      features: ru
-        ? [
-            "5 сессий с ИИ-коучем",
-            `${PLANS.ds_1.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-          ]
-        : [
-            "5 AI coaching sessions",
-            `${PLANS.ds_1.msgLimit} messages / session`,
-            "AI test analysis",
-          ],
-      noFeatures: ru ? ["Полный отчёт"] : ["Full Report"],
-    },
-    {
-      planType: "ds_2" as const,
-      icon: <Sparkles className="h-5 w-5" />,
-      name: ru ? "DeepSeek Продвинутый" : "DeepSeek Advanced",
-      popular: freeSessionUsed && dsSessions === 0,
-      features: ru
-        ? [
-            "15 сессий с ИИ-коучем",
-            `${PLANS.ds_2.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-            "Полный отчёт",
-          ]
-        : [
-            "15 AI coaching sessions",
-            `${PLANS.ds_2.msgLimit} messages / session`,
-            "AI test analysis",
-            "Full Report",
-          ],
-      noFeatures: [],
-    },
-    {
-      planType: "ds_3" as const,
-      icon: <Crown className="h-5 w-5" />,
-      name: ru ? "DeepSeek Профи" : "DeepSeek Pro",
-      popular: false,
-      features: ru
-        ? [
-            "50 сессий с ИИ-коучем",
-            `${PLANS.ds_3.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-            "Полный отчёт",
-          ]
-        : [
-            "50 AI coaching sessions",
-            `${PLANS.ds_3.msgLimit} messages / session`,
-            "AI test analysis",
-            "Full Report",
-          ],
-      noFeatures: [],
-    },
-  ];
-
-  const clPacks = [
-    {
-      planType: "cl_1" as const,
-      icon: <Zap className="h-5 w-5" />,
-      name: ru ? "Claude Старт" : "Claude Starter",
-      popular: false,
-      features: ru
-        ? [
-            "5 сессий с Claude",
-            `${PLANS.cl_1.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-          ]
-        : [
-            "5 Claude sessions",
-            `${PLANS.cl_1.msgLimit} messages / session`,
-            "AI test analysis",
-          ],
-      noFeatures: ru ? ["Полный отчёт"] : ["Full Report"],
-    },
-    {
-      planType: "cl_2" as const,
-      icon: <Sparkles className="h-5 w-5" />,
-      name: ru ? "Claude Продвинутый" : "Claude Advanced",
-      popular: clSessions === 0,
-      features: ru
-        ? [
-            "15 сессий с Claude",
-            `${PLANS.cl_2.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-            "Полный отчёт",
-          ]
-        : [
-            "15 Claude sessions",
-            `${PLANS.cl_2.msgLimit} messages / session`,
-            "AI test analysis",
-            "Full Report",
-          ],
-      noFeatures: [],
-    },
-    {
-      planType: "cl_3" as const,
-      icon: <Crown className="h-5 w-5" />,
-      name: ru ? "Claude Профи" : "Claude Pro",
-      popular: false,
-      features: ru
-        ? [
-            "30 сессий с Claude",
-            `${PLANS.cl_3.msgLimit} сообщений / сессия`,
-            "ИИ-анализ тестов",
-            "Полный отчёт",
-          ]
-        : [
-            "30 Claude sessions",
-            `${PLANS.cl_3.msgLimit} messages / session`,
-            "AI test analysis",
-            "Full Report",
-          ],
-      noFeatures: [],
-    },
-  ];
+  const hasCurrentSessions = isDs ? currentDsSessions > 0 : currentClSessions > 0;
 
   return (
-    <div className={`mx-auto max-w-5xl space-y-10 transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+    <div className={`mx-auto max-w-3xl space-y-10 transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
 
       {/* Success banner */}
       {paymentSuccess && (
         <div className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-5 py-4 text-green-700 dark:text-green-400">
           <CheckCircle2 className="h-6 w-6 shrink-0" />
-          <div>
-            <p className="font-semibold">{ru ? "Оплата прошла успешно!" : "Payment successful!"}</p>
-            <p className="text-sm opacity-80">
-              {ru ? "Сессии зачислены — открой коуч и начни." : "Sessions added — open the coach and start."}
-            </p>
+          <div className="flex-1">
+            <p className="font-semibold">{ru ? "Оплата прошла!" : "Payment successful!"}</p>
+            <p className="text-sm opacity-80">{ru ? "Сессии зачислены." : "Sessions added."}</p>
           </div>
+          <Link href="/coach">
+            <Button className="gap-2 bg-green-600 hover:bg-green-700 text-white">
+              <MessageSquare className="h-4 w-4" />
+              {ru ? "Открыть коуч" : "Open coach"}
+            </Button>
+          </Link>
         </div>
       )}
 
@@ -229,20 +166,24 @@ export default function PricingPage() {
         </div>
 
         {/* Balance widget */}
-        {(dsSessions > 0 || clSessions > 0 || hasReport) && (
+        {(currentDsSessions > 0 || currentClSessions > 0 || hasReport) && (
           <div className="shrink-0 rounded-lg border bg-card px-4 py-3 text-sm space-y-1.5">
-            {dsSessions > 0 && (
+            {currentDsSessions > 0 && (
               <div className="flex items-center gap-2">
                 <Bot className="h-3.5 w-3.5 text-blue-500" />
-                <span className="font-medium">{dsSessions}</span>
-                <span className="text-muted-foreground">DeepSeek {ru ? "сессий" : "sessions"}</span>
+                <span className="font-medium">{currentDsSessions}</span>
+                <span className="text-muted-foreground">
+                  DeepSeek {ru ? "сессий" : "sessions"} · {currentDsMsgLimit} {ru ? "сообщ/с" : "msg/s"}
+                </span>
               </div>
             )}
-            {clSessions > 0 && (
+            {currentClSessions > 0 && (
               <div className="flex items-center gap-2">
                 <Brain className="h-3.5 w-3.5 text-orange-500" />
-                <span className="font-medium">{clSessions}</span>
-                <span className="text-muted-foreground">Claude {ru ? "сессий" : "sessions"}</span>
+                <span className="font-medium">{currentClSessions}</span>
+                <span className="text-muted-foreground">
+                  Claude {ru ? "сессий" : "sessions"} · {currentClMsgLimit} {ru ? "сообщ/с" : "msg/s"}
+                </span>
               </div>
             )}
             {hasReport && (
@@ -262,7 +203,7 @@ export default function PricingPage() {
         )}
       </div>
 
-      {/* ── FREE TIER ──────────────────────────────────────────────────────── */}
+      {/* Free tier */}
       <div className="rounded-xl border border-dashed bg-muted/20 p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-3 flex-1">
@@ -308,9 +249,7 @@ export default function PricingPage() {
           </div>
           {!user ? (
             <Link href={`/${locale}/login`}>
-              <Button variant="outline">
-                {ru ? "Зарегистрироваться" : "Sign up"}
-              </Button>
+              <Button variant="outline">{ru ? "Зарегистрироваться" : "Sign up"}</Button>
             </Link>
           ) : (
             <Link href="/coach">
@@ -323,216 +262,142 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* ── DEEPSEEK SECTION ───────────────────────────────────────────────── */}
+      {/* ── CONFIGURATOR ─────────────────────────────────────────────────────── */}
       <div className="space-y-4">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Bot className="h-5 w-5 text-blue-500" />
-              {ru ? "DeepSeek — Быстро и доступно" : "DeepSeek — Fast & Affordable"}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {ru ? "Умный китайский ИИ, пишет по-русски" : "Smart AI, writes in your language"}
-            </p>
-          </div>
-
+        <div>
+          <h2 className="text-lg font-semibold">{ru ? "Коуч-сессии" : "Coaching Sessions"}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {ru
+              ? "1 сессия = 1 разговор с ИИ-коучем. Сессии не сгорают."
+              : "1 session = 1 conversation with AI coach. Sessions never expire."}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {dsPacks.map((p) => {
-            const planData = PLANS[p.planType];
-            const isActive = activeDsPlan === p.planType;
-            return (
-              <div key={p.planType} className="relative pt-5">
-                {isActive && (
-                  <div className="absolute top-0 left-0 right-0 flex justify-center">
-                    <Badge className="bg-blue-500 hover:bg-blue-500 shadow-sm whitespace-nowrap text-xs">
-                      {ru ? "Ваш план" : "Your plan"}
-                    </Badge>
-                  </div>
-                )}
-                <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
-                  isActive
-                    ? "border-2 border-blue-500 shadow-md shadow-blue-500/10"
-                    : p.popular
-                    ? "border-primary shadow-md shadow-primary/10"
-                    : ""
-                }`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-center min-h-[28px] items-center mb-1">
-                      {!isActive && p.popular ? (
-                        <Badge className="whitespace-nowrap">
-                          {ru ? "Популярный" : "Popular"}
-                        </Badge>
-                      ) : null}
-                    </div>
-                    <div className="flex items-center gap-2 text-primary">
-                      {p.icon}
-                      <CardTitle className="text-base">{p.name}</CardTitle>
-                    </div>
-                    <div className="flex items-baseline gap-1.5 pt-1">
-                      <span className="text-3xl font-bold">{planData.priceLabel}</span>
-                      <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
-                    </div>
-                  </CardHeader>
+        <Card className={`transition-all duration-200 ${borderActiveClass}`}>
+          <CardContent className="p-6 space-y-6">
 
-                  <CardContent className="flex-1 flex flex-col">
-                    <ul className="space-y-2 flex-1 mb-4">
-                      {p.features.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm">
-                          <Check className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
-                          {f}
-                        </li>
-                      ))}
-                      {p.noFeatures.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <X className="h-4 w-4 shrink-0 mt-0.5" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {isActive && (
-                      <div className="flex justify-between text-xs mb-3">
-                        <span className="text-muted-foreground">{planData.sessions} {ru ? "сессий в пакете" : "in pack"}</span>
-                        <span className="text-blue-600 dark:text-blue-400 font-medium">{dsSessions} {ru ? "осталось" : "left"}</span>
-                      </div>
-                    )}
-
-                    <Button
-                      className="w-full"
-                      variant={isActive || dsSessions > 0 ? "outline" : "default"}
-                      onClick={() => handlePurchase(p.planType)}
-                      disabled={purchaseLoading !== null}
-                    >
-                      {purchaseLoading === p.planType ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : isActive || dsSessions > 0 ? (
-                        ru ? "Добавить ещё" : "Add more"
-                      ) : (
-                        ru ? "Купить" : "Buy"
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
+            {/* Provider selector */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {ru ? "ИИ-модель" : "AI model"}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setProvider("deepseek")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                    isDs
+                      ? "bg-blue-500 text-white border-blue-500 shadow-sm"
+                      : "border-border hover:border-blue-300 bg-background"
+                  }`}
+                >
+                  <Bot className="h-4 w-4" />
+                  DeepSeek
+                </button>
+                <button
+                  onClick={() => setProvider("claude")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                    !isDs
+                      ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                      : "border-border hover:border-orange-300 bg-background"
+                  }`}
+                >
+                  <Brain className="h-4 w-4" />
+                  Claude
+                </button>
               </div>
-            );
-          })}
-        </div>
+              <p className="text-xs text-muted-foreground">
+                {isDs
+                  ? (ru ? "Умный китайский ИИ, быстрый и доступный" : "Smart Chinese AI, fast and affordable")
+                  : (ru ? "Передовой ИИ от Anthropic — точнее и глубже" : "Frontier AI from Anthropic — deeper & more precise")}
+              </p>
+            </div>
+
+            {/* Sessions selector */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {ru ? "Количество сессий" : "Number of sessions"}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {sessionsOpts.map(s => (
+                  <button key={s} onClick={() => handleSessionChange(s)} className={stepBtn(sessions === s)}>
+                    {s} {ru ? "сессий" : "sessions"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Messages selector */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {ru ? "Сообщений в сессии" : "Messages per session"}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {msgsOpts.map(m => (
+                  <button key={m} onClick={() => handleMsgChange(m)} className={stepBtn(msgs === m)}>
+                    {m} {ru ? "сообщ" : "msgs"}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {ru
+                  ? "20 ≈ короткий сеанс · 50 — стандартный · 100 — глубокий разбор"
+                  : "20 ≈ short · 50 — standard · 100 — deep dive"}
+              </p>
+            </div>
+
+            {/* Price + Buy */}
+            <div className="border-t pt-5 flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className={`text-4xl font-bold ${accentClass}`}>
+                    {priceKopecks ? formatPrice(priceKopecks) : "—"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {sessions} {ru ? "сессий" : "sessions"} × {msgs} {ru ? "сообщений" : "messages"}
+                </p>
+              </div>
+              <Button
+                size="lg"
+                className={`gap-2 min-w-[150px] ${buyBtnClass}`}
+                onClick={handlePurchase}
+                disabled={purchaseLoading !== null || !priceKopecks}
+              >
+                {purchaseLoading === "config" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    {hasCurrentSessions ? (ru ? "Добавить ещё" : "Add more") : (ru ? "Купить" : "Buy")}
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Included */}
+            <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-green-500" />
+                {ru ? "ИИ-анализ тестов" : "AI test analysis"}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-green-500" />
+                {ru ? "Сессии не сгорают" : "Sessions never expire"}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-green-500" />
+                {ru ? "История разговоров" : "Chat history"}
+              </span>
+            </div>
+
+          </CardContent>
+        </Card>
       </div>
 
-      {/* ── CLAUDE SECTION ─────────────────────────────────────────────────── */}
-      <div className="space-y-4">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Brain className="h-5 w-5 text-orange-500" />
-              {ru ? "Claude — Глубже и точнее" : "Claude — Deeper & More Precise"}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {ru ? "Передовой ИИ от Anthropic (США)" : "Frontier AI from Anthropic (USA)"}
-            </p>
-          </div>
-
-        </div>
-
-        {/* Coming soon note */}
-        <div className="flex items-center gap-2 rounded-lg border bg-amber-500/5 border-amber-500/20 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-          <Clock className="h-3.5 w-3.5 shrink-0" />
-          {ru
-            ? "Анализ результатов тестов от Claude — в разработке. Коуч-сессии с Claude работают уже сейчас."
-            : "Claude test result analysis — coming soon. Claude coaching sessions work right now."}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {clPacks.map((p) => {
-            const planData = PLANS[p.planType];
-            const isActive = activeClPlan === p.planType;
-            return (
-              <div key={p.planType} className="relative pt-5">
-                {isActive && (
-                  <div className="absolute top-0 left-0 right-0 flex justify-center">
-                    <Badge className="bg-orange-500 hover:bg-orange-500 shadow-sm whitespace-nowrap text-xs">
-                      {ru ? "Ваш план" : "Your plan"}
-                    </Badge>
-                  </div>
-                )}
-                <Card className={`flex flex-col overflow-hidden transition-all duration-200 h-full ${
-                  isActive
-                    ? "border-2 border-orange-500 shadow-md shadow-orange-500/10"
-                    : p.popular
-                    ? "border-orange-500 shadow-md shadow-orange-500/10"
-                    : ""
-                }`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-center min-h-[28px] items-center mb-1">
-                      {!isActive && p.popular ? (
-                        <Badge variant="outline" className="whitespace-nowrap border-orange-500 text-orange-600">
-                          {ru ? "Популярный" : "Popular"}
-                        </Badge>
-                      ) : null}
-                    </div>
-                    <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
-                      {p.icon}
-                      <CardTitle className="text-base">{p.name}</CardTitle>
-                    </div>
-                    <div className="flex items-baseline gap-1.5 pt-1">
-                      <span className="text-3xl font-bold">{planData.priceLabel}</span>
-                      <span className="text-xs text-muted-foreground">{ru ? "разово" : "one-time"}</span>
-                    </div>
-                    <CardDescription className="text-xs text-orange-600/70 dark:text-orange-400/70">
-                      {ru ? "Точнее чем DeepSeek" : "More precise than DeepSeek"}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="flex-1 flex flex-col">
-                    <ul className="space-y-2 flex-1 mb-4">
-                      {p.features.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm">
-                          <Check className="h-4 w-4 shrink-0 mt-0.5 text-orange-500" />
-                          {f}
-                        </li>
-                      ))}
-                      {p.noFeatures.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <X className="h-4 w-4 shrink-0 mt-0.5" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {isActive && (
-                      <div className="flex justify-between text-xs mb-3">
-                        <span className="text-muted-foreground">{planData.sessions} {ru ? "сессий в пакете" : "in pack"}</span>
-                        <span className="text-orange-600 dark:text-orange-400 font-medium">{clSessions} {ru ? "осталось" : "left"}</span>
-                      </div>
-                    )}
-
-                    <Button
-                      className="w-full"
-                      variant={isActive || clSessions > 0 ? "outline" : "default"}
-                      onClick={() => handlePurchase(p.planType)}
-                      disabled={purchaseLoading !== null}
-                    >
-                      {purchaseLoading === p.planType ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : isActive || clSessions > 0 ? (
-                        ru ? "Добавить ещё" : "Add more"
-                      ) : (
-                        ru ? "Купить" : "Buy"
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── FULL REPORT ────────────────────────────────────────────────────── */}
-      <div>
-        <div className="flex items-center gap-3 mb-4">
+      {/* ── FULL REPORT ──────────────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
           <span className="text-xs text-muted-foreground px-1 whitespace-nowrap">
             {ru ? "Без подписки — отдельно" : "Without subscription — standalone"}
@@ -582,7 +447,7 @@ export default function PricingPage() {
 
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 sm:gap-3 shrink-0">
               <div className="sm:text-right">
-                <div className="text-3xl font-bold">{PLANS.report_addon.priceLabel}</div>
+                <div className="text-3xl font-bold">{REPORT_PRICE_LABEL}</div>
                 <p className="text-xs text-muted-foreground">{ru ? "один раз" : "once"}</p>
               </div>
               {hasReport ? (
@@ -598,10 +463,10 @@ export default function PricingPage() {
               ) : (
                 <Button
                   className="gap-2 min-w-[120px]"
-                  onClick={() => handlePurchase("report_addon")}
+                  onClick={handleReportPurchase}
                   disabled={purchaseLoading !== null}
                 >
-                  {purchaseLoading === "report_addon" ? (
+                  {purchaseLoading === "report" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     ru ? "Купить отчёт" : "Buy report"
@@ -613,7 +478,6 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Session expiry note */}
       <p className="text-center text-xs text-muted-foreground">
         {ru
           ? "Сессии не сгорают — используй в своём темпе"

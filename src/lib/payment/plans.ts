@@ -1,63 +1,33 @@
-export const PLANS = {
-  ds_1: {
-    sessions: 5,
-    msgLimit: 100,
-    provider: "deepseek" as const,
-    hasReport: false,
-    priceKopecks: 14900,
-    priceLabel: "149 ₽",
-  },
-  ds_2: {
-    sessions: 15,
-    msgLimit: 300,
-    provider: "deepseek" as const,
-    hasReport: true,
-    priceKopecks: 49000,
-    priceLabel: "490 ₽",
-  },
-  ds_3: {
-    sessions: 50,
-    msgLimit: 1000,
-    provider: "deepseek" as const,
-    hasReport: true,
-    priceKopecks: 149000,
-    priceLabel: "1 490 ₽",
-  },
-  cl_1: {
-    sessions: 5,
-    msgLimit: 20,
-    provider: "claude" as const,
-    hasReport: false,
-    priceKopecks: 49000,
-    priceLabel: "490 ₽",
-  },
-  cl_2: {
-    sessions: 15,
-    msgLimit: 30,
-    provider: "claude" as const,
-    hasReport: true,
-    priceKopecks: 199000,
-    priceLabel: "1 990 ₽",
-  },
-  cl_3: {
-    sessions: 30,
-    msgLimit: 40,
-    provider: "claude" as const,
-    hasReport: true,
-    priceKopecks: 499000,
-    priceLabel: "4 990 ₽",
-  },
-  report_addon: {
-    sessions: 0,
-    msgLimit: 0,
-    provider: null,
-    hasReport: true,
-    priceKopecks: 29900,
-    priceLabel: "299 ₽",
-  },
-} as const;
+export type Provider = "deepseek" | "claude";
 
-export type PlanType = keyof typeof PLANS;
+export const DS_SESSIONS = [5, 15, 50] as const;
+export const DS_MSGS = [20, 50, 100] as const;
+export const CL_SESSIONS = [5, 15, 30] as const;
+export const CL_MSGS = [20, 30, 40] as const;
+
+export const DS_PRICES: { [s: number]: { [m: number]: number } } = {
+  5:  { 20: 19900, 50: 29900, 100: 44900 },
+  15: { 20: 49900, 50: 74900, 100: 99900 },
+  50: { 20: 129900, 50: 179900, 100: 249900 },
+};
+
+export const CL_PRICES: { [s: number]: { [m: number]: number } } = {
+  5:  { 20: 69900, 30: 89900, 40: 109900 },
+  15: { 20: 179900, 30: 229900, 40: 279900 },
+  30: { 20: 329900, 30: 419900, 40: 499900 },
+};
+
+export const REPORT_PRICE_KOPECKS = 29900;
+export const REPORT_PRICE_LABEL = "299 ₽";
+
+export function getConfigPrice(provider: Provider, sessions: number, msgsPerSession: number): number | null {
+  const matrix = provider === "deepseek" ? DS_PRICES : CL_PRICES;
+  return matrix[sessions]?.[msgsPerSession] ?? null;
+}
+
+export function formatPrice(kopecks: number): string {
+  return `${Math.round(kopecks / 100).toLocaleString("ru-RU")} ₽`;
+}
 
 export interface UserPlan {
   user_id: string;
@@ -76,7 +46,7 @@ export interface LocalSession {
   id: string;
   messagesUsed: number;
   messagesLimit: number;
-  provider: "deepseek" | "claude";
+  provider: Provider;
 }
 
 export const FREE_MSG_LIMIT = 20;
