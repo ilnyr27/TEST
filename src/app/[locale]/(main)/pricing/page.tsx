@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Check, Zap, Loader2, Bot, CheckCircle2, ArrowRight, Brain,
+  Check, Zap, Loader2, Bot, CheckCircle2, ArrowRight,
   MessageSquare, CreditCard, Crown,
 } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
@@ -42,7 +42,6 @@ export default function PricingPage() {
   const currentDsSessions = plan?.deepseek_sessions ?? 0;
   const currentDsMsgLimit = plan?.deepseek_msg_limit ?? 20;
   const currentClSessions = plan?.claude_sessions ?? 0;
-  const currentClMsgLimit = plan?.claude_msg_limit ?? 0;
   const hasReport = plan?.has_report ?? false;
   const freeSessionUsed = plan?.free_session_used ?? false;
   const freeAnalysisUsed = plan?.free_analysis_used ?? false;
@@ -159,7 +158,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {(currentDsSessions > 0 || currentClSessions > 0 || hasReport) && (
+        {(currentDsSessions > 0 || hasReport) && (
           <div className="shrink-0 rounded-lg border bg-card px-4 py-3 text-sm space-y-1.5">
             {currentDsSessions > 0 && (
               <div className="flex items-center gap-2">
@@ -167,15 +166,6 @@ export default function PricingPage() {
                 <span className="font-medium">{currentDsSessions}</span>
                 <span className="text-muted-foreground">
                   {ru ? "сессий" : "sessions"} · {DS_MSG_LIMIT} {ru ? "сообщ/с" : "msg/s"}
-                </span>
-              </div>
-            )}
-            {currentClSessions > 0 && (
-              <div className="flex items-center gap-2">
-                <Brain className="h-3.5 w-3.5 text-orange-500" />
-                <span className="font-medium">{currentClSessions}</span>
-                <span className="text-muted-foreground">
-                  Claude {ru ? "сессий" : "sessions"} · {currentClMsgLimit} {ru ? "сообщ/с" : "msg/s"}
                 </span>
               </div>
             )}
