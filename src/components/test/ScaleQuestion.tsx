@@ -32,7 +32,7 @@ export function ScaleQuestion({ question, value, onAnswer }: ScaleQuestionProps)
         <span>{minLabel}</span>
         <span>{maxLabel}</span>
       </div>
-      <div className="flex gap-2 justify-center">
+      <div className="flex gap-1.5 sm:gap-2 w-full">
         {options.map((opt) => {
           const numVal = parseInt(opt.option_key);
           const isSelected = selected === numVal;
@@ -41,14 +41,14 @@ export function ScaleQuestion({ question, value, onAnswer }: ScaleQuestionProps)
               key={opt.option_key}
               onClick={() => handleSelect(numVal)}
               className={cn(
-                "flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all hover:border-primary/50 min-w-[80px]",
+                "flex flex-col items-center gap-1.5 rounded-xl border-2 p-2 sm:p-4 transition-all hover:border-primary/50 flex-1",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-sm"
                   : "border-border hover:bg-muted/50"
               )}
             >
               <span className={cn(
-                "text-2xl font-bold",
+                "text-xl sm:text-2xl font-bold",
                 isSelected ? "text-primary" : "text-foreground"
               )}>
                 {opt.option_key}
