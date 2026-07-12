@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BarChart3, RotateCcw, Bot, Trophy, Loader2, MessageSquare } from "lucide-react";
+import { ArrowLeft, BarChart3, RotateCcw, Bot, Trophy, Loader2, MessageSquare, Share2 } from "lucide-react";
+import { generateShareCard } from "@/lib/share/generate-card";
 
 export default function TestResultsPage({
   params,
@@ -105,6 +106,51 @@ export default function TestResultsPage({
   const minutes = Math.floor(displayTime / 60);
   const seconds = displayTime % 60;
 
+  const [sharing, setSharing] = useState(false);
+
+  const handleShare = async () => {
+    if (!result) return;
+    setSharing(true);
+    try {
+      const topDim = [...result.dimensions]
+        .filter((d) => d.key !== "style")
+        .sort((a, b) => b.score - a.score)[0];
+      if (!topDim) return;
+
+      const blob = await generateShareCard({
+        testName: displayName,
+        topDimName: topDim.name,
+        topDimScore: topDim.score,
+        topDimColor: topDim.color,
+        summary: locale === "ru" ? result.summary.ru : result.summary.en,
+      });
+
+      const file = new File([blob], "result.png", { type: "image/png" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: locale === "ru" ? "Мои результаты теста" : "My Test Results",
+          text:
+            locale === "ru"
+              ? `Прошёл тест «${displayName}» — ${topDim.name}: ${topDim.score}%. Узнай себя: poznaisebya27.ru`
+              : `Took the "${displayName}" test — ${topDim.name}: ${topDim.score}%. Know yourself: poznaisebya27.ru`,
+        });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "result.png";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      // user cancelled share or error — silently ignore
+    } finally {
+      setSharing(false);
+    }
+  };
+
   // Spinner only while loading old results (fresh session has live data immediately via store)
   if (!storeMatchesTest && storedResult === undefined) {
     return (
@@ -152,12 +198,28 @@ export default function TestResultsPage({
             </p>
           </div>
         </div>
-        <Link href={`/test/${testId}/play`}>
-          <Button variant="outline" size="sm" className="gap-1" onClick={() => reset()}>
-            <RotateCcw className="h-3.5 w-3.5" />
-            {locale === "ru" ? "Заново" : "Retake"}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1"
+            onClick={handleShare}
+            disabled={sharing}
+          >
+            {sharing ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Share2 className="h-3.5 w-3.5" />
+            )}
+            {locale === "ru" ? "Поделиться" : "Share"}
           </Button>
-        </Link>
+          <Link href={`/test/${testId}/play`}>
+            <Button variant="outline" size="sm" className="gap-1" onClick={() => reset()}>
+              <RotateCcw className="h-3.5 w-3.5" />
+              {locale === "ru" ? "Заново" : "Retake"}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Summary */}
