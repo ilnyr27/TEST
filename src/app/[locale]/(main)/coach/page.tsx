@@ -707,6 +707,17 @@ export default function CoachPage() {
               </div>
             )}
 
+            {/* Session start hint — shown once at top of first message */}
+            {session && messages.length >= 1 && (
+              <div className="flex justify-center">
+                <span className="text-[11px] text-muted-foreground/60 bg-muted/50 rounded-full px-3 py-1">
+                  {ru
+                    ? `Сессия началась · ${session.messagesLimit} сообщений`
+                    : `Session started · ${session.messagesLimit} messages`}
+                </span>
+              </div>
+            )}
+
             {messages.map((msg, i) => (
               <div
                 key={i}
