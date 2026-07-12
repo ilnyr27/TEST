@@ -119,9 +119,8 @@ export default function TestResultsPage({
 
       const blob = await generateShareCard({
         testName: displayName,
-        topDimName: topDim.name,
-        topDimScore: topDim.score,
-        topDimColor: topDim.color,
+        dimensions: result.dimensions,
+        radarData: result.radarData,
         summary: locale === "ru" ? result.summary.ru : result.summary.en,
       });
 
@@ -133,8 +132,8 @@ export default function TestResultsPage({
           title: locale === "ru" ? "Мои результаты теста" : "My Test Results",
           text:
             locale === "ru"
-              ? `Прошёл тест «${displayName}» — ${topDim.name}: ${topDim.score}%. Узнай себя: poznaisebya27.ru`
-              : `Took the "${displayName}" test — ${topDim.name}: ${topDim.score}%. Know yourself: poznaisebya27.ru`,
+              ? `Прошёл тест «${displayName}» — ${topDim.name}: ${topDim.score}%. Узнай себя на poznaisebya27.ru`
+              : `Took the "${displayName}" test — ${topDim.name}: ${topDim.score}%. Know yourself at poznaisebya27.ru`,
         });
       } else {
         const url = URL.createObjectURL(blob);
