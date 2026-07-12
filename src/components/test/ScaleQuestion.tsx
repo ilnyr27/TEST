@@ -18,62 +18,58 @@ export function ScaleQuestion({ question, value, onAnswer }: ScaleQuestionProps)
   );
 
   const options = question.options.sort((a, b) => a.sort_order - b.sort_order);
-  const minLabel = locale === "ru" ? question.scale_min_label_ru : question.scale_min_label_en;
-  const maxLabel = locale === "ru" ? question.scale_max_label_ru : question.scale_max_label_en;
 
   const handleSelect = (val: number) => {
     setSelected(val);
     onAnswer({ value: val });
   };
 
-  const isCompact = options.length > 5;
-
   return (
-    <div className="space-y-3">
-      {!isCompact && (
-        <div className="flex justify-between text-xs text-muted-foreground px-1">
-          <span>{minLabel}</span>
-          <span>{maxLabel}</span>
-        </div>
-      )}
-      <div className="flex gap-1.5 w-full">
-        {options.map((opt) => {
-          const numVal = parseInt(opt.option_key);
-          const isSelected = selected === numVal;
-          return (
-            <button
-              key={opt.option_key}
-              onClick={() => handleSelect(numVal)}
-              className={cn(
-                "flex flex-col items-center gap-1 rounded-xl border-2 transition-all hover:border-primary/50 flex-1",
-                isCompact ? "py-3 px-0.5" : "py-3 px-1 sm:p-4",
-                isSelected
-                  ? "border-primary bg-primary/10 shadow-sm"
-                  : "border-border hover:bg-muted/50"
+    <div className="space-y-2">
+      {options.map((opt) => {
+        const numVal = parseInt(opt.option_key);
+        const isSelected = selected === numVal;
+        const label = locale === "ru" ? opt.text_ru : opt.text_en;
+
+        return (
+          <button
+            key={opt.option_key}
+            onClick={() => handleSelect(numVal)}
+            className={cn(
+              "w-full flex items-center gap-4 rounded-xl border-2 px-4 py-3 text-left transition-all hover:border-primary/50",
+              isSelected
+                ? "border-primary bg-primary/10 shadow-sm"
+                : "border-border hover:bg-muted/50"
+            )}
+          >
+            {/* Radio circle */}
+            <span className={cn(
+              "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+              isSelected ? "border-primary" : "border-muted-foreground/40"
+            )}>
+              {isSelected && (
+                <span className="h-2.5 w-2.5 rounded-full bg-primary" />
               )}
-            >
-              <span className={cn(
-                "font-bold",
-                isCompact ? "text-base" : "text-xl sm:text-2xl",
-                isSelected ? "text-primary" : "text-foreground"
-              )}>
-                {opt.option_key}
-              </span>
-              {!isCompact && (
-                <span className="hidden sm:block text-xs text-muted-foreground text-center leading-tight">
-                  {locale === "ru" ? opt.text_ru : opt.text_en}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {isCompact && (
-        <div className="flex justify-between text-xs text-muted-foreground px-1">
-          <span>{minLabel}</span>
-          <span>{maxLabel}</span>
-        </div>
-      )}
+            </span>
+
+            {/* Number badge */}
+            <span className={cn(
+              "text-sm font-bold w-5 shrink-0 text-center",
+              isSelected ? "text-primary" : "text-muted-foreground"
+            )}>
+              {opt.option_key}
+            </span>
+
+            {/* Label */}
+            <span className={cn(
+              "text-sm leading-snug",
+              isSelected ? "font-medium text-foreground" : "text-muted-foreground"
+            )}>
+              {label}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
