@@ -780,6 +780,11 @@ export default function CoachPage() {
               )}
             </Button>
           </div>
+          <p className="px-1 pt-1 text-[11px] text-muted-foreground/60">
+            {ru
+              ? "Сообщения обрабатываются DeepSeek (Китай). Не указывайте персональные данные."
+              : "Messages are processed by DeepSeek (China). Do not include personal data."}
+          </p>
         </CardContent>
       </Card>
 

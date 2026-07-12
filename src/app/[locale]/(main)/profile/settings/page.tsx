@@ -1,17 +1,62 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Bot, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Shield, Bot, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { useUserSettings } from "@/hooks/useUserSettings";
+import { createClient } from "@/lib/supabase/client";
+
+const CONFIRM_WORD_RU = "УДАЛИТЬ";
+const CONFIRM_WORD_EN = "DELETE";
 
 export default function SettingsPage() {
   const t = useTranslations("ai");
   const tc = useTranslations("common");
+  const locale = useLocale() as "ru" | "en";
+  const ru = locale === "ru";
   const { settings, loading, updateSetting } = useUserSettings();
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [confirmInput, setConfirmInput] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const confirmWord = ru ? CONFIRM_WORD_RU : CONFIRM_WORD_EN;
+  const confirmed = confirmInput === confirmWord;
+
+  const handleDelete = async () => {
+    if (!confirmed) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch("/api/user/delete", { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error");
+      }
+      // Sign out and redirect
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Error");
+      setDeleting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,6 +119,97 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Danger Zone */}
+      <Card className="border-destructive/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" />
+            {ru ? "Опасная зона" : "Danger zone"}
+          </CardTitle>
+          <CardDescription>
+            {ru
+              ? "Необратимые действия с аккаунтом"
+              : "Irreversible account actions"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium">
+                {ru ? "Удалить аккаунт" : "Delete account"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {ru
+                  ? "Удалит все данные: результаты тестов, отчёт, историю чатов. Возврат средств за неиспользованные сессии — по запросу на ilray@mail.ru."
+                  : "Deletes all data: test results, report, chat history. Refund for unused sessions — contact ilray@mail.ru."}
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="shrink-0 gap-2"
+              onClick={() => { setConfirmInput(""); setDeleteError(null); setShowDeleteDialog(true); }}
+            >
+              <Trash2 className="h-4 w-4" />
+              {ru ? "Удалить" : "Delete"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Confirmation dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <Trash2 className="h-5 w-5" />
+              {ru ? "Удалить аккаунт?" : "Delete account?"}
+            </DialogTitle>
+            <DialogDescription>
+              {ru
+                ? "Это действие необратимо. Все данные будут удалены без возможности восстановления."
+                : "This action is irreversible. All your data will be permanently deleted."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 py-2">
+            <p className="text-sm text-muted-foreground">
+              {ru
+                ? <>Введите <strong className="text-foreground">{confirmWord}</strong> для подтверждения:</>
+                : <>Type <strong className="text-foreground">{confirmWord}</strong> to confirm:</>}
+            </p>
+            <Input
+              value={confirmInput}
+              onChange={(e) => setConfirmInput(e.target.value)}
+              placeholder={confirmWord}
+              className="font-mono"
+            />
+            {deleteError && (
+              <p className="text-xs text-destructive">{deleteError}</p>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={deleting}
+            >
+              {ru ? "Отмена" : "Cancel"}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={!confirmed || deleting}
+              className="gap-2"
+            >
+              {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+              {ru ? "Удалить навсегда" : "Delete forever"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
