@@ -141,8 +141,8 @@ export default function SettingsPage() {
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {ru
-                  ? "Удалит все данные: результаты тестов, отчёт, историю чатов. Возврат средств за неиспользованные сессии — по запросу на ilray@mail.ru."
-                  : "Deletes all data: test results, report, chat history. Refund for unused sessions — contact ilray@mail.ru."}
+                  ? "Удалит все данные: результаты тестов, отчёт, историю чатов. После удаления возврат средств невозможен — если нужен возврат, сначала напишите на ilray@mail.ru."
+                  : "Deletes all data: test results, report, chat history. Refunds are not possible after deletion — if you need a refund, contact ilray@mail.ru first."}
               </p>
             </div>
             <Button
@@ -168,8 +168,8 @@ export default function SettingsPage() {
             </DialogTitle>
             <DialogDescription>
               {ru
-                ? "Это действие необратимо. Все данные будут удалены без возможности восстановления."
-                : "This action is irreversible. All your data will be permanently deleted."}
+                ? "Это действие необратимо. Все данные и оплаченные сессии будут удалены без возможности восстановления или возврата средств."
+                : "This action is irreversible. All data and paid sessions will be permanently deleted with no possibility of recovery or refund."}
             </DialogDescription>
           </DialogHeader>
 
