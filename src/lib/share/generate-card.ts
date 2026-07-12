@@ -6,7 +6,7 @@ export interface ShareDimension {
 }
 
 export interface ShareRadarPoint {
-  subject: string;
+  name: string;
   value: number;
   fullMark: number;
 }
@@ -136,9 +136,9 @@ function drawRadar(
     const lx = cx + lr * Math.cos(angle);
     const ly = cy + lr * Math.sin(angle);
     const label =
-      data[i].subject.length > 9
-        ? data[i].subject.slice(0, 8) + "…"
-        : data[i].subject;
+      data[i].name.length > 9
+        ? data[i].name.slice(0, 8) + "…"
+        : data[i].name;
     // anchor: left/center/right depending on position
     const cos = Math.cos(angle);
     ctx.textAlign = cos > 0.3 ? "left" : cos < -0.3 ? "right" : "center";
