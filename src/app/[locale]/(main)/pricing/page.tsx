@@ -15,7 +15,7 @@ import { usePlan } from "@/hooks/usePlan";
 import { Link } from "@/lib/i18n/navigation";
 import {
   DS_SESSIONS, CL_SESSIONS,
-  DS_MSG_LIMIT, CL_MSG_LIMIT,
+  DS_MSG_LIMIT, CL_MSG_LIMIT, FREE_MSG_LIMIT,
   getSessionPrice, formatPrice, REPORT_PRICE_LABEL, Provider,
 } from "@/lib/payment/plans";
 
@@ -211,8 +211,8 @@ export default function PricingPage() {
               </div>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {ru
-                  ? "Все тесты · 1 бесплатный чат (20 сообщений) · 1 ИИ-анализ"
-                  : "All tests · 1 free chat (20 messages) · 1 AI analysis"}
+                  ? `Все тесты · 1 бесплатный чат (${FREE_MSG_LIMIT} сообщений) · 1 ИИ-анализ`
+                  : `All tests · 1 free chat (${FREE_MSG_LIMIT} messages) · 1 AI analysis`}
               </p>
             </div>
           </div>
