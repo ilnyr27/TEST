@@ -1,12 +1,14 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { AppLogo } from "@/components/ui/app-logo";
+import { Send } from "lucide-react";
 
 export function Footer() {
   const t = useTranslations("common");
   const tl = useTranslations("legal");
+  const locale = useLocale();
 
   return (
     <footer className="border-t bg-muted/30 print:hidden">
@@ -30,6 +32,15 @@ export function Footer() {
             <Link href="/contacts" className="hover:text-foreground transition-colors">
               {tl("contactsTitle")}
             </Link>
+            <a
+              href="https://t.me/ilnur_ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 hover:text-foreground transition-colors"
+            >
+              <Send className="h-3 w-3" />
+              {locale === "ru" ? "Поддержка" : "Support"}
+            </a>
           </nav>
         </div>
       </div>

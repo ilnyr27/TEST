@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Globe, FileText } from "lucide-react";
+import { Mail, Globe, FileText, Send } from "lucide-react";
 
 export default function ContactsPage() {
   const locale = useLocale();
@@ -59,6 +59,18 @@ export default function ContactsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
+          <div>
+            <p className="text-muted-foreground">Telegram</p>
+            <a
+              href="https://t.me/ilnur_ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary hover:underline flex items-center gap-1"
+            >
+              <Send className="h-3.5 w-3.5" />
+              @ilnur_ai
+            </a>
+          </div>
           <div>
             <p className="text-muted-foreground">Email</p>
             <a href="mailto:ilray@mail.ru" className="font-medium text-primary hover:underline">
