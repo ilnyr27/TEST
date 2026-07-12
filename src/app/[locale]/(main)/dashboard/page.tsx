@@ -30,6 +30,7 @@ import {
   Shield,
   Info,
   Crown,
+  Brain,
 } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
 import { getResults, StoredResult } from "@/lib/test-engine/results-store";
@@ -37,7 +38,7 @@ import { getAllTests } from "@/lib/test-engine/test-registry";
 import { detectFlags, Flag } from "@/lib/scoring/flag-detector";
 
 const categoryIcons: Record<string, React.ReactNode> = {
-  psychology: <AppLogo size={20} />,
+  psychology: <Brain className="h-5 w-5" />,
   career: <Briefcase className="h-5 w-5" />,
   intelligence: <Lightbulb className="h-5 w-5" />,
   habits: <Repeat className="h-5 w-5" />,
