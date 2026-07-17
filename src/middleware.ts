@@ -70,9 +70,9 @@ export async function middleware(request: NextRequest) {
   // 4. Run next-intl middleware
   const intlResponse = intlMiddleware(request);
 
-  // 5. Merge Supabase cookies into intl response
+  // 5. Merge Supabase cookies into intl response (preserve all options incl. maxAge)
   supabaseResponse.cookies.getAll().forEach((cookie) => {
-    intlResponse.cookies.set(cookie.name, cookie.value);
+    intlResponse.cookies.set(cookie);
   });
 
   return intlResponse;

@@ -55,4 +55,4 @@ export interface LocalSession {
   provider: Provider;
 }
 
-export const FREE_MSG_LIMIT = 5;
+export const FREE_MSG_LIMIT = 12;
