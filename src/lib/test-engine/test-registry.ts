@@ -10,6 +10,7 @@ import { getCreativeQuestions, creativeTestMeta } from "./creative-data";
 import { getHabitsQuestions, habitsTestMeta } from "./habits-data";
 import { getMBTIQuestions, mbtiTestMeta } from "./mbti-data";
 import { getLoveLanguagesQuestions, loveLanguagesTestMeta } from "./love-languages-data";
+import { getCareerAptitudeQuestions, careerAptitudeTestMeta } from "./career-aptitude-data";
 
 export interface TestMeta {
   id: string;
@@ -119,6 +120,14 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "For each question, choose one of two options — the one that resonates more with you. There are no right answers.",
     },
     getQuestions: getLoveLanguagesQuestions,
+  },
+  "career-aptitude": {
+    meta: {
+      ...careerAptitudeTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько оно описывает вас. Отвечайте честно, думая о том, что вам действительно нравится делать.",
+      instructionEn: "Rate each statement from 1 to 5 — how well it describes you. Answer honestly, thinking about what you genuinely enjoy doing.",
+    },
+    getQuestions: getCareerAptitudeQuestions,
   },
 };
 

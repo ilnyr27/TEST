@@ -64,12 +64,12 @@ export default function TestPlayPage({
     }
   }, [testId, locale, initTest]);
 
-  // Auto-start if idle or different test
+  // Auto-start only if different test (preserve progress for same test)
   useEffect(() => {
-    if (status === "idle" || activeTestId !== testId) {
+    if (activeTestId !== testId) {
       handleStart();
     }
-  }, [status, activeTestId, testId, handleStart]);
+  }, [activeTestId, testId, handleStart]);
 
   const currentQuestion = questions[currentIndex];
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;

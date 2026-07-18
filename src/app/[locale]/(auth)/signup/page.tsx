@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -18,14 +18,19 @@ import {
 } from "@/components/ui/card";
 import { AppLogo } from "@/components/ui/app-logo";
 
+type Gender = "male" | "female" | "other";
+
 export default function SignupPage() {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
   const tl = useTranslations("legal");
+  const locale = useLocale();
+  const ru = locale === "ru";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [gender, setGender] = useState<Gender | null>(null);
   const [consentPrivacy, setConsentPrivacy] = useState(false);
   const [consentTerms, setConsentTerms] = useState(false);
   const [error, setError] = useState("");
@@ -53,7 +58,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        data: { display_name: displayName },
+        data: { display_name: displayName, gender: gender ?? "other" },
       },
     });
 
@@ -106,6 +111,32 @@ export default function SignupPage() {
                 onChange={(e) => setDisplayName(e.target.value)}
               />
             </div>
+            {/* Gender */}
+            <div className="space-y-2">
+              <Label>{ru ? "Кто вы?" : "Who are you?"}</Label>
+              <div className="flex gap-2">
+                {(["female", "male", "other"] as Gender[]).map((g) => {
+                  const label = ru
+                    ? g === "female" ? "Женщина" : g === "male" ? "Мужчина" : "Не указывать"
+                    : g === "female" ? "Female" : g === "male" ? "Male" : "Prefer not to say";
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setGender(g)}
+                      className={`flex-1 rounded-lg border-2 py-2 text-sm font-medium transition-all ${
+                        gender === g
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border hover:border-muted-foreground/40"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">{t("email")}</Label>
               <Input

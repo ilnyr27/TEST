@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Question, QuestionOption, AnswerData } from "@/types/database";
 
 export interface TestSessionState {
@@ -34,61 +35,9 @@ export interface TestSessionState {
   tick: () => void;
 }
 
-export const useTestSessionStore = create<TestSessionState>((set) => ({
-  testId: null,
-  testName: "",
-  questions: [],
-  totalQuestions: 0,
-  currentIndex: 0,
-  answers: {},
-  status: "idle",
-  startedAt: null,
-  timeSpentSeconds: 0,
-
-  initTest: (testId, testName, questions) =>
-    set({
-      testId,
-      testName,
-      questions,
-      totalQuestions: questions.length,
-      currentIndex: 0,
-      answers: {},
-      status: "active",
-      startedAt: new Date().toISOString(),
-      timeSpentSeconds: 0,
-    }),
-
-  submitAnswer: (questionId, data) =>
-    set((state) => ({
-      answers: { ...state.answers, [questionId]: data },
-    })),
-
-  goNext: () =>
-    set((state) => {
-      const next = state.currentIndex + 1;
-      if (next >= state.totalQuestions) {
-        return { status: "completed" };
-      }
-      return { currentIndex: next };
-    }),
-
-  goPrev: () =>
-    set((state) => ({
-      currentIndex: Math.max(0, state.currentIndex - 1),
-    })),
-
-  goToQuestion: (index) =>
-    set((state) => ({
-      currentIndex: Math.max(0, Math.min(index, state.totalQuestions - 1)),
-    })),
-
-  pause: () => set({ status: "paused" }),
-  resume: () => set({ status: "active" }),
-
-  complete: () => set({ status: "completed" }),
-
-  reset: () =>
-    set({
+export const useTestSessionStore = create<TestSessionState>()(
+  persist(
+    (set) => ({
       testId: null,
       testName: "",
       questions: [],
@@ -98,10 +47,80 @@ export const useTestSessionStore = create<TestSessionState>((set) => ({
       status: "idle",
       startedAt: null,
       timeSpentSeconds: 0,
-    }),
 
-  tick: () =>
-    set((state) => ({
-      timeSpentSeconds: state.timeSpentSeconds + 1,
-    })),
-}));
+      initTest: (testId, testName, questions) =>
+        set({
+          testId,
+          testName,
+          questions,
+          totalQuestions: questions.length,
+          currentIndex: 0,
+          answers: {},
+          status: "active",
+          startedAt: new Date().toISOString(),
+          timeSpentSeconds: 0,
+        }),
+
+      submitAnswer: (questionId, data) =>
+        set((state) => ({
+          answers: { ...state.answers, [questionId]: data },
+        })),
+
+      goNext: () =>
+        set((state) => {
+          const next = state.currentIndex + 1;
+          if (next >= state.totalQuestions) {
+            return { status: "completed" };
+          }
+          return { currentIndex: next };
+        }),
+
+      goPrev: () =>
+        set((state) => ({
+          currentIndex: Math.max(0, state.currentIndex - 1),
+        })),
+
+      goToQuestion: (index) =>
+        set((state) => ({
+          currentIndex: Math.max(0, Math.min(index, state.totalQuestions - 1)),
+        })),
+
+      pause: () => set({ status: "paused" }),
+      resume: () => set({ status: "active" }),
+
+      complete: () => set({ status: "completed" }),
+
+      reset: () =>
+        set({
+          testId: null,
+          testName: "",
+          questions: [],
+          totalQuestions: 0,
+          currentIndex: 0,
+          answers: {},
+          status: "idle",
+          startedAt: null,
+          timeSpentSeconds: 0,
+        }),
+
+      tick: () =>
+        set((state) => ({
+          timeSpentSeconds: state.timeSpentSeconds + 1,
+        })),
+    }),
+    {
+      name: "test-session-progress",
+      partialize: (state) => ({
+        testId: state.testId,
+        testName: state.testName,
+        questions: state.questions,
+        totalQuestions: state.totalQuestions,
+        currentIndex: state.currentIndex,
+        answers: state.answers,
+        status: state.status,
+        startedAt: state.startedAt,
+        timeSpentSeconds: state.timeSpentSeconds,
+      }),
+    }
+  )
+);
