@@ -70,24 +70,22 @@ export default function CategoryPage({
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">
-                          {locale === "ru" ? test.nameRu : test.nameEn}
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          {locale === "ru" ? test.descriptionRu : test.descriptionEn}
-                        </CardDescription>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
-                        <Badge variant="secondary">{test.methodology}</Badge>
-                        {done && (
-                          <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            {locale === "ru" ? "Пройден" : "Done"}
-                          </span>
-                        )}
-                      </div>
+                      <CardTitle className="text-lg leading-snug flex-1 min-w-0">
+                        {locale === "ru" ? test.nameRu : test.nameEn}
+                      </CardTitle>
+                      {done && (
+                        <span className="flex items-center gap-1 text-xs text-green-600 font-medium shrink-0">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          {locale === "ru" ? "Пройден" : "Done"}
+                        </span>
+                      )}
                     </div>
+                    <Badge variant="secondary" className="w-fit max-w-full truncate mt-1 text-xs">
+                      {test.methodology}
+                    </Badge>
+                    <CardDescription className="mt-2 line-clamp-2">
+                      {locale === "ru" ? test.descriptionRu : test.descriptionEn}
+                    </CardDescription>
                     <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <HelpCircle className="h-3.5 w-3.5" />
