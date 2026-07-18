@@ -1,6 +1,14 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { FREE_MSG_LIMIT, UserPlan } from "@/lib/payment/plans";
+import { FREE_MSG_LIMIT, DS_MSG_LIMIT, SUB_PLANS, UserPlan } from "@/lib/payment/plans";
+
+function getEffectiveMsgLimit(plan: UserPlan): number {
+  const subExpiry = plan.subscription_expires_at ? new Date(plan.subscription_expires_at) : null;
+  const isSubActive = subExpiry ? subExpiry > new Date() : false;
+  const subPlanId = isSubActive ? plan.subscription_plan : null;
+  if (subPlanId && subPlanId in SUB_PLANS) return SUB_PLANS[subPlanId].msgLimit;
+  return DS_MSG_LIMIT;
+}
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -60,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
     const remaining = plan!.deepseek_sessions;
-    const msgLimit = plan!.deepseek_msg_limit;
+    const msgLimit = getEffectiveMsgLimit(plan!);
 
     await supabase
       .from("user_plans")
