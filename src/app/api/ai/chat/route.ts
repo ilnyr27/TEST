@@ -5,6 +5,7 @@ import { buildChatMessages } from "@/lib/ai/prompt-builder";
 import { ProviderType, AIMessage } from "@/lib/ai/types";
 import { StoredResult } from "@/lib/test-engine/results-store";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { DS_MSG_LIMIT, SUB_PLANS, UserPlan } from "@/lib/payment/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Validate session
     const { data: session } = await supabase
       .from("chat_sessions")
-      .select("id, messages_used, messages_limit, is_active")
+      .select("id, messages_used, messages_limit, is_active, provider")
       .eq("id", sessionId)
       .eq("user_id", user.id)
       .single();
@@ -68,9 +69,29 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Session not found or expired" }, { status: 404 });
     }
 
-    if (session.messages_used >= session.messages_limit) {
+    // For DeepSeek paid sessions: recompute limit from current subscription status.
+    // This mirrors Claude/ChatGPT behavior — limit drops when subscription expires.
+    let effectiveLimit = session.messages_limit;
+    let isSubActive = false;
+    if (session.provider === "deepseek") {
+      const { data: plan } = await supabase
+        .from("user_plans")
+        .select("subscription_plan, subscription_expires_at")
+        .eq("user_id", user.id)
+        .single() as { data: Pick<UserPlan, "subscription_plan" | "subscription_expires_at"> | null };
+      if (plan) {
+        const subExpiry = plan.subscription_expires_at ? new Date(plan.subscription_expires_at) : null;
+        isSubActive = subExpiry ? subExpiry > new Date() : false;
+        const subPlanId = isSubActive ? plan.subscription_plan : null;
+        effectiveLimit = subPlanId && subPlanId in SUB_PLANS
+          ? SUB_PLANS[subPlanId].msgLimit
+          : DS_MSG_LIMIT;
+      }
+    }
+
+    if (session.messages_used >= effectiveLimit) {
       return Response.json(
-        { error: "Session message limit reached" },
+        { error: "Session message limit reached", canUpgrade: !isSubActive && session.provider === "deepseek" },
         { status: 402 }
       );
     }
