@@ -11,6 +11,7 @@ import { HabitsScorer } from "./habits-scorer";
 import { MBTIScorer } from "./mbti-scorer";
 import { LoveLanguagesScorer } from "./love-languages-scorer";
 import { CareerAptitudeScorer } from "./career-aptitude-scorer";
+import { ShadowScorer } from "./shadow-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -25,6 +26,7 @@ const scorers: Record<string, Scorer> = {
   "mbti-light": new MBTIScorer(),
   "love-languages": new LoveLanguagesScorer(),
   "career-aptitude": new CareerAptitudeScorer(),
+  shadow: new ShadowScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {

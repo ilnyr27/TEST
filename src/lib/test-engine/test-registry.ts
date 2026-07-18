@@ -11,6 +11,7 @@ import { getHabitsQuestions, habitsTestMeta } from "./habits-data";
 import { getMBTIQuestions, mbtiTestMeta } from "./mbti-data";
 import { getLoveLanguagesQuestions, loveLanguagesTestMeta } from "./love-languages-data";
 import { getCareerAptitudeQuestions, careerAptitudeTestMeta } from "./career-aptitude-data";
+import { getShadowQuestions, shadowTestMeta } from "./shadow-data";
 
 export interface TestMeta {
   id: string;
@@ -128,6 +129,14 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5 — how well it describes you. Answer honestly, thinking about what you genuinely enjoy doing.",
     },
     getQuestions: getCareerAptitudeQuestions,
+  },
+  shadow: {
+    meta: {
+      ...shadowTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас. Здесь нет «правильных» ответов: честность важнее желаемого образа себя.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. There are no 'right' answers: honesty matters more than the image you want to project.",
+    },
+    getQuestions: getShadowQuestions,
   },
 };
 
