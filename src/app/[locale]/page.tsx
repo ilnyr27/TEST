@@ -81,11 +81,17 @@ export default function LandingPage() {
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               {t("heroSub")}
             </p>
-            <div className="mt-8 flex justify-center gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
               <Link href="/signup">
-                <Button size="lg" className="gap-2">
+                <Button size="lg" className="gap-2 w-full sm:w-auto">
                   {t("startFree")}
                   <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/demo">
+                <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+                  <Sparkles className="h-4 w-4" />
+                  {t("seeDemo")}
                 </Button>
               </Link>
             </div>
