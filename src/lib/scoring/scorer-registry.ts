@@ -23,6 +23,8 @@ import { EnergyManagementScorer } from "./energy-management-scorer";
 import { TimeManagementScorer } from "./time-management-scorer";
 import { ConflictStyleScorer } from "./conflict-style-scorer";
 import { RelationshipValuesScorer } from "./relationship-values-scorer";
+import { DivergentThinkingScorer } from "./divergent-thinking-scorer";
+import { CreativityBlocksScorer } from "./creativity-blocks-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -49,6 +51,8 @@ const scorers: Record<string, Scorer> = {
   "time-management": new TimeManagementScorer(),
   "conflict-style": new ConflictStyleScorer(),
   "relationship-values": new RelationshipValuesScorer(),
+  "divergent-thinking": new DivergentThinkingScorer(),
+  "creativity-blocks": new CreativityBlocksScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {

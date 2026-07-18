@@ -23,6 +23,8 @@ import { getEnergyManagementQuestions, energyManagementTestMeta } from "./energy
 import { getTimeManagementQuestions, timeManagementTestMeta } from "./time-management-data";
 import { getConflictStyleQuestions, conflictStyleTestMeta } from "./conflict-style-data";
 import { getRelationshipValuesQuestions, relationshipValuesTestMeta } from "./relationship-values-data";
+import { getDivergentThinkingQuestions, divergentThinkingTestMeta } from "./divergent-thinking-data";
+import { getCreativityBlocksQuestions, creativityBlocksTestMeta } from "./creativity-blocks-data";
 
 export interface TestMeta {
   id: string;
@@ -236,6 +238,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate how important each statement is to you in the context of close relationships — from 1 (not important at all) to 5 (critically important). There are no right answers.",
     },
     getQuestions: getRelationshipValuesQuestions,
+  },
+  "divergent-thinking": {
+    meta: {
+      ...divergentThinkingTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас. Думайте о реальных ситуациях, а не о желаемом образе себя.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. Think about real situations, not your ideal self-image.",
+    },
+    getQuestions: getDivergentThinkingQuestions,
+  },
+  "creativity-blocks": {
+    meta: {
+      ...creativityBlocksTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас. Высокий балл означает, что блок активен. Честность важнее желаемого образа.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. A high score means the block is active. Honesty matters more than your ideal self-image.",
+    },
+    getQuestions: getCreativityBlocksQuestions,
   },
 };
 
