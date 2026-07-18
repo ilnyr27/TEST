@@ -26,6 +26,7 @@ export default function PricingPage() {
   const { plan, loading: planLoading, refresh, subscriptionPlan, subscriptionExpiresAt, subscriptionCancelled, isSubActive } = usePlan();
   const [purchaseLoading, setPurchaseLoading] = useState<string | null>(null);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const paymentSuccess = searchParams.get("payment") === "success";
   const paymentType = searchParams.get("type");
@@ -49,8 +50,13 @@ export default function PricingPage() {
   const msgLimit = DS_MSG_LIMIT;
   const priceKopecks = getSessionPrice("deepseek", dsSessions);
 
+  const showError = (msg: string) => {
+    setErrorMsg(msg);
+    setTimeout(() => setErrorMsg(null), 6000);
+  };
+
   const handlePurchase = async () => {
-    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; } // eslint-disable-line react-hooks/immutability
+    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; }
     setPurchaseLoading("config");
     try {
       const res = await fetch("/api/payment/create", {
@@ -59,14 +65,14 @@ export default function PricingPage() {
         body: JSON.stringify({ type: "config", provider: "deepseek" as Provider, sessions: dsSessions }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url; // eslint-disable-line react-hooks/immutability
-      else alert(data.error || "Payment error");
-    } catch { alert("Payment error"); }
+      if (data.url) window.location.href = data.url;
+      else showError(data.error || "Payment error");
+    } catch { showError("Payment error"); }
     finally { setPurchaseLoading(null); }
   };
 
   const handleReportPurchase = async () => {
-    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; } // eslint-disable-line react-hooks/immutability
+    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; }
     setPurchaseLoading("report");
     try {
       const res = await fetch("/api/payment/create", {
@@ -75,14 +81,14 @@ export default function PricingPage() {
         body: JSON.stringify({ type: "report" }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url; // eslint-disable-line react-hooks/immutability
-      else alert(data.error || "Payment error");
-    } catch { alert("Payment error"); }
+      if (data.url) window.location.href = data.url;
+      else showError(data.error || "Payment error");
+    } catch { showError("Payment error"); }
     finally { setPurchaseLoading(null); }
   };
 
   const handleSubPurchase = async (planId: SubPlan) => {
-    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; } // eslint-disable-line react-hooks/immutability
+    if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; }
     setPurchaseLoading(`sub_${planId}`);
     try {
       const res = await fetch("/api/payment/create", {
@@ -91,9 +97,9 @@ export default function PricingPage() {
         body: JSON.stringify({ type: "subscription", plan: planId }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url; // eslint-disable-line react-hooks/immutability
-      else alert(data.error || "Payment error");
-    } catch { alert("Payment error"); }
+      if (data.url) window.location.href = data.url;
+      else showError(data.error || "Payment error");
+    } catch { showError("Payment error"); }
     finally { setPurchaseLoading(null); }
   };
 
@@ -104,8 +110,8 @@ export default function PricingPage() {
       const res = await fetch("/api/subscription/cancel", { method: "POST" });
       const data = await res.json();
       if (data.ok) { await refresh(); }
-      else alert(data.error || "Error");
-    } catch { alert("Error"); }
+      else showError(data.error || "Error");
+    } catch { showError("Error"); }
     finally { setCancelLoading(false); }
   };
 
@@ -140,6 +146,17 @@ export default function PricingPage() {
               {ru ? "Открыть коуч" : "Open coach"}
             </Button>
           </Link>
+        </div>
+      )}
+
+      {/* Error banner */}
+      {errorMsg && (
+        <div className="flex items-center gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-red-700 dark:text-red-400">
+          <X className="h-5 w-5 shrink-0" />
+          <p className="flex-1 text-sm">{errorMsg}</p>
+          <button onClick={() => setErrorMsg(null)} className="text-red-500 hover:text-red-700">
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 

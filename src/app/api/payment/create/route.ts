@@ -37,7 +37,10 @@ export async function POST(request: NextRequest) {
         product_type: productType,
         sub_plan: plan,
       };
-      savePaymentMethod = true;
+      // save_payment_method requires recurring payments feature in YuKassa.
+      // Keep false until the shop has it enabled; subscription still works
+      // as a 30-day access grant renewed manually.
+      savePaymentMethod = false;
 
     } else if (body.type === "report") {
       priceKopecks = REPORT_PRICE_KOPECKS;
