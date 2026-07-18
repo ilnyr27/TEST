@@ -177,7 +177,7 @@ const SCALE_OPTIONS_EN = [
 ];
 
 export function getCareerAptitudeQuestions(): (Question & { options: QuestionOption[] })[] {
-  return items.map((item) => {
+  return items.map((item, idx) => {
     const options: QuestionOption[] = SCALE_OPTIONS_RU.map((opt, i) => ({
       id: `ca-opt-${item.number}-${opt.key}`,
       question_id: `ca-q-${item.number}`,
@@ -190,12 +190,22 @@ export function getCareerAptitudeQuestions(): (Question & { options: QuestionOpt
     return {
       id: `ca-q-${item.number}`,
       test_id: CAREER_APTITUDE_TEST_ID,
+      question_number: idx + 1,
       text_ru: item.textRu,
       text_en: item.textEn,
-      question_type: "scale" as const,
-      sort_order: item.number,
+      type: "scale" as const,
+      depth_level: 1,
+      scale_min: 1,
+      scale_max: 5,
+      scale_min_label_ru: "Совсем не про меня",
+      scale_min_label_en: "Not me at all",
+      scale_max_label_ru: "Точно про меня",
+      scale_max_label_en: "Definitely me",
       is_required: true,
+      branch_logic: null,
       scoring_key: { dimension: item.dimension },
+      metadata: null,
+      created_at: new Date().toISOString(),
       options,
     };
   });
