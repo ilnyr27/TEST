@@ -25,6 +25,8 @@ import { getConflictStyleQuestions, conflictStyleTestMeta } from "./conflict-sty
 import { getRelationshipValuesQuestions, relationshipValuesTestMeta } from "./relationship-values-data";
 import { getDivergentThinkingQuestions, divergentThinkingTestMeta } from "./divergent-thinking-data";
 import { getCreativityBlocksQuestions, creativityBlocksTestMeta } from "./creativity-blocks-data";
+import { getHumorTypeQuestions, humorTypeTestMeta } from "./humor-type-data";
+import { getTravelerTypeQuestions, travelerTypeTestMeta } from "./traveler-type-data";
 
 export interface TestMeta {
   id: string;
@@ -254,6 +256,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. A high score means the block is active. Honesty matters more than your ideal self-image.",
     },
     getQuestions: getCreativityBlocksQuestions,
+  },
+  "humor-type": {
+    meta: {
+      ...humorTypeTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает ваш обычный стиль юмора. Нет хороших или плохих ответов.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes your usual humor style. There are no good or bad answers.",
+    },
+    getQuestions: getHumorTypeQuestions,
+  },
+  "traveler-type": {
+    meta: {
+      ...travelerTypeTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас в путешествиях. Думайте о том, что вам действительно нравится, а не о том, что «правильно».",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you when traveling. Think about what you genuinely enjoy, not what's 'correct'.",
+    },
+    getQuestions: getTravelerTypeQuestions,
   },
 };
 

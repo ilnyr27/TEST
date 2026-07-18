@@ -25,6 +25,8 @@ import { ConflictStyleScorer } from "./conflict-style-scorer";
 import { RelationshipValuesScorer } from "./relationship-values-scorer";
 import { DivergentThinkingScorer } from "./divergent-thinking-scorer";
 import { CreativityBlocksScorer } from "./creativity-blocks-scorer";
+import { HumorTypeScorer } from "./humor-type-scorer";
+import { TravelerTypeScorer } from "./traveler-type-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -53,6 +55,8 @@ const scorers: Record<string, Scorer> = {
   "relationship-values": new RelationshipValuesScorer(),
   "divergent-thinking": new DivergentThinkingScorer(),
   "creativity-blocks": new CreativityBlocksScorer(),
+  "humor-type": new HumorTypeScorer(),
+  "traveler-type": new TravelerTypeScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {
