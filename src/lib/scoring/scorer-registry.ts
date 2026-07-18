@@ -21,6 +21,8 @@ import { ViaStrengthsScorer } from "./via-strengths-scorer";
 import { WorkStyleScorer } from "./work-style-scorer";
 import { EnergyManagementScorer } from "./energy-management-scorer";
 import { TimeManagementScorer } from "./time-management-scorer";
+import { ConflictStyleScorer } from "./conflict-style-scorer";
+import { RelationshipValuesScorer } from "./relationship-values-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -45,6 +47,8 @@ const scorers: Record<string, Scorer> = {
   "work-style": new WorkStyleScorer(),
   "energy-management": new EnergyManagementScorer(),
   "time-management": new TimeManagementScorer(),
+  "conflict-style": new ConflictStyleScorer(),
+  "relationship-values": new RelationshipValuesScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {

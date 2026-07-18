@@ -21,6 +21,8 @@ import { getViaStrengthsQuestions, viaStrengthsTestMeta } from "./via-strengths-
 import { getWorkStyleQuestions, workStyleTestMeta } from "./work-style-data";
 import { getEnergyManagementQuestions, energyManagementTestMeta } from "./energy-management-data";
 import { getTimeManagementQuestions, timeManagementTestMeta } from "./time-management-data";
+import { getConflictStyleQuestions, conflictStyleTestMeta } from "./conflict-style-data";
+import { getRelationshipValuesQuestions, relationshipValuesTestMeta } from "./relationship-values-data";
 
 export interface TestMeta {
   id: string;
@@ -218,6 +220,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5 — how well it describes your actual behavior, not the desired one.",
     },
     getQuestions: getTimeManagementQuestions,
+  },
+  "conflict-style": {
+    meta: {
+      ...conflictStyleTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает ваше поведение в реальных конфликтных ситуациях. Думайте о том, как вы ведёте себя обычно — не как хотели бы.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes your behavior in real conflict situations. Think about how you usually act — not how you'd like to.",
+    },
+    getQuestions: getConflictStyleQuestions,
+  },
+  "relationship-values": {
+    meta: {
+      ...relationshipValuesTestMeta,
+      instructionRu: "Оцените, насколько важно для вас каждое утверждение в контексте близких отношений — по шкале от 1 (совсем не важно) до 5 (критически важно). Нет правильных ответов.",
+      instructionEn: "Rate how important each statement is to you in the context of close relationships — from 1 (not important at all) to 5 (critically important). There are no right answers.",
+    },
+    getQuestions: getRelationshipValuesQuestions,
   },
 };
 
