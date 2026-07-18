@@ -45,6 +45,9 @@ export function usePlan() {
     setPlan(data as UserPlan | null);
   }, [user]);
 
+  const subExpiry = plan?.subscription_expires_at ? new Date(plan.subscription_expires_at) : null;
+  const isSubActive = subExpiry ? subExpiry > new Date() : false;
+
   return {
     plan,
     loading,
@@ -56,5 +59,9 @@ export function usePlan() {
     hasReport: plan?.has_report ?? false,
     freeSessionUsed: plan?.free_session_used ?? false,
     freeAnalysisUsed: plan?.free_analysis_used ?? false,
+    subscriptionPlan: isSubActive ? (plan?.subscription_plan ?? null) : null,
+    subscriptionExpiresAt: isSubActive ? plan?.subscription_expires_at ?? null : null,
+    subscriptionCancelled: !!plan?.subscription_cancelled_at,
+    isSubActive,
   };
 }

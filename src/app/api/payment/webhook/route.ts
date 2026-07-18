@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { SUB_PLANS, SubPlan } from "@/lib/payment/plans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +34,49 @@ export async function POST(request: NextRequest) {
       .eq("user_id", userId)
       .single();
 
+    // ── SUBSCRIPTION ─────────────────────────────────────────────────────────
+    if (metadata.product_type?.startsWith("subscription_")) {
+      const planId = metadata.sub_plan as SubPlan;
+      if (!(planId in SUB_PLANS)) {
+        console.error("[webhook] Unknown sub plan:", planId);
+        return Response.json({ error: "Unknown sub plan" }, { status: 400 });
+      }
+      const subPlan = SUB_PLANS[planId];
+
+      // Save payment method id for future recurring charges
+      const paymentMethodId = payment.payment_method?.id ?? null;
+
+      // Extend subscription by 1 month from current expiry (or now if new)
+      const currentExpiry = existing?.subscription_expires_at
+        ? new Date(existing.subscription_expires_at)
+        : new Date();
+      const nextExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
+      nextExpiry.setMonth(nextExpiry.getMonth() + 1);
+
+      // Add sessions on top of existing (unused sessions roll over)
+      const newSessions = (existing?.deepseek_sessions ?? 0) + subPlan.sessionsPerMonth;
+
+      await supabase.from("user_plans").upsert({
+        user_id: userId,
+        deepseek_sessions: newSessions,
+        deepseek_msg_limit: subPlan.msgLimit,
+        claude_sessions: existing?.claude_sessions ?? 0,
+        claude_msg_limit: existing?.claude_msg_limit ?? 0,
+        has_report: true, // subscribers always get full report
+        free_session_used: existing?.free_session_used ?? false,
+        free_analysis_used: existing?.free_analysis_used ?? false,
+        subscription_plan: planId,
+        subscription_expires_at: nextExpiry.toISOString(),
+        subscription_payment_method_id: paymentMethodId ?? existing?.subscription_payment_method_id ?? null,
+        subscription_cancelled_at: null, // clear any previous cancellation
+        updated_at: new Date().toISOString(),
+      });
+
+      console.log(`[webhook] Subscription ${planId} applied to user ${userId}, expires ${nextExpiry.toISOString()}`);
+      return Response.json({ ok: true });
+    }
+
+    // ── REPORT ADDON ──────────────────────────────────────────────────────────
     if (metadata.product_type === "report_addon") {
       await supabase.from("user_plans").upsert({
         user_id: userId,
@@ -49,6 +93,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ ok: true });
     }
 
+    // ── SESSION BUNDLE ────────────────────────────────────────────────────────
     const provider = metadata.provider as "deepseek" | "claude" | undefined;
     const sessions = metadata.sessions ? parseInt(metadata.sessions) : null;
     const msgsPerSession = metadata.msgs_per_session ? parseInt(metadata.msgs_per_session) : null;

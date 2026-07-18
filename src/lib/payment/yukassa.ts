@@ -10,6 +10,7 @@ interface CreatePaymentParams {
   description: string;
   returnUrl: string;
   metadata?: Record<string, string>;
+  savePaymentMethod?: boolean;
 }
 
 interface YuKassaPayment {
@@ -18,6 +19,7 @@ interface YuKassaPayment {
   amount: { value: string; currency: string };
   confirmation?: { type: string; confirmation_url: string };
   metadata?: Record<string, string>;
+  payment_method?: { id: string; type: string; saved: boolean };
 }
 
 function getCredentials() {
@@ -37,7 +39,7 @@ function getAuthHeader() {
 export async function createPayment(
   params: CreatePaymentParams
 ): Promise<YuKassaPayment> {
-  const { amountKopecks, description, returnUrl, metadata } = params;
+  const { amountKopecks, description, returnUrl, metadata, savePaymentMethod } = params;
   const rubles = (amountKopecks / 100).toFixed(2);
 
   const idempotenceKey = crypto.randomUUID();
@@ -53,6 +55,42 @@ export async function createPayment(
       amount: { value: rubles, currency: "RUB" },
       capture: true,
       confirmation: { type: "redirect", return_url: returnUrl },
+      description,
+      metadata,
+      ...(savePaymentMethod && { save_payment_method: true }),
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`YuKassa error: ${response.status} ${error}`);
+  }
+
+  return response.json();
+}
+
+// Server-to-server charge using saved payment method (for monthly renewals)
+export async function chargeWithSavedMethod(params: {
+  amountKopecks: number;
+  description: string;
+  paymentMethodId: string;
+  metadata?: Record<string, string>;
+}): Promise<YuKassaPayment> {
+  const { amountKopecks, description, paymentMethodId, metadata } = params;
+  const rubles = (amountKopecks / 100).toFixed(2);
+  const idempotenceKey = crypto.randomUUID();
+
+  const response = await fetch(`${YUKASSA_API}/payments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+      "Idempotence-Key": idempotenceKey,
+    },
+    body: JSON.stringify({
+      amount: { value: rubles, currency: "RUB" },
+      capture: true,
+      payment_method_id: paymentMethodId,
       description,
       metadata,
     }),
