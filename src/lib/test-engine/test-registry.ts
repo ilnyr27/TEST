@@ -15,6 +15,8 @@ import { getShadowQuestions, shadowTestMeta } from "./shadow-data";
 import { getDeepBigFiveQuestions, deepBigFiveTestMeta } from "./deep-big-five-data";
 import { getLocusQuestions, locusTestMeta } from "./locus-data";
 import { getHardinessQuestions, hardinessTestMeta } from "./hardiness-data";
+import { getCognitiveBiasQuestions, cognitiveBiasTestMeta } from "./cognitive-bias-data";
+import { getThinkingStyleQuestions, thinkingStyleTestMeta } from "./thinking-style-data";
 
 export interface TestMeta {
   id: string;
@@ -164,6 +166,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5. Think about how you actually behave in difficult situations — not how you would like to.",
     },
     getQuestions: getHardinessQuestions,
+  },
+  "cognitive-bias": {
+    meta: {
+      ...cognitiveBiasTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает ваши мысли и реакции. Здесь нет правильных ответов: чем честнее — тем полезнее результат.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes your thoughts and reactions. There are no right answers: the more honest you are, the more useful the result.",
+    },
+    getQuestions: getCognitiveBiasQuestions,
+  },
+  "thinking-style": {
+    meta: {
+      ...thinkingStyleTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5. Ориентируйтесь на то, как вы реально мыслите и действуете — а не как хотели бы.",
+      instructionEn: "Rate each statement from 1 to 5. Focus on how you actually think and act — not how you'd like to.",
+    },
+    getQuestions: getThinkingStyleQuestions,
   },
 };
 

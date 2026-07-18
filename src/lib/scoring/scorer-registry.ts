@@ -15,6 +15,8 @@ import { ShadowScorer } from "./shadow-scorer";
 import { DeepBigFiveScorer } from "./deep-big-five-scorer";
 import { LocusScorer } from "./locus-scorer";
 import { HardinessScorer } from "./hardiness-scorer";
+import { CognitiveBiasScorer } from "./cognitive-bias-scorer";
+import { ThinkingStyleScorer } from "./thinking-style-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -33,6 +35,8 @@ const scorers: Record<string, Scorer> = {
   "deep-big-five": new DeepBigFiveScorer(),
   "locus-control": new LocusScorer(),
   hardiness: new HardinessScorer(),
+  "cognitive-bias": new CognitiveBiasScorer(),
+  "thinking-style": new ThinkingStyleScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {
