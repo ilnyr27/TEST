@@ -2,7 +2,7 @@ import { AnswerData } from "@/types/database";
 import { Scorer, ScoringResult } from "./types";
 import { careerAptitudeDimensions } from "@/lib/test-engine/career-aptitude-data";
 
-const DIMENSIONS = ["LEAD", "ANAL", "CREA", "TECH", "PEOP", "ENTR"] as const;
+const DIMENSIONS = ["LEAD", "ANAL", "CREA", "TECH", "PEOP", "ENTR", "CRAFT"] as const;
 
 export class CareerAptitudeScorer implements Scorer {
   calculate(
@@ -10,7 +10,7 @@ export class CareerAptitudeScorer implements Scorer {
     answers: Record<string, AnswerData>,
     locale: "ru" | "en"
   ): ScoringResult {
-    const sums: Record<string, number[]> = { LEAD: [], ANAL: [], CREA: [], TECH: [], PEOP: [], ENTR: [] };
+    const sums: Record<string, number[]> = { LEAD: [], ANAL: [], CREA: [], TECH: [], PEOP: [], ENTR: [], CRAFT: [] };
 
     for (const q of questions) {
       const ans = answers[q.id];

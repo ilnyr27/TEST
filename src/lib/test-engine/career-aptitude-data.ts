@@ -1,7 +1,7 @@
 import { Question, QuestionOption } from "@/types/database";
 
-// Career Aptitude Test — 6 dimensions, 8 questions each, scale 1-5
-// LEAD=Leadership, ANAL=Analytical, CREA=Creative, TECH=Technical, PEOP=People, ENTR=Entrepreneurial
+// Career Aptitude Test — 7 dimensions, 8 questions each, scale 1-5
+// LEAD=Leadership, ANAL=Analytical, CREA=Creative, TECH=Technical, PEOP=People, ENTR=Entrepreneurial, CRAFT=Craft/Trades
 
 export const CAREER_APTITUDE_TEST_ID = "career-aptitude";
 
@@ -13,8 +13,8 @@ export const careerAptitudeTestMeta = {
   descriptionRu: "Узнайте, к какой профессиональной роли вы предрасположены. 6 ключевых направлений: лидерство, аналитика, творчество, технологии, работа с людьми, предпринимательство.",
   descriptionEn: "Discover which professional role suits you best. 6 key directions: leadership, analytics, creativity, technology, people work, entrepreneurship.",
   methodology: "Multi-dimensional career aptitude assessment",
-  estimatedMinutes: 10,
-  questionCount: 48,
+  estimatedMinutes: 12,
+  questionCount: 56,
   category: "career",
 };
 
@@ -90,13 +90,24 @@ export const careerAptitudeDimensions: Record<string, {
     rolesRu: ["Предприниматель", "Бизнес-девелопер", "Продакт-менеджер", "Консультант", "Инвестор"],
     rolesEn: ["Entrepreneur", "Business Developer", "Product Manager", "Consultant", "Investor"],
   },
+  CRAFT: {
+    nameRu: "Мастерство",
+    nameEn: "Craftsmanship",
+    color: "#78716c",
+    descHighRu: "Вы человек дела и умелых рук. Вам важно создавать качественный, осязаемый результат — будь то идеально уложенная труба, блюдо шеф-повара или отполированная деталь. Профессионализм в своём ремесле — ваша ценность.",
+    descHighEn: "You are a hands-on person who takes pride in quality craft. Whether it's a perfectly fitted pipe, a chef's dish, or a polished part — you care about mastery in your trade. Professional excellence is your core value.",
+    descLowRu: "Работа руками и точное физическое мастерство — не ваш главный путь. Вы больше тяготеете к интеллектуальному, творческому или коммуникативному труду.",
+    descLowEn: "Hands-on work and physical precision aren't your primary path. You gravitate more toward intellectual, creative, or communicative work.",
+    rolesRu: ["Повар / Шеф-повар", "Сантехник / Электрик", "Плотник / Столяр", "Механик", "Парикмахер / Мастер", "Фермер", "Швея / Портной", "Строитель"],
+    rolesEn: ["Chef / Cook", "Plumber / Electrician", "Carpenter / Joiner", "Mechanic", "Hairdresser / Craftsperson", "Farmer", "Tailor / Seamstress", "Builder"],
+  },
 };
 
 interface CareerAptitudeItem {
   number: number;
   textRu: string;
   textEn: string;
-  dimension: "LEAD" | "ANAL" | "CREA" | "TECH" | "PEOP" | "ENTR";
+  dimension: "LEAD" | "ANAL" | "CREA" | "TECH" | "PEOP" | "ENTR" | "CRAFT";
 }
 
 const items: CareerAptitudeItem[] = [
@@ -159,6 +170,16 @@ const items: CareerAptitudeItem[] = [
   { number: 46, textRu: "Мне нравится продавать, убеждать и договариваться", textEn: "I enjoy selling, persuading, and negotiating", dimension: "ENTR" },
   { number: 47, textRu: "Я думаю о создании собственного дела или продукта", textEn: "I think about creating my own business or product", dimension: "ENTR" },
   { number: 48, textRu: "Успех для меня — это конкретный измеримый результат", textEn: "For me, success means a concrete measurable outcome", dimension: "ENTR" },
+
+  // CRAFT — Craftsmanship / Skilled Trades (8 questions)
+  { number: 49, textRu: "Мне нравится работать руками и создавать что-то материальное", textEn: "I enjoy working with my hands and creating something tangible", dimension: "CRAFT" },
+  { number: 50, textRu: "Я получаю глубокое удовольствие, когда вещь сделана идеально — без изъянов", textEn: "I feel deep satisfaction when something is made perfectly — without flaws", dimension: "CRAFT" },
+  { number: 51, textRu: "Мне важно освоить своё дело до высокого уровня мастерства", textEn: "It's important to me to master my trade to a high level of skill", dimension: "CRAFT" },
+  { number: 52, textRu: "Я люблю работу, где виден конкретный физический результат в конце дня", textEn: "I love work where I can see a concrete physical result at the end of the day", dimension: "CRAFT" },
+  { number: 53, textRu: "Точность, аккуратность и качество исполнения для меня важнее скорости", textEn: "Precision, neatness, and quality of execution matter more to me than speed", dimension: "CRAFT" },
+  { number: 54, textRu: "Мне нравится, когда мои руки и глаза работают вместе над задачей", textEn: "I enjoy when my hands and eyes work together on a task", dimension: "CRAFT" },
+  { number: 55, textRu: "Я уважаю людей, которые мастерски владеют профессиональными навыками", textEn: "I deeply respect people who are masterfully skilled at their trade", dimension: "CRAFT" },
+  { number: 56, textRu: "Работа в мастерской, кухне, поле или цехе мне ближе, чем за компьютером", textEn: "Working in a workshop, kitchen, field, or production floor feels more natural to me than at a desk", dimension: "CRAFT" },
 ];
 
 const SCALE_OPTIONS_RU = [
