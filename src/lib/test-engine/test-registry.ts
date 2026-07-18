@@ -17,6 +17,8 @@ import { getLocusQuestions, locusTestMeta } from "./locus-data";
 import { getHardinessQuestions, hardinessTestMeta } from "./hardiness-data";
 import { getCognitiveBiasQuestions, cognitiveBiasTestMeta } from "./cognitive-bias-data";
 import { getThinkingStyleQuestions, thinkingStyleTestMeta } from "./thinking-style-data";
+import { getViaStrengthsQuestions, viaStrengthsTestMeta } from "./via-strengths-data";
+import { getWorkStyleQuestions, workStyleTestMeta } from "./work-style-data";
 
 export interface TestMeta {
   id: string;
@@ -182,6 +184,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5. Focus on how you actually think and act — not how you'd like to.",
     },
     getQuestions: getThinkingStyleQuestions,
+  },
+  "via-strengths": {
+    meta: {
+      ...viaStrengthsTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас. Думайте о своём реальном поведении, а не о том, каким хотите казаться.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. Think about your actual behavior, not how you want to appear.",
+    },
+    getQuestions: getViaStrengthsQuestions,
+  },
+  "work-style": {
+    meta: {
+      ...workStyleTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько точно оно описывает вас в рабочем контексте. Нет правильных или неправильных ответов.",
+      instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you in a work context. There are no right or wrong answers.",
+    },
+    getQuestions: getWorkStyleQuestions,
   },
 };
 
