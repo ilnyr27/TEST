@@ -13,6 +13,8 @@ import { LoveLanguagesScorer } from "./love-languages-scorer";
 import { CareerAptitudeScorer } from "./career-aptitude-scorer";
 import { ShadowScorer } from "./shadow-scorer";
 import { DeepBigFiveScorer } from "./deep-big-five-scorer";
+import { LocusScorer } from "./locus-scorer";
+import { HardinessScorer } from "./hardiness-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -29,6 +31,8 @@ const scorers: Record<string, Scorer> = {
   "career-aptitude": new CareerAptitudeScorer(),
   shadow: new ShadowScorer(),
   "deep-big-five": new DeepBigFiveScorer(),
+  "locus-control": new LocusScorer(),
+  hardiness: new HardinessScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {

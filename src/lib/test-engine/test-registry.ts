@@ -13,6 +13,8 @@ import { getLoveLanguagesQuestions, loveLanguagesTestMeta } from "./love-languag
 import { getCareerAptitudeQuestions, careerAptitudeTestMeta } from "./career-aptitude-data";
 import { getShadowQuestions, shadowTestMeta } from "./shadow-data";
 import { getDeepBigFiveQuestions, deepBigFiveTestMeta } from "./deep-big-five-data";
+import { getLocusQuestions, locusTestMeta } from "./locus-data";
+import { getHardinessQuestions, hardinessTestMeta } from "./hardiness-data";
 
 export interface TestMeta {
   id: string;
@@ -146,6 +148,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5. Focus on how you actually behave — not how you'd like to. The more honest the answers, the more accurate your portrait.",
     },
     getQuestions: getDeepBigFiveQuestions,
+  },
+  "locus-control": {
+    meta: {
+      ...locusTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько оно описывает вашу реальную позицию. Здесь нет правильных ответов: интересен именно ваш взгляд.",
+      instructionEn: "Rate each statement from 1 to 5 — how well it describes your actual stance. There are no right answers: your perspective is what matters.",
+    },
+    getQuestions: getLocusQuestions,
+  },
+  hardiness: {
+    meta: {
+      ...hardinessTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5. Думайте о том, как вы реально ведёте себя в трудных ситуациях — не о том, как хотели бы.",
+      instructionEn: "Rate each statement from 1 to 5. Think about how you actually behave in difficult situations — not how you would like to.",
+    },
+    getQuestions: getHardinessQuestions,
   },
 };
 
