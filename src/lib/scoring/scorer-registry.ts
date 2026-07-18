@@ -19,6 +19,8 @@ import { CognitiveBiasScorer } from "./cognitive-bias-scorer";
 import { ThinkingStyleScorer } from "./thinking-style-scorer";
 import { ViaStrengthsScorer } from "./via-strengths-scorer";
 import { WorkStyleScorer } from "./work-style-scorer";
+import { EnergyManagementScorer } from "./energy-management-scorer";
+import { TimeManagementScorer } from "./time-management-scorer";
 
 const scorers: Record<string, Scorer> = {
   "big-five": new BigFiveScorer(),
@@ -41,6 +43,8 @@ const scorers: Record<string, Scorer> = {
   "thinking-style": new ThinkingStyleScorer(),
   "via-strengths": new ViaStrengthsScorer(),
   "work-style": new WorkStyleScorer(),
+  "energy-management": new EnergyManagementScorer(),
+  "time-management": new TimeManagementScorer(),
 };
 
 export function getScorer(testSlug: string): Scorer | null {

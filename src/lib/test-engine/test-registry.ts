@@ -19,6 +19,8 @@ import { getCognitiveBiasQuestions, cognitiveBiasTestMeta } from "./cognitive-bi
 import { getThinkingStyleQuestions, thinkingStyleTestMeta } from "./thinking-style-data";
 import { getViaStrengthsQuestions, viaStrengthsTestMeta } from "./via-strengths-data";
 import { getWorkStyleQuestions, workStyleTestMeta } from "./work-style-data";
+import { getEnergyManagementQuestions, energyManagementTestMeta } from "./energy-management-data";
+import { getTimeManagementQuestions, timeManagementTestMeta } from "./time-management-data";
 
 export interface TestMeta {
   id: string;
@@ -200,6 +202,22 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you in a work context. There are no right or wrong answers.",
     },
     getQuestions: getWorkStyleQuestions,
+  },
+  "energy-management": {
+    meta: {
+      ...energyManagementTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько оно описывает вашу реальную ситуацию прямо сейчас. Отвечайте честно, не «как должно быть».",
+      instructionEn: "Rate each statement from 1 to 5 — how well it describes your actual situation right now. Answer honestly, not 'how it should be'.",
+    },
+    getQuestions: getEnergyManagementQuestions,
+  },
+  "time-management": {
+    meta: {
+      ...timeManagementTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5 — насколько оно описывает ваше реальное поведение, а не желаемое.",
+      instructionEn: "Rate each statement from 1 to 5 — how well it describes your actual behavior, not the desired one.",
+    },
+    getQuestions: getTimeManagementQuestions,
   },
 };
 
