@@ -12,6 +12,7 @@ import { getMBTIQuestions, mbtiTestMeta } from "./mbti-data";
 import { getLoveLanguagesQuestions, loveLanguagesTestMeta } from "./love-languages-data";
 import { getCareerAptitudeQuestions, careerAptitudeTestMeta } from "./career-aptitude-data";
 import { getShadowQuestions, shadowTestMeta } from "./shadow-data";
+import { getDeepBigFiveQuestions, deepBigFiveTestMeta } from "./deep-big-five-data";
 
 export interface TestMeta {
   id: string;
@@ -137,6 +138,14 @@ const tests: Record<string, TestDefinition> = {
       instructionEn: "Rate each statement from 1 to 5 — how accurately it describes you. There are no 'right' answers: honesty matters more than the image you want to project.",
     },
     getQuestions: getShadowQuestions,
+  },
+  "deep-big-five": {
+    meta: {
+      ...deepBigFiveTestMeta,
+      instructionRu: "Оцените каждое утверждение по шкале от 1 до 5. Ориентируйтесь на то, как вы реально ведёте себя — а не как хотели бы. Чем честнее ответы, тем точнее ваш портрет.",
+      instructionEn: "Rate each statement from 1 to 5. Focus on how you actually behave — not how you'd like to. The more honest the answers, the more accurate your portrait.",
+    },
+    getQuestions: getDeepBigFiveQuestions,
   },
 };
 
