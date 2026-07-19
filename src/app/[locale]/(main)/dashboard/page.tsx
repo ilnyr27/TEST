@@ -129,6 +129,33 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Categories — shown early so new users immediately see what to explore */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">{t("exploreCategories")}</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {categories.map((cat) => (
+            <Link key={cat} href={`/category/${cat}`}>
+              <Card className="group cursor-pointer transition-all hover:shadow-md">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <span className={categoryColors[cat]}>
+                      {categoryIcons[cat]}
+                    </span>
+                    <div className="flex-1">
+                      <CardTitle className="text-base">{tc(cat)}</CardTitle>
+                      <CardDescription className="text-xs">
+                        {tc(`${cat}Desc`)}
+                      </CardDescription>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                  </div>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Flags / Warnings */}
       {flags.length > 0 && (
         <div className="space-y-3">
@@ -275,32 +302,6 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Categories */}
-      <div>
-        <h2 className="mb-4 text-xl font-semibold">{t("exploreCategories")}</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {categories.map((cat) => (
-            <Link key={cat} href={`/category/${cat}`}>
-              <Card className="group cursor-pointer transition-all hover:shadow-md">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <span className={categoryColors[cat]}>
-                      {categoryIcons[cat]}
-                    </span>
-                    <div className="flex-1">
-                      <CardTitle className="text-base">{tc(cat)}</CardTitle>
-                      <CardDescription className="text-xs">
-                        {tc(`${cat}Desc`)}
-                      </CardDescription>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                  </div>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
