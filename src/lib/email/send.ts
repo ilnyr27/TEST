@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 
-const FROM = "Познай Себя <noreply@poznaisebya27.ru>";
+// Switch to noreply@poznaisebya27.ru once domain is verified in Resend
+const FROM = process.env.EMAIL_FROM ?? "Познай Себя <onboarding@resend.dev>";
 
 let _resend: Resend | null = null;
 function getResend() {
