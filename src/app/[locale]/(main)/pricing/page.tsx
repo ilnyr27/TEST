@@ -88,6 +88,7 @@ export default function PricingPage() {
   };
 
   const handleSubPurchase = async (planId: SubPlan) => {
+    // eslint-disable-next-line react-hooks/immutability
     if (!user) { window.location.href = `/${locale}/login?next=/${locale}/pricing`; return; }
     setPurchaseLoading(`sub_${planId}`);
     try {
@@ -97,6 +98,7 @@ export default function PricingPage() {
         body: JSON.stringify({ type: "subscription", plan: planId }),
       });
       const data = await res.json();
+      // eslint-disable-next-line react-hooks/immutability
       if (data.url) window.location.href = data.url;
       else showError(data.error || "Payment error");
     } catch { showError("Payment error"); }
