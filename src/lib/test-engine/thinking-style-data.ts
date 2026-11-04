@@ -121,11 +121,11 @@ export function getThinkingStyleQuestions(): (Question & { options: QuestionOpti
     metadata: null,
     created_at: new Date().toISOString(),
     options: [
-      { id: `ts-o-${item.number}-1`, question_id: `ts-q-${item.number}`, option_key: "1", text_ru: "Совершенно не согласен", text_en: "Strongly disagree", sort_order: 0 },
-      { id: `ts-o-${item.number}-2`, question_id: `ts-q-${item.number}`, option_key: "2", text_ru: "Скорее не согласен", text_en: "Disagree", sort_order: 1 },
-      { id: `ts-o-${item.number}-3`, question_id: `ts-q-${item.number}`, option_key: "3", text_ru: "Нейтрально", text_en: "Neutral", sort_order: 2 },
-      { id: `ts-o-${item.number}-4`, question_id: `ts-q-${item.number}`, option_key: "4", text_ru: "Скорее согласен", text_en: "Agree", sort_order: 3 },
-      { id: `ts-o-${item.number}-5`, question_id: `ts-q-${item.number}`, option_key: "5", text_ru: "Полностью согласен", text_en: "Strongly agree", sort_order: 4 },
+      { id: `ts-o-${item.number}-1`, question_id: `ts-q-${item.number}`, option_key: "1", text_ru: "Совсем не про меня", text_en: "Not me at all", sort_order: 0 },
+      { id: `ts-o-${item.number}-2`, question_id: `ts-q-${item.number}`, option_key: "2", text_ru: "Скорее не про меня", text_en: "Not really me", sort_order: 1 },
+      { id: `ts-o-${item.number}-3`, question_id: `ts-q-${item.number}`, option_key: "3", text_ru: "Трудно сказать", text_en: "Hard to say", sort_order: 2 },
+      { id: `ts-o-${item.number}-4`, question_id: `ts-q-${item.number}`, option_key: "4", text_ru: "Скорее про меня", text_en: "Somewhat me", sort_order: 3 },
+      { id: `ts-o-${item.number}-5`, question_id: `ts-q-${item.number}`, option_key: "5", text_ru: "Это точно про меня", text_en: "Definitely me", sort_order: 4 },
     ],
   }));
 }

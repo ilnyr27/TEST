@@ -18,6 +18,20 @@ function isProtectedRoute(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip Supabase call for purely public routes — no auth needed
+  const isPublicOnly =
+    pathname.match(/^\/(ru|en)?\/?$/) ||           // home
+    pathname.match(/^\/(ru|en)\/category/) ||
+    pathname.match(/^\/(ru|en)\/test\/[^/]+\/?$/) || // test detail (not play)
+    pathname.match(/^\/(ru|en)\/(legal|guide|contacts|terms|privacy|offer|cookies)/) ||
+    pathname.match(/^\/(ru|en)\/(login|signup|auth)/);
+
+  if (isPublicOnly) {
+    return intlMiddleware(request);
+  }
+
   // 1. Refresh Supabase session (updates cookies)
   let supabaseResponse = NextResponse.next({ request });
 

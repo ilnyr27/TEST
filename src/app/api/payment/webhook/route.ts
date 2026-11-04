@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { SUB_PLANS, SubPlan } from "@/lib/payment/plans";
 import { sendPaymentConfirmation } from "@/lib/email/send";
+import { getPayment } from "@/lib/payment/yukassa";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +17,13 @@ export async function POST(request: NextRequest) {
     if (!userId) {
       console.error("[webhook] Missing user_id:", metadata);
       return Response.json({ error: "Missing user_id" }, { status: 400 });
+    }
+
+    // Verify the payment actually exists and succeeded in YuKassa (prevents fake webhook attacks)
+    const verified = await getPayment(yukassaId);
+    if (verified.status !== "succeeded") {
+      console.warn("[webhook] Payment not succeeded:", yukassaId, verified.status);
+      return Response.json({ ok: true }); // acknowledge but don't credit
     }
 
     const supabase = createServerClient(

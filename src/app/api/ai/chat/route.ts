@@ -96,12 +96,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Increment message count (fire-and-forget to not delay streaming)
-    supabase
+    // Atomic optimistic increment: WHERE messages_used = snapshot prevents double-spending on concurrent requests.
+    // If another request already incremented, updated rows = 0 → reject with 409 so client can retry.
+    const { data: incremented } = await supabase
       .from("chat_sessions")
       .update({ messages_used: session.messages_used + 1 })
       .eq("id", sessionId)
-      .then(() => {});
+      .eq("messages_used", session.messages_used)
+      .select("id");
+
+    if (!incremented || incremented.length === 0) {
+      return Response.json(
+        { error: "Concurrent request detected, please resend" },
+        { status: 409 }
+      );
+    }
 
     const aiProvider = createAIProvider(provider);
     const messages = buildChatMessages(

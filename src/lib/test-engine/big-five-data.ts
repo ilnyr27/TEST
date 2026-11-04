@@ -1,8 +1,8 @@
 import { Question, QuestionOption } from "@/types/database";
 
-// Big Five Inventory (BFI-44) — adapted
+// Big Five — scenario-based adaptation of BFI-44
 // Dimensions: O=Openness, C=Conscientiousness, E=Extraversion, A=Agreeableness, N=Neuroticism
-// Scale 1-5: 1=Strongly Disagree, 5=Strongly Agree
+// Scale 1-5: 1=Not me at all, 5=Definitely me
 // Some items are reverse-scored (marked reverse: true)
 
 interface BigFiveQuestion {
@@ -15,58 +15,58 @@ interface BigFiveQuestion {
 
 const bigFiveItems: BigFiveQuestion[] = [
   // Extraversion (E) — 8 items
-  { number: 1, textRu: "Я разговорчивый человек", textEn: "I see myself as someone who is talkative", dimension: "E", reverse: false },
-  { number: 6, textRu: "Я сдержанный, замкнутый", textEn: "I see myself as someone who is reserved", dimension: "E", reverse: true },
-  { number: 11, textRu: "Я полон энергии", textEn: "I see myself as someone who is full of energy", dimension: "E", reverse: false },
-  { number: 16, textRu: "Я генерирую много энтузиазма", textEn: "I see myself as someone who generates a lot of enthusiasm", dimension: "E", reverse: false },
-  { number: 21, textRu: "Я обычно тихий", textEn: "I see myself as someone who tends to be quiet", dimension: "E", reverse: true },
-  { number: 26, textRu: "У меня напористый характер", textEn: "I see myself as someone who has an assertive personality", dimension: "E", reverse: false },
-  { number: 31, textRu: "Я иногда застенчив, скован", textEn: "I see myself as someone who is sometimes shy, inhibited", dimension: "E", reverse: true },
-  { number: 36, textRu: "Я общительный, компанейский", textEn: "I see myself as someone who is outgoing, sociable", dimension: "E", reverse: false },
+  { number: 1,  textRu: "Когда в компании возникает тишина, я обычно нахожу что сказать первым", textEn: "When a conversation goes quiet, I usually find something to say first", dimension: "E", reverse: false },
+  { number: 6,  textRu: "Мне нужно побыть одному, чтобы восстановить силы после насыщенного общения", textEn: "I need time alone to recharge after a lot of socializing", dimension: "E", reverse: true },
+  { number: 11, textRu: "Даже к вечеру пятницы у меня остаётся энергия, чтобы чем-то заняться", textEn: "Even by Friday evening I still have energy to do something", dimension: "E", reverse: false },
+  { number: 16, textRu: "Когда я рассказываю о чём-то, люди вокруг начинают заражаться моим интересом", textEn: "When I talk about something I love, people around me get caught up in my enthusiasm", dimension: "E", reverse: false },
+  { number: 21, textRu: "На вечеринках я провожу больше времени в тихом разговоре с одним человеком, чем в центре шумной компании", textEn: "At parties I spend more time in a quiet conversation with one person than in the middle of a crowd", dimension: "E", reverse: true },
+  { number: 26, textRu: "Я готов настаивать на своём, даже если это создаёт напряжение", textEn: "I am willing to push my point, even if it creates friction", dimension: "E", reverse: false },
+  { number: 31, textRu: "Первые несколько минут в незнакомой компании мне непросто расслабиться", textEn: "The first few minutes in an unfamiliar group I find it hard to loosen up", dimension: "E", reverse: true },
+  { number: 36, textRu: "Мне легко заводить разговор с незнакомыми людьми", textEn: "I find it easy to start a conversation with strangers", dimension: "E", reverse: false },
 
   // Agreeableness (A) — 9 items
-  { number: 2, textRu: "Я склонен находить недостатки в других", textEn: "I see myself as someone who tends to find fault with others", dimension: "A", reverse: true },
-  { number: 7, textRu: "Я готов помогать и быть бескорыстным", textEn: "I see myself as someone who is helpful and unselfish with others", dimension: "A", reverse: false },
-  { number: 12, textRu: "Я часто начинаю ссоры с другими", textEn: "I see myself as someone who starts quarrels with others", dimension: "A", reverse: true },
-  { number: 17, textRu: "Я умею прощать", textEn: "I see myself as someone who has a forgiving nature", dimension: "A", reverse: false },
-  { number: 22, textRu: "Я обычно доверяю людям", textEn: "I see myself as someone who is generally trusting", dimension: "A", reverse: false },
-  { number: 27, textRu: "Я иногда бываю холоден и отстранён", textEn: "I see myself as someone who can be cold and aloof", dimension: "A", reverse: true },
-  { number: 32, textRu: "Я внимателен и добр к другим", textEn: "I see myself as someone who is considerate and kind to almost everyone", dimension: "A", reverse: false },
-  { number: 37, textRu: "Я иногда бываю грубым с другими", textEn: "I see myself as someone who is sometimes rude to others", dimension: "A", reverse: true },
-  { number: 42, textRu: "Я люблю сотрудничать с другими", textEn: "I see myself as someone who likes to cooperate with others", dimension: "A", reverse: false },
+  { number: 2,  textRu: "Когда кто-то рассказывает о своём плане, я замечаю его слабые стороны раньше, чем сильные", textEn: "When someone describes their plan, I notice its flaws before its strengths", dimension: "A", reverse: true },
+  { number: 7,  textRu: "Мне несложно помочь кому-то, даже если это отнимает моё личное время", textEn: "I don't mind helping others even when it takes up my personal time", dimension: "A", reverse: false },
+  { number: 12, textRu: "Я готов открыто поспорить, если убеждён, что прав", textEn: "I am willing to argue openly if I believe I am right", dimension: "A", reverse: true },
+  { number: 17, textRu: "Я могу отпустить обиду, не держась за неё месяцами", textEn: "I can let go of a grudge rather than holding onto it for months", dimension: "A", reverse: false },
+  { number: 22, textRu: "Мой первый порыв в отношении нового человека — доверие, а не осторожность", textEn: "My first instinct with a new person is to trust them, not be cautious", dimension: "A", reverse: false },
+  { number: 27, textRu: "Когда я устал или расстроен, я могу быть отстранённым в общении", textEn: "When I am tired or upset, I can become distant and hard to reach", dimension: "A", reverse: true },
+  { number: 32, textRu: "Я замечаю, когда кому-то рядом плохо, и стараюсь это исправить", textEn: "I notice when someone nearby is not OK and try to do something about it", dimension: "A", reverse: false },
+  { number: 37, textRu: "В момент раздражения я могу сказать что-то резкое, не успев подумать", textEn: "When irritated, I can say something blunt before I have time to think", dimension: "A", reverse: true },
+  { number: 42, textRu: "Мне больше нравится работать вместе с кем-то, чем в одиночку", textEn: "I enjoy working alongside someone more than working alone", dimension: "A", reverse: false },
 
   // Conscientiousness (C) — 9 items
-  { number: 3, textRu: "Я выполняю работу тщательно", textEn: "I see myself as someone who does a thorough job", dimension: "C", reverse: false },
-  { number: 8, textRu: "Я бываю небрежным, неаккуратным", textEn: "I see myself as someone who can be somewhat careless", dimension: "C", reverse: true },
-  { number: 13, textRu: "Я надёжный работник", textEn: "I see myself as someone who is a reliable worker", dimension: "C", reverse: false },
-  { number: 18, textRu: "Я склонен к дезорганизации", textEn: "I see myself as someone who tends to be disorganized", dimension: "C", reverse: true },
-  { number: 23, textRu: "Я склонен к лени", textEn: "I see myself as someone who tends to be lazy", dimension: "C", reverse: true },
-  { number: 28, textRu: "Я настойчив, пока задача не выполнена", textEn: "I see myself as someone who perseveres until the task is finished", dimension: "C", reverse: false },
-  { number: 33, textRu: "Я делаю вещи эффективно", textEn: "I see myself as someone who does things efficiently", dimension: "C", reverse: false },
-  { number: 38, textRu: "Я строю планы и следую им", textEn: "I see myself as someone who makes plans and follows through with them", dimension: "C", reverse: false },
-  { number: 43, textRu: "Я легко отвлекаюсь", textEn: "I see myself as someone who is easily distracted", dimension: "C", reverse: true },
+  { number: 3,  textRu: "Перед тем как сдать работу, я обычно проверяю её ещё раз", textEn: "Before handing something in, I usually check it one more time", dimension: "C", reverse: false },
+  { number: 8,  textRu: "Я могу отправить сообщение или документ, не перечитав его", textEn: "I can send a message or document without rereading it first", dimension: "C", reverse: true },
+  { number: 13, textRu: "Если я обещал что-то сделать — это будет сделано", textEn: "If I said I would do something, it will get done", dimension: "C", reverse: false },
+  { number: 18, textRu: "Мой рабочий стол и файлы нередко превращаются в хаос", textEn: "My desk and files often turn into a mess", dimension: "C", reverse: true },
+  { number: 23, textRu: "Мне бывает сложно заставить себя начать дело, которое не интересно", textEn: "I sometimes struggle to make myself start a task that doesn't interest me", dimension: "C", reverse: true },
+  { number: 28, textRu: "Я не успокоюсь, пока не доведу начатое до конца", textEn: "I won't rest until I have finished what I started", dimension: "C", reverse: false },
+  { number: 33, textRu: "Я обычно нахожу самый короткий путь к нужному результату", textEn: "I usually find the most direct path to the result I need", dimension: "C", reverse: false },
+  { number: 38, textRu: "Когда у меня есть план, я его придерживаюсь, а не меняю на ходу", textEn: "When I have a plan, I stick to it rather than change it along the way", dimension: "C", reverse: false },
+  { number: 43, textRu: "Мне сложно долго сосредоточиться на одной задаче, не отвлекаясь", textEn: "I find it hard to focus on one task for long without getting distracted", dimension: "C", reverse: true },
 
   // Neuroticism (N) — 8 items
-  { number: 4, textRu: "Я подавлен, грустен", textEn: "I see myself as someone who is depressed, blue", dimension: "N", reverse: false },
-  { number: 9, textRu: "Я расслаблен, хорошо справляюсь со стрессом", textEn: "I see myself as someone who is relaxed, handles stress well", dimension: "N", reverse: true },
-  { number: 14, textRu: "Я бываю напряжён", textEn: "I see myself as someone who can be tense", dimension: "N", reverse: false },
-  { number: 19, textRu: "Я часто беспокоюсь", textEn: "I see myself as someone who worries a lot", dimension: "N", reverse: false },
-  { number: 24, textRu: "Я эмоционально стабилен, не легко расстраиваюсь", textEn: "I see myself as someone who is emotionally stable, not easily upset", dimension: "N", reverse: true },
-  { number: 29, textRu: "Я бываю капризным", textEn: "I see myself as someone who can be moody", dimension: "N", reverse: false },
-  { number: 34, textRu: "Я сохраняю спокойствие в сложных ситуациях", textEn: "I see myself as someone who remains calm in tense situations", dimension: "N", reverse: true },
-  { number: 39, textRu: "Я легко нервничаю", textEn: "I see myself as someone who gets nervous easily", dimension: "N", reverse: false },
+  { number: 4,  textRu: "Бывают периоды, когда всё кажется серым и хочется просто не двигаться", textEn: "There are periods when everything feels grey and I just want to stay still", dimension: "N", reverse: false },
+  { number: 9,  textRu: "Когда всё идёт не по плану, я обычно нахожу способ не паниковать", textEn: "When things go off plan, I usually find a way not to panic", dimension: "N", reverse: true },
+  { number: 14, textRu: "Я замечаю, что внутреннее напряжение накапливается во мне даже без видимой причины", textEn: "I notice inner tension building up even when there is no obvious reason", dimension: "N", reverse: false },
+  { number: 19, textRu: "Я могу долго прокручивать в голове то, что уже нельзя изменить", textEn: "I can replay something in my head for a long time even when it can no longer be changed", dimension: "N", reverse: false },
+  { number: 24, textRu: "Мои эмоции обычно ровные — меня сложно выбить из колеи", textEn: "My emotions are usually steady — it takes a lot to knock me off balance", dimension: "N", reverse: true },
+  { number: 29, textRu: "Моё настроение может резко меняться без очевидной причины", textEn: "My mood can shift sharply without an obvious reason", dimension: "N", reverse: false },
+  { number: 34, textRu: "В критический момент я обычно думаю трезво, а не теряюсь", textEn: "In a critical moment I usually think clearly rather than freeze", dimension: "N", reverse: true },
+  { number: 39, textRu: "Мне достаточно небольшой неопределённости, чтобы начать беспокоиться", textEn: "A small amount of uncertainty is enough to make me start worrying", dimension: "N", reverse: false },
 
   // Openness (O) — 10 items
-  { number: 5, textRu: "Я оригинален, мне приходят новые идеи", textEn: "I see myself as someone who is original, comes up with new ideas", dimension: "O", reverse: false },
-  { number: 10, textRu: "Мне интересны разные вещи", textEn: "I see myself as someone who is curious about many different things", dimension: "O", reverse: false },
-  { number: 15, textRu: "Я изобретателен", textEn: "I see myself as someone who is ingenious, a deep thinker", dimension: "O", reverse: false },
-  { number: 20, textRu: "У меня активное воображение", textEn: "I see myself as someone who has an active imagination", dimension: "O", reverse: false },
-  { number: 25, textRu: "Я изобретателен", textEn: "I see myself as someone who is inventive", dimension: "O", reverse: false },
-  { number: 30, textRu: "Я ценю художественные, эстетические переживания", textEn: "I see myself as someone who values artistic, aesthetic experiences", dimension: "O", reverse: false },
-  { number: 35, textRu: "Я предпочитаю рутинную работу", textEn: "I see myself as someone who prefers work that is routine", dimension: "O", reverse: true },
-  { number: 40, textRu: "Мне нравится размышлять, играть с идеями", textEn: "I see myself as someone who likes to reflect, play with ideas", dimension: "O", reverse: false },
-  { number: 41, textRu: "У меня мало интересов в области искусства", textEn: "I see myself as someone who has few artistic interests", dimension: "O", reverse: true },
-  { number: 44, textRu: "Я ценю интеллектуальный опыт", textEn: "I see myself as someone who is sophisticated in art, music, or literature", dimension: "O", reverse: false },
+  { number: 5,  textRu: "У меня регулярно появляются идеи, которые я раньше нигде не слышал", textEn: "I regularly come up with ideas I haven't heard from anyone else", dimension: "O", reverse: false },
+  { number: 10, textRu: "Я могу с одинаковым интересом читать про квантовую физику и средневековую историю", textEn: "I can read about quantum physics and medieval history with equal curiosity", dimension: "O", reverse: false },
+  { number: 15, textRu: "Я люблю задаваться вопросом «а что, если всё устроить совсем иначе?»", textEn: "I enjoy asking 'what if everything was done completely differently?'", dimension: "O", reverse: false },
+  { number: 20, textRu: "Я легко погружаюсь в воображаемые миры — книги, фильмы, собственные фантазии", textEn: "I easily get absorbed in imaginary worlds — books, films, my own daydreams", dimension: "O", reverse: false },
+  { number: 25, textRu: "Когда стандартный путь не работает, я придумываю нестандартный", textEn: "When the standard approach doesn't work, I invent a non-standard one", dimension: "O", reverse: false },
+  { number: 30, textRu: "Красиво сделанная вещь — музыка, кино, дизайн — способна по-настоящему тронуть меня", textEn: "A beautifully made thing — music, film, design — can genuinely move me", dimension: "O", reverse: false },
+  { number: 35, textRu: "Мне комфортнее делать то, что я уже хорошо знаю, чем пробовать что-то новое", textEn: "I am more comfortable doing what I already know well than trying something new", dimension: "O", reverse: true },
+  { number: 40, textRu: "Мне нравится брать одну идею и думать, куда она может привести", textEn: "I enjoy taking a single idea and exploring where it might lead", dimension: "O", reverse: false },
+  { number: 41, textRu: "Искусство, музыка или литература — не моя стихия", textEn: "Art, music, or literature are not really my thing", dimension: "O", reverse: true },
+  { number: 44, textRu: "Хороший разговор о сложных темах — это для меня удовольствие, а не утомление", textEn: "A good conversation about complex topics is a pleasure for me, not a chore", dimension: "O", reverse: false },
 ];
 
 // Sort by question number for linear flow
@@ -74,12 +74,12 @@ const sortedItems = [...bigFiveItems].sort((a, b) => a.number - b.number);
 
 const scaleLabels = {
   ru: {
-    min: "Совершенно не согласен",
-    max: "Полностью согласен",
+    min: "Нет, не про меня",
+    max: "Да, это точно про меня",
   },
   en: {
-    min: "Strongly disagree",
-    max: "Strongly agree",
+    min: "Not me at all",
+    max: "Definitely me",
   },
 };
 
@@ -124,11 +124,11 @@ export function getBigFiveQuestions(): (Question & { options: QuestionOption[] }
     metadata: null,
     created_at: new Date().toISOString(),
     options: [
-      { id: `bf-o-${item.number}-1`, question_id: `bf-q-${item.number}`, option_key: "1", text_ru: "Совершенно не согласен", text_en: "Strongly disagree", sort_order: 0 },
-      { id: `bf-o-${item.number}-2`, question_id: `bf-q-${item.number}`, option_key: "2", text_ru: "Скорее не согласен", text_en: "Disagree", sort_order: 1 },
-      { id: `bf-o-${item.number}-3`, question_id: `bf-q-${item.number}`, option_key: "3", text_ru: "Нейтрально", text_en: "Neutral", sort_order: 2 },
-      { id: `bf-o-${item.number}-4`, question_id: `bf-q-${item.number}`, option_key: "4", text_ru: "Скорее согласен", text_en: "Agree", sort_order: 3 },
-      { id: `bf-o-${item.number}-5`, question_id: `bf-q-${item.number}`, option_key: "5", text_ru: "Полностью согласен", text_en: "Strongly agree", sort_order: 4 },
+      { id: `bf-o-${item.number}-1`, question_id: `bf-q-${item.number}`, option_key: "1", text_ru: "Совсем не про меня", text_en: "Not me at all", sort_order: 0 },
+      { id: `bf-o-${item.number}-2`, question_id: `bf-q-${item.number}`, option_key: "2", text_ru: "Скорее не про меня", text_en: "Not really me", sort_order: 1 },
+      { id: `bf-o-${item.number}-3`, question_id: `bf-q-${item.number}`, option_key: "3", text_ru: "Трудно сказать", text_en: "Hard to say", sort_order: 2 },
+      { id: `bf-o-${item.number}-4`, question_id: `bf-q-${item.number}`, option_key: "4", text_ru: "Скорее про меня", text_en: "Somewhat me", sort_order: 3 },
+      { id: `bf-o-${item.number}-5`, question_id: `bf-q-${item.number}`, option_key: "5", text_ru: "Это точно про меня", text_en: "Definitely me", sort_order: 4 },
     ],
   }));
 }

@@ -15,39 +15,39 @@ interface HabitsQuestion {
 
 const habitsItems: HabitsQuestion[] = [
   // Health Habits (HH) — 5 items
-  { number: 1, textRu: "Я регулярно занимаюсь физическими упражнениями", textEn: "I exercise regularly", dimension: "HH", reverse: false },
-  { number: 2, textRu: "Я часто пропускаю приёмы пищи", textEn: "I often skip meals", dimension: "HH", reverse: true },
-  { number: 3, textRu: "Я сплю не менее 7 часов в сутки", textEn: "I sleep at least 7 hours per night", dimension: "HH", reverse: false },
-  { number: 4, textRu: "Я пью достаточно воды в течение дня", textEn: "I drink enough water throughout the day", dimension: "HH", reverse: false },
-  { number: 5, textRu: "Я часто ем фастфуд или нездоровую пищу", textEn: "I often eat fast food or junk food", dimension: "HH", reverse: true },
+  { number: 1, textRu: "Я двигаюсь хотя бы 20–30 минут в день — прогулка, зал, зарядка", textEn: "I move for at least 20–30 minutes a day — a walk, gym, or exercise", dimension: "HH", reverse: false },
+  { number: 2, textRu: "Я пропускаю приёмы пищи, потому что забываю или не успеваю", textEn: "I skip meals because I forget or don't have time", dimension: "HH", reverse: true },
+  { number: 3, textRu: "Я просыпаюсь более-менее отдохнувшим большинство дней", textEn: "I wake up feeling reasonably rested most mornings", dimension: "HH", reverse: false },
+  { number: 4, textRu: "К середине дня у меня есть стакан воды рядом", textEn: "By midday I usually have water within reach", dimension: "HH", reverse: false },
+  { number: 5, textRu: "Еда навынос или фастфуд — мой частый выбор в будни", textEn: "Takeout or fast food is my go-to on busy weekdays", dimension: "HH", reverse: true },
 
   // Productivity (PR) — 5 items
-  { number: 6, textRu: "Я планирую свой день заранее", textEn: "I plan my day in advance", dimension: "PR", reverse: false },
-  { number: 7, textRu: "Я откладываю важные дела на потом", textEn: "I put off important tasks until later", dimension: "PR", reverse: true },
-  { number: 8, textRu: "Я расставляю приоритеты и фокусируюсь на главном", textEn: "I prioritize tasks and focus on what matters most", dimension: "PR", reverse: false },
-  { number: 9, textRu: "Я завершаю начатые дела в срок", textEn: "I finish tasks on time", dimension: "PR", reverse: false },
-  { number: 10, textRu: "Я трачу много времени на бесцельное листание телефона", textEn: "I spend a lot of time mindlessly scrolling my phone", dimension: "PR", reverse: true },
+  { number: 6, textRu: "Начиная день, я примерно знаю, что именно сделаю сегодня", textEn: "When I start the day, I roughly know what I will actually do today", dimension: "PR", reverse: false },
+  { number: 7, textRu: "Важное дело, которое не срочно, у меня часто откладывается до последнего", textEn: "An important but non-urgent task often sits on my list until the last moment", dimension: "PR", reverse: true },
+  { number: 8, textRu: "В конце рабочего дня я могу назвать одно главное, что продвинул сегодня", textEn: "At the end of the workday I can name one main thing I actually moved forward", dimension: "PR", reverse: false },
+  { number: 9, textRu: "Дедлайны — это ориентир, а не стресс: я обычно успеваю заранее", textEn: "Deadlines are a guide, not a stressor — I usually finish ahead of time", dimension: "PR", reverse: false },
+  { number: 10, textRu: "Я открываю телефон «на минуту» и теряю полчаса", textEn: "I open my phone 'for a minute' and lose half an hour", dimension: "PR", reverse: true },
 
   // Mindfulness (MN) — 5 items
-  { number: 11, textRu: "Я выделяю время на тишину и размышления", textEn: "I set aside time for silence and reflection", dimension: "MN", reverse: false },
-  { number: 12, textRu: "Я замечаю свои эмоции и реагирую на них осознанно", textEn: "I notice my emotions and respond to them mindfully", dimension: "MN", reverse: false },
-  { number: 13, textRu: "Я часто действую на автопилоте, не задумываясь", textEn: "I often act on autopilot without thinking", dimension: "MN", reverse: true },
-  { number: 14, textRu: "Я практикую благодарность или ведение дневника", textEn: "I practice gratitude or journaling", dimension: "MN", reverse: false },
-  { number: 15, textRu: "Я умею отпускать тревожные мысли", textEn: "I am able to let go of anxious thoughts", dimension: "MN", reverse: false },
+  { number: 11, textRu: "Я нахожу хотя бы несколько минут в день, чтобы побыть в тишине с собой", textEn: "I find at least a few minutes each day to be quiet with myself", dimension: "MN", reverse: false },
+  { number: 12, textRu: "Когда что-то выбивает меня из колеи, я замечаю это раньше, чем срываюсь", textEn: "When something throws me off, I notice it before I snap", dimension: "MN", reverse: false },
+  { number: 13, textRu: "Я добираюсь до работы или ложусь спать, почти не помня, что происходило последний час", textEn: "I often commute or fall asleep barely remembering what happened in the last hour", dimension: "MN", reverse: true },
+  { number: 14, textRu: "У меня есть хоть какая-то практика благодарности, рефлексии или дневника", textEn: "I have some kind of gratitude, reflection, or journaling practice", dimension: "MN", reverse: false },
+  { number: 15, textRu: "Тревожная мысль, которая появилась вечером, к утру уже не так давит", textEn: "An anxious thought that appeared in the evening usually feels lighter by morning", dimension: "MN", reverse: false },
 
   // Social Habits (SH) — 5 items
-  { number: 16, textRu: "Я регулярно общаюсь с друзьями и близкими", textEn: "I regularly communicate with friends and family", dimension: "SH", reverse: false },
-  { number: 17, textRu: "Я избегаю общения, когда чувствую усталость", textEn: "I avoid socializing when I feel tired", dimension: "SH", reverse: true },
-  { number: 18, textRu: "Я помогаю другим без ожидания чего-то взамен", textEn: "I help others without expecting anything in return", dimension: "SH", reverse: false },
-  { number: 19, textRu: "Я активно слушаю собеседника, не перебивая", textEn: "I actively listen to others without interrupting", dimension: "SH", reverse: false },
-  { number: 20, textRu: "Я провожу время с людьми, которые меня вдохновляют", textEn: "I spend time with people who inspire me", dimension: "SH", reverse: false },
+  { number: 16, textRu: "На прошлой неделе я пообщался с кем-то близким — не по делу, просто так", textEn: "Last week I talked with someone close — not for a reason, just to connect", dimension: "SH", reverse: false },
+  { number: 17, textRu: "Когда я устал, я предпочитаю исчезнуть, чем быть с людьми", textEn: "When tired, I prefer to disappear rather than be around people", dimension: "SH", reverse: true },
+  { number: 18, textRu: "Я помогаю кому-то, не считая это долгом и не ожидая ответного жеста", textEn: "I help people without tallying it up or expecting something back", dimension: "SH", reverse: false },
+  { number: 19, textRu: "Когда человек говорит, я слушаю его — а не жду, пока смогу вставить своё", textEn: "When someone speaks, I listen to them — not just wait for my turn to talk", dimension: "SH", reverse: false },
+  { number: 20, textRu: "После общения с конкретными людьми я обычно заряжаюсь, а не выматываюсь", textEn: "After spending time with certain people I usually feel charged, not drained", dimension: "SH", reverse: false },
 
   // Learning (LR) — 5 items
-  { number: 21, textRu: "Я читаю книги или статьи для саморазвития", textEn: "I read books or articles for self-improvement", dimension: "LR", reverse: false },
-  { number: 22, textRu: "Я изучаю новые навыки или темы каждую неделю", textEn: "I learn new skills or topics every week", dimension: "LR", reverse: false },
-  { number: 23, textRu: "Мне сложно выделить время на обучение", textEn: "I find it hard to make time for learning", dimension: "LR", reverse: true },
-  { number: 24, textRu: "Я анализирую свои ошибки и извлекаю уроки", textEn: "I analyze my mistakes and learn from them", dimension: "LR", reverse: false },
-  { number: 25, textRu: "Я ставлю цели для своего развития и отслеживаю прогресс", textEn: "I set development goals and track my progress", dimension: "LR", reverse: false },
+  { number: 21, textRu: "На прошлой неделе я что-то читал или смотрел, чтобы лучше разобраться в теме", textEn: "Last week I read or watched something to get better at something", dimension: "LR", reverse: false },
+  { number: 22, textRu: "Я пробую что-то новое — навык, инструмент или тему — хотя бы раз в неделю", textEn: "I try something new — a skill, tool, or topic — at least once a week", dimension: "LR", reverse: false },
+  { number: 23, textRu: "Обучение — это то, что я хочу делать, но до чего никак не доходят руки", textEn: "Learning is something I want to do but never quite get around to", dimension: "LR", reverse: true },
+  { number: 24, textRu: "После провала или ошибки я обычно думаю, что именно пошло не так", textEn: "After a mistake or failure I usually think about what actually went wrong", dimension: "LR", reverse: false },
+  { number: 25, textRu: "У меня есть конкретные цели роста, и я знаю, куда двигаюсь", textEn: "I have specific growth goals and I know the direction I am heading", dimension: "LR", reverse: false },
 ];
 
 // Sort by question number for linear flow

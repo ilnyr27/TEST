@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         user_id: user.id,
         free_session_used: true,
         deepseek_sessions: 0,
-        deepseek_msg_limit: FREE_MSG_LIMIT,
+        deepseek_msg_limit: plan?.deepseek_msg_limit ?? FREE_MSG_LIMIT, // preserve existing limit if user had paid history
         claude_sessions: plan?.claude_sessions ?? 0,
         claude_msg_limit: plan?.claude_msg_limit ?? 0,
         has_report: plan?.has_report ?? false,
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     await supabase
       .from("user_plans")
-      .update({ deepseek_sessions: remaining - 1, updated_at: new Date().toISOString() })
+      .update({ deepseek_sessions: remaining - 1, free_session_used: true, updated_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
     const { data: session } = await supabase
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
 
   await supabase
     .from("user_plans")
-    .update({ claude_sessions: claudeRemaining - 1, updated_at: new Date().toISOString() })
+    .update({ claude_sessions: claudeRemaining - 1, free_session_used: true, updated_at: new Date().toISOString() })
     .eq("user_id", user.id);
 
   const { data: session } = await supabase

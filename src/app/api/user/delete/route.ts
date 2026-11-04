@@ -27,6 +27,7 @@ export async function DELETE(request: NextRequest) {
       admin.from("user_reports").delete().eq("user_id", userId),
       admin.from("test_results").delete().eq("user_id", userId),
       admin.from("payments").delete().eq("user_id", userId),
+      admin.from("chat_sessions").delete().eq("user_id", userId),
     ]);
 
     // Delete auth user (cascades any remaining references)

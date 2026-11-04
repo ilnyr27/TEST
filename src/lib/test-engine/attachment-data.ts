@@ -55,13 +55,13 @@ const items: AttachmentItem[] = [
 ];
 
 const scaleOptions = (qNum: number): QuestionOption[] => [
-  { id: `at-o-${qNum}-1`, question_id: `at-q-${qNum}`, option_key: "1", text_ru: "Совершенно не согласен", text_en: "Strongly disagree", sort_order: 0 },
-  { id: `at-o-${qNum}-2`, question_id: `at-q-${qNum}`, option_key: "2", text_ru: "Не согласен", text_en: "Disagree", sort_order: 1 },
-  { id: `at-o-${qNum}-3`, question_id: `at-q-${qNum}`, option_key: "3", text_ru: "Скорее не согласен", text_en: "Slightly disagree", sort_order: 2 },
-  { id: `at-o-${qNum}-4`, question_id: `at-q-${qNum}`, option_key: "4", text_ru: "Нейтрально", text_en: "Neutral", sort_order: 3 },
-  { id: `at-o-${qNum}-5`, question_id: `at-q-${qNum}`, option_key: "5", text_ru: "Скорее согласен", text_en: "Slightly agree", sort_order: 4 },
-  { id: `at-o-${qNum}-6`, question_id: `at-q-${qNum}`, option_key: "6", text_ru: "Согласен", text_en: "Agree", sort_order: 5 },
-  { id: `at-o-${qNum}-7`, question_id: `at-q-${qNum}`, option_key: "7", text_ru: "Полностью согласен", text_en: "Strongly agree", sort_order: 6 },
+  { id: `at-o-${qNum}-1`, question_id: `at-q-${qNum}`, option_key: "1", text_ru: "Совсем не про меня", text_en: "Not me at all", sort_order: 0 },
+  { id: `at-o-${qNum}-2`, question_id: `at-q-${qNum}`, option_key: "2", text_ru: "Не согласен", text_en: "Not really me", sort_order: 1 },
+  { id: `at-o-${qNum}-3`, question_id: `at-q-${qNum}`, option_key: "3", text_ru: "Скорее не про меня", text_en: "Slightly disagree", sort_order: 2 },
+  { id: `at-o-${qNum}-4`, question_id: `at-q-${qNum}`, option_key: "4", text_ru: "Трудно сказать", text_en: "Hard to say", sort_order: 3 },
+  { id: `at-o-${qNum}-5`, question_id: `at-q-${qNum}`, option_key: "5", text_ru: "Скорее про меня", text_en: "Slightly agree", sort_order: 4 },
+  { id: `at-o-${qNum}-6`, question_id: `at-q-${qNum}`, option_key: "6", text_ru: "Согласен", text_en: "Somewhat me", sort_order: 5 },
+  { id: `at-o-${qNum}-7`, question_id: `at-q-${qNum}`, option_key: "7", text_ru: "Это точно про меня", text_en: "Definitely me", sort_order: 6 },
 ];
 
 export function getAttachmentQuestions(): (Question & { options: QuestionOption[] })[] {
